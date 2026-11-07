@@ -1,0 +1,6 @@
+# Cópias de segurança têm nomes e valores dos jovens: nunca as ponha no GitHub
+tesouraria-copia-*.json
+tesouraria-antes-de-importar-*.json
+*.backup.json
+.DS_Store
+Thumbs.db
