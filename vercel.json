@@ -24,6 +24,9 @@
       ]
     }
   ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://mquenad-moz-pc.tail40a864.ts.net:8443/api/:path*" }
+  ],
   "redirects": [
     { "source": "/(\\.env.*|server\\.js|iniciar\\.bat|sql/.*|package.*\\.json|api/_lib/.*)", "destination": "/", "permanent": false }
   ]

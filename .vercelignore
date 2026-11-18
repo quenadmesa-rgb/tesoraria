@@ -1,0 +1,11 @@
+# No Vercel só vai o site. Os dados (/api) são encaminhados para o servidor do PC
+# (MySQL local) através do Tailscale Funnel — ver "rewrites" em vercel.json.
+api/
+server.js
+iniciar.bat
+sql/
+.env
+.env.example
+node_modules/
+package.json
+package-lock.json
