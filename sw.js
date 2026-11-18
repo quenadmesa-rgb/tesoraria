@@ -1,7 +1,7 @@
 // Permite abrir a tesouraria sem internet depois da primeira visita.
 // Páginas do site: tenta a rede primeiro (para receber as actualizações) e usa a cópia guardada se não houver rede.
 // Bibliotecas e letras (CDN): usa a cópia guardada, porque têm versão fixa.
-const CACHE = "tesouraria-v21";
+const CACHE = "tesouraria-v22";
 const BASE = ["./", "index.html", "i18n.js", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 const CDN = [
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",

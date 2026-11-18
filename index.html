@@ -930,6 +930,23 @@ main.wrap{gap:16px}
 .kpi.saldo .v{font-size:19px!important}
 .kpi .h{font-size:10.5px!important;margin-top:1px}
 @media (max-width:640px){.kpis .kpi{flex:0 0 136px!important;padding:9px 11px!important}.kpi .v{font-size:15px!important}.kpi.saldo .v{font-size:16px!important}.kpi::before{width:22px!important;height:22px!important}.kpi::after{top:18px!important;right:18px!important}}
+/* telemóvel: cartões pequenos em grelha (sem deslizar de lado), todos visíveis */
+@media (max-width:640px){
+  .kpis,.kpis.kpis4,.kpis.kpis5{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;overflow:visible;gap:6px!important;padding:6px 0 8px!important}
+  .kpis>.kpi{grid-column:span 2!important}
+  .kpis>.kpi:nth-child(4):nth-last-child(2),.kpis>.kpi:nth-child(5):last-child,.kpis>.kpi:first-child:nth-last-child(4),.kpis>.kpi:first-child:nth-last-child(4)~.kpi,.kpis>.kpi:first-child:nth-last-child(2),.kpis>.kpi:first-child:nth-last-child(2)~.kpi{grid-column:span 3!important}
+  .kpis .kpi{flex:none!important;min-width:0;padding:7px 9px!important;border-radius:10px;gap:1px!important}
+  .kpis .kpi::before,.kpis .kpi::after{display:none!important}
+  .kpis .kpi .l{font-size:8.5px!important;padding-right:0!important;letter-spacing:.05em;white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25!important}
+  .kpis .kpi .v{font-size:13.5px!important;margin-top:2px!important;overflow:hidden;text-overflow:ellipsis}
+  .kpis .kpi.saldo .v{font-size:14px!important}
+  .kpis .kpi .v small.de{font-size:10px}
+  .kpis .kpi .h{font-size:9px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+}
+@media (max-width:340px){.kpis>.kpi{grid-column:span 3!important}}
+/* cartões do Painel: clicáveis */
+.kpi-link{cursor:pointer;transition:box-shadow .15s,border-color .15s}.kpi-link:hover{box-shadow:var(--sh-2,var(--shadow-lg));border-color:var(--kc,var(--line))}.kpi-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.kpi-link .l::after{content:" ›";opacity:.6;font-weight:800}
 /* quadros */
 .panel{border:1px solid color-mix(in srgb,var(--line) 60%,transparent);box-shadow:var(--sh-1);padding:16px 18px;border-radius:var(--r)}
 .panel h3{font-size:14.5px}
@@ -1475,11 +1492,11 @@ function vResumo(){
   const ent=tc+tco+tof;
   return `<div class="head"><div><h2>Painel de ${S.ano}</h2><p>Entradas, saídas e evolução do saldo ao longo do ano.</p></div><div class="head-acts"><div class="xbar"><button class="btn" data-xls-exp="tudo"><span aria-hidden="true">⬇</span> Exportar Excel completo</button></div></div></div>
   <div class="kpis">
-    <div class="kpi saldo"><span class="l">Saldo disponível</span><span class="v">${fmt(saldo)}</span><span class="h">${ent?Math.round(ts/ent*100):0}% das entradas já gasto</span></div>
-    <div class="kpi k1"><span class="l">Cotas</span><span class="v">${fmt(tc)}</span></div>
-    <div class="kpi k2"><span class="l">Contribuições</span><span class="v">${fmt(tco)}</span></div>
-    <div class="kpi k3"><span class="l">Ofertas</span><span class="v">${fmt(tof)}</span></div>
-    <div class="kpi k4"><span class="l">Saídas</span><span class="v out">${fmt(ts)}</span></div>
+    <div class="kpi saldo kpi-link" role="link" tabindex="0" data-tab="relatorio" data-anual="1" title="Abrir"><span class="l">Saldo disponível</span><span class="v">${fmt(saldo)}</span><span class="h">${ent?Math.round(ts/ent*100):0}% das entradas já gasto</span></div>
+    <div class="kpi k1 kpi-link" role="link" tabindex="0" data-tab="cotas" title="Abrir"><span class="l">Cotas</span><span class="v">${fmt(tc)}</span></div>
+    <div class="kpi k2 kpi-link" role="link" tabindex="0" data-tab="contribuicoes" title="Abrir"><span class="l">Contribuições</span><span class="v">${fmt(tco)}</span></div>
+    <div class="kpi k3 kpi-link" role="link" tabindex="0" data-tab="ofertas" title="Abrir"><span class="l">Ofertas</span><span class="v">${fmt(tof)}</span></div>
+    <div class="kpi k4 kpi-link" role="link" tabindex="0" data-tab="saidas" title="Abrir"><span class="l">Saídas</span><span class="v out">${fmt(ts)}</span></div>
   </div>
   <section class="panel chart-panel"><div class="ch-h"><div><h3>Evolução do saldo</h3><p class="muted small">Saldo acumulado no fim de cada mês (entradas menos saídas)</p></div></div>
     ${lineChart(acum.slice(0,ultimo),"Saldo acumulado")}</section>
@@ -1680,7 +1697,7 @@ function vEventos(grupo){
     <div class="kpi k1"><span class="l">${co?"Campanhas":"Eventos"}</span><span class="v">${lista.length}</span><span class="h">${nAt} com a meta atingida</span></div>
     <div class="kpi k2"><span class="l">Recebido</span><span class="v">${fmt(te)}</span></div>
     <div class="kpi k3"><span class="l">Meta total</span><span class="v">${tm?fmt(tm):"—"}</span><span class="h">${tm?"falta "+fmt(Math.max(0,tm-te)):"sem metas definidas"}</span></div>
-    <div class="kpi k4"><span class="l">Saídas</span><span class="v ${ts?"out":""}">${fmt(ts)}</span></div>
+    <div class="kpi k4 kpi-link" role="link" tabindex="0" data-tab="saidas" title="Abrir"><span class="l">Saídas</span><span class="v ${ts?"out":""}">${fmt(ts)}</span></div>
     <div class="kpi saldo"><span class="l">Saldo</span><span class="v">${fmt(te-ts)}</span><span class="h">${tm?"cumprimento global "+Math.round(te/tm*100)+"%":""}</span></div></div>`;
   const FILT=[["todos","Todas"],["curso","Em curso"],["atingida","Meta atingida"],["semmeta","Sem meta"]];
   const barra=todos.length?`<section class="panel filtros"><div class="toolbar">
@@ -2229,6 +2246,7 @@ function vMembros(){
 }
 document.addEventListener("input",ev=>{if(ev.target.id!=="mSearch")return;S.mq=ev.target.value;const q=nrm(S.mq);let n=0;
   document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".");paginar(true)});
+document.addEventListener("keydown",ev=>{if((ev.key==="Enter"||ev.key===" ")&&ev.target.classList&&ev.target.classList.contains("kpi-link")){ev.preventDefault();ev.target.click()}});
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-mf]");if(!b)return;S.mf=b.dataset.mf;render()});
 document.addEventListener("change",ev=>{if(ev.target.id==="mOrd"){S.mOrd=ev.target.value;render()}});
 document.addEventListener("click",ev=>{if(!ev.target.closest('[data-act="mEditar"]'))return;document.activeElement&&document.activeElement.blur&&document.activeElement.blur();S.mEdit=!S.mEdit;render()});
