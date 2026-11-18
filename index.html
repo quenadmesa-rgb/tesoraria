@@ -1599,7 +1599,7 @@ function vClass(){
   ${opts?`<select class="inp" id="perVal" aria-label="Escolher período">${opts}</select>`:""}</div>
   ${r.length?`${pod.length?`<div class="podium">${order.map(x=>`<div class="pod ${x.pos===1?"p1":""}"><span class="pos">${x.pos}.º</span><span class="nm">${esc(x.m.nome)}</span><span class="money">${fmt(x.v)}</span></div>`).join("")}</div>`:""}
   <section class="panel tbl-panel"><div class="scroll"><table class="mov rk"><thead><tr><th class="c-n">Pos.</th><th>Membro</th><th class="r">Cota (MZN)</th><th class="r">% do total</th><th>Comparação</th></tr></thead><tbody>${r.map(x=>`<tr><td class="c-n">${x.pos}.º</td><td class="c-desc">${esc(x.m.nome)}</td><td class="money">${fmt(x.v)}</td><td class="money">${total?Math.round(x.v/total*1000)/10+"%":"—"}</td><td class="c-cump"><span class="cbar"><i style="width:${(x.v/r[0].v*100).toFixed(1)}%"></i></span></td></tr>`).join("")}</tbody>
-    <tfoot><tr><td class="c-n"></td><td>Total (${r.length})</td><td class="money">${fmt(total)}</td><td class="money">100%</td><td></td></tr></tfoot></table></div>
+    </table></div>
   ${semCota>0?`<p class="muted" style="margin:10px 0 0;font-size:13px">${semCota} ${semCota===1?"membro sem cota":"membros sem cota"} neste período.</p>`:""}</section>`
   :`<div class="empty">Nenhuma cota registada em ${nomePeriodo().toLowerCase()}.</div>`}`;
 }
@@ -1715,7 +1715,7 @@ function vActividades(){
   html+=`<section class="panel"><div class="head"><h3>Lista de ${S.ano}</h3><select class="inp" id="actMes" aria-label="Filtrar por mês" style="width:auto"><option value="todos">Todos os meses</option>${MESES.map((m,i)=>`<option value="${i+1}" ${+S.actMes===i+1?"selected":""}>${m}${meses.includes(i+1)?"":" (0)"}</option>`).join("")}</select></div>`;
   if(!lst.length)html+=`<div class="empty" style="margin-top:10px">Ainda não há actividades registadas${S.actMes==="todos"?" neste ano":" neste mês"}.</div>`;
   else{html+=`<div class="scroll" style="margin-top:10px"><table class="mov acts"><thead><tr><th class="c-n">Nº</th><th>Data / período</th><th>Actividade</th><th>Tipo</th><th>Local</th><th class="r">Participantes</th><th>Observação</th></tr></thead><tbody>${lst.map((a,i)=>`<tr data-drawer-act="${a.id}" tabindex="0" class="clicavel" title="Ver detalhes"><td class="c-n">${i+1}</td><td class="nw">${a.periodo?esc(a.periodo):dataPt(a.data)}</td><td class="c-desc">${esc(a.nome)}</td><td>${esc(TACT[a.tipo]||"Actividade")}</td><td>${esc(a.local||"—")}</td><td class="money">${num(a.participantes)||"—"}</td><td class="c-nota">${esc(a.nota||"")}</td></tr>`).join("")}</tbody>
-    <tfoot><tr><td class="c-n"></td><td colspan="4">Total (${lst.length} ${lst.length===1?"actividade":"actividades"})</td><td class="money">${sum(lst.map(a=>num(a.participantes)))}</td><td></td></tr></tfoot></table></div>`}
+    </table></div>`}
   return html+`</section>`;
 }
 function formActividade(a){
@@ -1743,7 +1743,7 @@ function tabEventos(evs,co){
       <td class="c-cump">${p==null?'<span class="muted">sem meta</span>':`<div class="cump"><span class="cbar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${corPct(p)}"></i></span><b>${Math.round(p)}%</b></div>`}</td></tr>`}).join("");
   const T=evs.map(e=>eventoTotais(e.id)),te=sum(T.map(t=>t.te)),ts=sum(T.map(t=>t.ts)),tm=sum(evs.map(e=>num(e.meta)));
   return `<section class="panel tbl-panel"><div class="scroll"><table class="mov evs"><thead><tr><th class="c-n">Nº</th><th>${co?"Contribuição":"Conferência / evento"}</th><th>Data</th><th class="r">Meta (MZN)</th><th class="r">Recebido (MZN)</th><th class="r">Saídas (MZN)</th><th class="r">Saldo (MZN)</th><th>Cumprimento</th></tr></thead><tbody>${rows}</tbody>
-    <tfoot><tr><td class="c-n"></td><td colspan="2">Total (${evs.length})</td><td class="money">${tm?fmt(tm):"—"}</td><td class="money">${fmt(te)}</td><td class="money">${fmt(ts)}</td><td class="money">${fmt(te-ts)}</td><td>${tm?Math.round(te/tm*100)+"%":""}</td></tr></tfoot></table></div>
+    </table></div>
     <p class="muted small tbl-nota">${S.edit?"Toque numa linha para abrir e registar entradas e saídas.":"Toque numa linha para ver o detalhe."}</p></section>`;
 }
 function cardEvento(e){
@@ -1975,7 +1975,7 @@ function tabMovs(arr,sai){
     return `<tr data-drawer-mov="${v.id}" tabindex="0" class="clicavel" title="Ver detalhes"><td class="c-n">${i+1}</td><td class="nw">${v.data?dataPt(v.data):"—"}</td><td>${v.data?MESES[+v.data.slice(5,7)-1]:"—"}</td><td class="c-desc">${esc(v.nome||"(sem descrição)")}</td>${sai?`<td>${esc(orig)}</td>`:""}<td class="c-nota">${esc(v.nota||"")}</td><td class="money ${sai?"out":""}">${fmt(num(v.valor))}</td>${S.edit?`<td class="c-acc"><button class="del" data-del="${v.id}" aria-label="Apagar ${esc(v.nome||"registo")}">Apagar</button></td>`:""}</tr>`}).join("");
   const busca=l.length>5?`<div class="tbl-tools"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" data-tblsearch placeholder="Procurar por descrição, nota ou data…" autocomplete="off" aria-label="Procurar na tabela"></div></div>`:"";
   return busca+`<div class="scroll"><table class="mov"><thead><tr><th class="c-n">Nº</th><th>Data</th><th>Mês</th><th>Descrição</th>${sai?"<th>Origem</th>":""}<th>Nota</th><th class="r">Valor (MZN)</th>${S.edit?'<th><span class="sr">Acções</span></th>':""}</tr></thead><tbody>${rows}</tbody>
-    <tfoot><tr><td class="c-n"></td><td colspan="${sai?5:4}">Total (${l.length} ${l.length===1?"registo":"registos"})</td><td class="money">${fmt(sum(l.map(v=>num(v.valor))))}</td>${S.edit?"<td></td>":""}</tr></tfoot></table></div>`;
+    </table></div>`;
 }
 function vOfertas(){
   const arr=movsAno("oferta");
@@ -2706,7 +2706,7 @@ function vRegiao(){
         <td>${ed?`<input inputmode="decimal" data-cval="${r.d.id}" value="${r.val||""}" placeholder="0" aria-label="Contribuído por ${esc(r.d.nome)}">`:fmt(r.val)}</td>
         <td data-cfalta="${r.d.id}">${r.meta==null?"–":fmt(r.meta-r.val)}</td>
         <td><strong data-cpct="${r.d.id}">${r.p==null?"sem meta":pct(r.p)}</strong></td></tr>`).join("")}
-      </tbody><tfoot><tr><td class="c-n"></td><td style="text-align:left">Região</td><td data-cft="meta">${fmt(tm)}</td><td data-cft="val">${fmt(tv)}</td><td data-cft="falta">${fmt(tm-sum(cr.filter(r=>r.meta!=null).map(r=>r.val)))}</td><td data-cft="pct">${tm?pct(sum(cr.filter(r=>r.meta!=null).map(r=>r.val))/tm*100):"–"}</td></tr></tfoot></table></div>
+      </tbody></table></div>
       ${cr.some(r=>r.meta==null)?`<p class="muted" style="margin:0;font-size:13px">As direcções "sem meta" ficam fora da classificação até escrever a meta atribuída.</p>`:""}
       <h3 style="margin-top:6px">Cumprimento da meta por direcção</h3>
       ${metaBarras(ord.filter(r=>r.p!=null).map(r=>({nome:r.d.nome,meta:r.meta,valor:r.val,p:r.p,pos:r.pos})))}`;
@@ -2722,7 +2722,7 @@ function vRegiao(){
   <section class="panel" style="display:flex;flex-direction:column;gap:10px">
     <div class="head"><h3>Quotas por direcção em ${S.ano}</h3>${ed?`<button class="btn small primary" data-act="regAddDir">+ Direcção</button>`:""}</div>
     <p class="muted" style="margin:0;font-size:13px">${ed?"Toque num mês e escreva o valor enviado. Guarda sozinho. A % é a parte de cada direcção no total da região.":""}</p>
-    <div class="scroll"><table class="cota reg"><thead>${head}</thead><tbody>${body}</tbody><tfoot>${colt}</tfoot></table></div>
+    <div class="scroll"><table class="cota reg"><thead>${head}</thead><tbody>${body}</tbody></table></div>
   </section>
   <section class="panel" style="display:flex;flex-direction:column;gap:10px">
     <div class="head"><h3>Metas das conferências</h3>
