@@ -1435,7 +1435,7 @@ function render(){
   if(S.sessao.padrao){$("#tabs").innerHTML="";main.innerHTML=vMudarSenha();return}
   if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
-  const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
+  const bMig="";if(window.TES_REMOTO&&S.edit&&S.sessao.papel!=="leitor"&&!S.migTentado&&S.loaded.m&&S.loaded.e&&S.loaded.v&&dadosDoNavegador())migrarSilencioso();
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
   setTimeout(()=>{ferramentasTabela();paginar(false);cabecalhosFlutuantes();if(S.drawer)renderDrawer(false)},0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
@@ -3627,6 +3627,11 @@ function textoUltimaCopia(){const t=ultimaCopia();if(!t)return "Ainda não foi b
 document.addEventListener("click",ev=>{const a=ev.target.closest('[data-act="bkExport"]');if(!a||!(window.TES_LOCAL||window.TES_REMOTO))return;
   baixarCopia("tesouraria-copia-");try{localStorage.setItem(BK_KEY,String(Date.now()))}catch(e){}toast("Cópia baixada");render()});
 // Dados antigos guardados só neste navegador (antes do MySQL): podem ser enviados para a base de dados.
+// Dados antigos deste navegador → MySQL, automaticamente e em silêncio: só registos que ainda não existem (nunca substitui), sem contas de utilizador.
+async function migrarSilencioso(){S.migTentado=true;const d=dadosDoNavegador();if(!d||!window.TES_REMOTO||TES_REMOTO.estado().online===false)return;
+  const exist={membros:new Set(S.membros.map(x=>x.id)),eventos:new Set(S.eventos.map(x=>x.id)),movimentos:new Set(S.movs.map(x=>x.id)),actividades:new Set(S.acts.map(x=>x.id)),relatorios:new Set(Object.keys(S.rels||{})),regiao:new Set(S.regiao&&Object.keys(S.regiao).length?["pemba"]:[]),config:new Set([...(S.lider&&Object.keys(S.lider).length?["lideranca"]:[]),...(S.relCfg&&Object.keys(S.relCfg).length?["relatorio"]:[]),...(S.aparencia&&Object.keys(S.aparencia).length?["aparencia"]:[])])};
+  const ops=[];for(const col of Object.keys(exist))for(const [id,v] of Object.entries(d[col]||{}))if(v&&typeof v==="object"&&/^[A-Za-z0-9._-]{1,64}$/.test(id)&&!exist[col].has(id))ops.push({op:"set",col,id,data:v});
+  try{if(ops.length)await S.db.batch(ops);localStorage.setItem("tesouraria-db-antigo",localStorage.getItem("tesouraria-db")||"");localStorage.removeItem("tesouraria-db")}catch(e){console.warn("Migração silenciosa adiada:",e&&e.message)}}
 function dadosDoNavegador(){try{const d=JSON.parse(localStorage.getItem("tesouraria-db")||"null");return d&&COLECOES.some(k=>d[k]&&Object.keys(d[k]).length)?d:null}catch(e){return null}}
 async function enviarParaMySQL(d,origem){
   const n=Object.keys(d.membros||{}).length,mv=Object.keys(d.movimentos||{}).length;
