@@ -2,7 +2,7 @@
 //   op: "set" (substitui), "update" (junta campos), "delete", "senha" (a própria senha: {atual,nova}),
 //       "importar" (só administrador: copia uma cópia de segurança completa para o MySQL).
 // Permissões: "leitor" só lê; "tesoureiro" grava tudo menos utilizadores; "admin" grava tudo.
-import { COLECOES, PAPEIS, PODE_GRAVAR, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada, espelhar } from "./_lib/core.js";
+import { COLECOES, PAPEIS, PRIVILEGIOS, podeGravar, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada, espelhar } from "./_lib/core.js";
 
 const idOk = id => typeof id === "string" && /^[A-Za-z0-9._-]{1,64}$/.test(id);
 const proibido = m => Object.assign(new Error(m), { status: 403 });
@@ -41,17 +41,21 @@ async function gravarUtilizador(cx, eu, { op, id, data }) {
   if (u && u.papel === "admin" && papel !== "admin" && admins.length < 2) throw invalido("Tem de ficar pelo menos um administrador.");
   if (id === eu.id && papel !== eu.papel) throw invalido("Não pode mudar o seu próprio papel.");
   const nome = String(data.nome ?? u?.nome ?? id).trim().slice(0, 200) || id;
-  const senha = data.senha != null ? String(data.senha) : "";
+  const senha = data.senha != null ? String(data.senha) : ""; // repor a senha de outra pessoa: só o administrador (verificado acima)
   if (senha) exigeSenhaForte(senha, id);
+  // privilégios extra atribuídos pelo administrador: {gravar:true, verUtilizadores:true}
+  let priv = null;
+  if (data.privilegios != null) { if (typeof data.privilegios !== "object" || Array.isArray(data.privilegios)) throw invalido("Privilégios inválidos."); const o = {}; for (const k of PRIVILEGIOS) if (data.privilegios[k] === true) o[k] = true; priv = JSON.stringify(o); }
   if (!u) {
     if (op === "update") throw Object.assign(new Error("O utilizador já não existe."), { status: 404 });
     if (!senha) throw invalido("Escreva a senha.");
     const s = novaSenha(senha);
-    await cx.query("INSERT INTO utilizadores (id,nome,papel,salt,hash,alg,senha_alterada) VALUES (?,?,?,?,?,?,0)", [id, nome, papel, s.salt, s.hash, s.alg]); // tem de mudar a senha na primeira entrada
+    await cx.query("INSERT INTO utilizadores (id,nome,papel,privilegios,salt,hash,alg,senha_alterada) VALUES (?,?,?,?,?,?,?,0)", [id, nome, papel, priv, s.salt, s.hash, s.alg]); // tem de mudar a senha na primeira entrada
     return;
   }
   if (senha) { const s = novaSenha(senha); await cx.query("UPDATE utilizadores SET nome=?,papel=?,salt=?,hash=?,alg=?,senha_alterada=0 WHERE id=?", [nome, papel, s.salt, s.hash, s.alg, id]); } // senha reposta: tem de a mudar ao entrar
   else await cx.query("UPDATE utilizadores SET nome=?,papel=? WHERE id=?", [nome, papel, id]);
+  if (priv != null) await cx.query("UPDATE utilizadores SET privilegios=? WHERE id=?", [priv, id]);
 }
 
 async function mudarSenha(cx, eu, { data }) {
@@ -97,7 +101,7 @@ export default async function handler(req, res) {
     if (ops.length === 1 && ops[0].op === "ausente") { await getPool().query("UPDATE utilizadores SET visto_em=NULL WHERE id=?", [eu.id]); return enviar(res, 200, { ok: true }); }
     const soSenha = ops.every(o => o.op === "senha");
     if (!eu.senha_alterada && !soSenha) return enviar(res, 403, { erro: "Defina uma senha nova antes de continuar.", codigo: "mudar_senha" });
-    if (!PODE_GRAVAR.includes(eu.papel) && !soSenha) return enviar(res, 403, { erro: "Utilizador só de visualização." });
+    if (!podeGravar(eu) && !soSenha) return enviar(res, 403, { erro: "Utilizador só de visualização." });
     cx = await getPool().getConnection();
     await cx.beginTransaction();
     let token = null;

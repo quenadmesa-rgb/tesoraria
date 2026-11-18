@@ -9,6 +9,13 @@ import crypto from "node:crypto";
 export const COLECOES = ["membros", "eventos", "movimentos", "actividades", "regiao", "config", "relatorios"];
 export const PAPEIS = ["admin", "tesoureiro", "leitor", "responsavel", "viceResponsavel", "secretario", "viceSecretario", "conselheiro", "pastor"];
 export const PODE_GRAVAR = ["admin", "tesoureiro"];
+// Quem vê a lista de utilizadores: administrador e secretários (os outros só o próprio perfil)
+export const VER_UTILIZADORES = ["admin", "secretario", "viceSecretario"];
+// Privilégios extra que o administrador pode atribuir a cada pessoa, além do papel
+export const PRIVILEGIOS = ["gravar", "verUtilizadores"];
+export function privDe(u) { let p = u && u.privilegios; if (typeof p === "string") { try { p = JSON.parse(p); } catch { p = null; } } const o = {}; for (const k of PRIVILEGIOS) if (p && p[k] === true) o[k] = true; return o; }
+export const podeGravar = u => !!u && (PODE_GRAVAR.includes(u.papel) || !!privDe(u).gravar);
+export const podeVerUtilizadores = u => !!u && (VER_UTILIZADORES.includes(u.papel) || !!privDe(u).verUtilizadores);
 const ITER = 150000;
 
 let pool = null, schemaPronto = null;
@@ -70,6 +77,7 @@ export function ensureSchema() {
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN visto_em DATETIME NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     // "sessao_id": a única sessão válida desta conta (a mesma conta não pode estar ligada duas vezes).
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN sessao_id VARCHAR(32) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
+    try { await db.query("ALTER TABLE utilizadores ADD COLUMN privilegios VARCHAR(255) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     // ---- Modelo relacional normalizado (1FN–3FN): uma tabela por entidade, chaves primárias e estrangeiras,
     //      sem valores repetidos nem dependências transitivas. Preenchido a partir dos documentos e actualizado a cada gravação.
     for (const v of ["jovens", "ofertas", "saidas", "contribuicoes", "contribuicoes_entradas", "conferencias"]) {
@@ -261,7 +269,7 @@ export async function sessao(req) {
   if (ok.length !== sig.length || !crypto.timingSafeEqual(Buffer.from(ok), Buffer.from(sig))) return null;
   let d; try { d = JSON.parse(Buffer.from(p, "base64url").toString()); } catch { return null; }
   if (!d || !d.u || d.exp < Date.now()) return null;
-  const [rows] = await getPool().query("SELECT id,nome,papel,senha_alterada,hash,sessao_id FROM utilizadores WHERE id=?", [d.u]);
+  const [rows] = await getPool().query("SELECT id,nome,papel,privilegios,senha_alterada,hash,sessao_id FROM utilizadores WHERE id=?", [d.u]);
   const u = rows[0];
   if (!u || String(u.hash).slice(0, 12) !== d.pv) return null;
   if (!u.sessao_id || u.sessao_id !== d.sid) return null; // a conta entrou noutro aparelho ou saiu
@@ -270,7 +278,7 @@ export async function sessao(req) {
 }
 
 export function utilizadorPublico(r) {
-  return { id: r.id, nome: r.nome, papel: r.papel, senhaAlterada: !!r.senha_alterada, ultimoLogin: r.ultimo_login || null, totalLogins: r.total_logins || 0, criado: r.criado_em || null };
+  return { id: r.id, nome: r.nome, papel: r.papel, privilegios: privDe(r), senhaAlterada: !!r.senha_alterada, ultimoLogin: r.ultimo_login || null, totalLogins: r.total_logins || 0, criado: r.criado_em || null };
 }
 
 export function enviar(res, status, obj) {

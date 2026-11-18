@@ -1,6 +1,6 @@
 // GET /api/data -> todos os dados da tesouraria (precisa de sessão).
 // Os utilizadores vêm sem senhas. O administrador recebe também a lista de todos e o histórico de acessos.
-import { COLECOES, getPool, ensureSchema, sessao, utilizadorPublico, enviar, erroInterno, dbConfigurada } from "./_lib/core.js";
+import { COLECOES, podeVerUtilizadores, getPool, ensureSchema, sessao, utilizadorPublico, enviar, erroInterno, dbConfigurada } from "./_lib/core.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return enviar(res, 405, { erro: "Método não permitido" });
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
       for (const r of rows) out[c][r.id] = typeof r.dados === "string" ? JSON.parse(r.dados) : r.dados;
     }
     const admin = eu.papel === "admin";
-    const [us] = await db.query(admin ? "SELECT * FROM utilizadores" : "SELECT * FROM utilizadores WHERE id=?", admin ? [] : [eu.id]);
+    const verTodos = podeVerUtilizadores(eu); // administrador e secretários vêem todos; os outros só o próprio perfil
+    const [us] = await db.query(verTodos ? "SELECT * FROM utilizadores" : "SELECT * FROM utilizadores WHERE id=?", verTodos ? [] : [eu.id]);
     out.utilizadores = {};
     for (const u of us) { const p = utilizadorPublico(u); delete p.id; out.utilizadores[u.id] = p; }
     if (admin) {

@@ -430,6 +430,13 @@ label.check small{font-weight:400;color:var(--muted);font-size:12px}
 .search span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:17px;pointer-events:none}
 .search .inp{padding-left:36px}
 
+/* Perfil e privilégios */
+.privs{white-space:normal;min-width:190px}.privs .chip{margin:1px 3px 1px 0}.pchk{display:flex;align-items:center;gap:6px;font-size:12px;margin:2px 0;white-space:nowrap}
+.sel-papel{min-width:150px;padding:4px 8px;height:auto}.u-acts{display:flex;gap:6px;flex-wrap:wrap}
+.perfil{display:flex;flex-direction:column;gap:12px;max-width:620px}.perfil-top{display:flex;align-items:center;gap:14px}.perfil-top h3{margin:0 0 4px}
+.av-g{width:56px;height:56px;font-size:22px;display:grid;place-items:center;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;flex:none}
+.perfil-dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:0}.perfil-dl div{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sunk)}
+.perfil-dl dt{font-size:11px;color:var(--muted)}.perfil-dl dd{margin:2px 0 0;font-weight:600}.perfil-pode{margin:0;padding-left:18px;display:grid;gap:4px}
 /* Tabelas de membros e utilizadores */
 .scroll.flat{box-shadow:none;border-radius:10px}
 .mtab td,.mtab th,.utab td,.utab th{text-align:left}
@@ -1387,13 +1394,15 @@ const ICO={resumo:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14"
   jovens:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9z"/>',
   relatorio:'<path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5M8.5 13h7M8.5 17h5"/>',
   pdf:'<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>',
+  perfil:'<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.3-3.6 4.2-5.4 7.5-5.4s6.2 1.8 7.5 5.4"/>',
   utilizadores:'<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/>'};
 const ico=k=>`<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]||""}</svg>`;
-const GRUPOS=[["Geral",["resumo","membros"]],["Finanças",["cotas","classificacao","contribuicoes","conferencias","ofertas","saidas"]],["Juventude",["actividades","jovens","regiao"]],["Relatórios",["relatorio","pdf"]],["Administração",["utilizadores"]]];
+const GRUPOS=[["Geral",["resumo","membros"]],["Finanças",["cotas","classificacao","contribuicoes","conferencias","ofertas","saidas"]],["Juventude",["actividades","jovens","regiao"]],["Relatórios",["relatorio","pdf"]],["Administração",["utilizadores","perfil"]]];
+function tabsDaSessao(){return [...TABS,podeVerU(S.sessao)?["utilizadores","Utilizadores"]:["perfil","O meu perfil"]]}
 function renderTabs(){
   const pt=$("#pgTitle");
   if(!S.sessao||S.sessao.padrao){$("#tabs").innerHTML="";if(pt)pt.innerHTML="";return}
-  const T2=S.sessao.papel==="admin"?[...TABS,["utilizadores","Utilizadores"]]:TABS,lbl=Object.fromEntries(T2);
+  const T2=tabsDaSessao(),lbl=Object.fromEntries(T2);
   $("#tabs").innerHTML=GRUPOS.map(([g,ks])=>{const bs=ks.filter(k=>lbl[k]);return bs.length?`<div class="tgrp"><span class="tgl">${g}</span>${bs.map(k=>`<button class="tab" data-tab="${k}" aria-current="${S.tab===k}">${ico(k)}<span>${lbl[k]}</span></button>`).join("")}</div>`:""}).join("");
   if(pt)pt.innerHTML=`<b>${esc(lbl[S.tab]||"")}</b><span>Tesouraria da Juventude · ${S.ano}</span>`;
   // Barra de baixo (telemóvel/tablet): 4 secções principais + "Mais"
@@ -1403,7 +1412,7 @@ function renderTabs(){
   const mm=$("#maisMenu");if(mm&&!mm.hidden)abrirMais();
 }
 function abrirMais(){const mm=$("#maisMenu");if(!S.sessao)return;
-  const T2=S.sessao.papel==="admin"?[...TABS,["utilizadores","Utilizadores"]]:TABS,lbl=Object.fromEntries(T2);
+  const T2=tabsDaSessao(),lbl=Object.fromEntries(T2);
   mm.innerHTML=`<div class="mais" role="dialog" aria-modal="true" aria-label="Todas as secções"><div class="mais-h"><b>Todas as secções</b><button class="sheet-x" data-act="maisFechar" aria-label="Fechar">✕</button></div>
     ${GRUPOS.map(([g,ks])=>{const bs=ks.filter(k=>lbl[k]);return bs.length?`<div class="mais-g"><span class="tgl">${g}</span><div class="mais-grid">${bs.map(k=>`<button class="mais-i" data-tab="${k}" aria-current="${S.tab===k}">${ico(k)}<span>${lbl[k]}</span></button>`).join("")}</div></div>`:""}).join("")}</div>`;
   mm.hidden=false;document.body.classList.add("sem-scroll")}
@@ -1434,9 +1443,10 @@ function render(){
   const ys=document.querySelector(".yearsel");if(ys)ys.hidden=!S.sessao||!!S.sessao.padrao;
   if(!S.sessao){main.innerHTML=vLogin();return}
   if(S.sessao.padrao){$("#tabs").innerHTML="";main.innerHTML=vMudarSenha();return}
-  if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
-  const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
-  const bMig="";if(window.TES_REMOTO&&S.edit&&PODE_GRAVAR.includes(S.sessao.papel)&&!S.migTentado&&S.loaded.m&&S.loaded.e&&S.loaded.v&&dadosDoNavegador())migrarSilencioso();
+  if(S.tab==="utilizadores"&&!podeVerU(S.sessao))S.tab="perfil";
+  if(S.tab==="perfil"&&podeVerU(S.sessao))S.tab="utilizadores";
+  const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers,perfil:vPerfil}[S.tab];
+  const bMig="";if(window.TES_REMOTO&&S.edit&&podeGravarU(S.sessao)&&!S.migTentado&&S.loaded.m&&S.loaded.e&&S.loaded.v&&dadosDoNavegador())migrarSilencioso();
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
   setTimeout(()=>{ferramentasTabela();paginar(false);cabecalhosFlutuantes();if(S.drawer)renderDrawer(false)},0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
@@ -3123,7 +3133,7 @@ function xlsLib(){if(window.XLSX)return Promise.resolve(window.XLSX);if(_xls)ret
   _xls=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>ok(window.XLSX);s.onerror=()=>{_xls=null;ko(Object.assign(new Error("nolib"),{code:"nolib"}))};document.head.appendChild(s)});return _xls}
 const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1,contribuicoes:1,conferencias:1,regiao:1,regmetas:1,lideranca:1};
 function xlsBar(kind,big){
-  const imp=S.edit&&XLS_IMP[kind]&&PODE_GRAVAR.includes(S.sessao?.papel);
+  const imp=S.edit&&XLS_IMP[kind]&&podeGravarU(S.sessao);
   return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button><button class="btn" data-pdf-tab="${kind}"><span aria-hidden="true">⬇</span> PDF</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
 }
 const simNao=b=>b?"Sim":"Não";
@@ -3164,7 +3174,7 @@ function xlsSheets(kind){
     contribuicoes:()=>[["Contribuições "+A,contribs()],...contribNomes()],conferencias:()=>[["Conferências",confs()],["Conferências - saldo",confSaldo()]],
     actividades:()=>[["Actividades "+A,acts()]],lideranca:()=>[["Liderança",lider()]],regiao:()=>[["Região de Pemba "+A,regiao()]],regmetas:()=>regMetas(),resumo:()=>[["Painel "+A,resumo()]],
     utilizadores:()=>[["Utilizadores",users()],...(window.TES_REMOTO?[["Acessos",acessos()]]:[])]};
-  if(kind==="tudo"){sh.push(...K.resumo(),...K.membros(),...K.lideranca(),...K.cotas(),...K.ofertas(),...K.saidas(),...K.contribuicoes(),...K.conferencias(),...K.actividades(),...K.regiao(),...K.regmetas());if(S.sessao?.papel==="admin")sh.push(...K.utilizadores())}
+  if(kind==="tudo"){sh.push(...K.resumo(),...K.membros(),...K.lideranca(),...K.cotas(),...K.ofertas(),...K.saidas(),...K.contribuicoes(),...K.conferencias(),...K.actividades(),...K.regiao(),...K.regmetas());if(podeVerU(S.sessao))sh.push(...K.utilizadores())}
   else if(K[kind])sh.push(...K[kind]());
   return sh.map(([n,r])=>[String(n).slice(0,31),r]);
 }
@@ -3398,7 +3408,7 @@ function xlsInterpretar(wb,kind,X){
 }
 
 // PDF de qualquer tabela: usa as mesmas folhas do Excel
-const TITULOS_TAB={tudo:"Todos os dados",cotas:"Cotas",membros:"Jovens",ofertas:"Ofertas",saidas:"Saídas",contribuicoes:"Contribuições",conferencias:"Conferências",actividades:"Actividades",utilizadores:"Utilizadores",resumo:"Painel",regiao:"Região de Pemba",regmetas:"Metas das conferências",lideranca:"Liderança"};
+const TITULOS_TAB={tudo:"Todos os dados",cotas:"Cotas",membros:"Jovens",ofertas:"Ofertas",saidas:"Saídas",contribuicoes:"Contribuições",conferencias:"Conferências",actividades:"Actividades",utilizadores:"Utilizadores",perfil:"O meu perfil",resumo:"Painel",regiao:"Região de Pemba",regmetas:"Metas das conferências",lideranca:"Liderança"};
 async function pdfTabelas(kind){
   const J=await pdfLib(),T=s=>window.TES_TR?TES_TR(s):s;
   const sheets=xlsSheets(kind).filter(s=>s[1].length);
@@ -3436,6 +3446,13 @@ document.addEventListener("change",async ev=>{
 // ---------- entrada no sistema (login) e utilizadores
 const PAPEIS={admin:"Administrador",tesoureiro:"Tesoureiro (pode registar)",leitor:"Só leitura",responsavel:"Responsável (só visualização)",viceResponsavel:"Vice-Responsável (só visualização)",secretario:"Secretário(a) (só visualização)",viceSecretario:"Vice-Secretário(a) (só visualização)",conselheiro:"Conselheiro(a) (só visualização)",pastor:"Pastor(a) (só visualização)"};
 const PODE_GRAVAR=["admin","tesoureiro"];
+// Lista de utilizadores: só administrador e secretários; os outros vêem só o seu perfil. O administrador pode dar privilégios extra.
+const VER_UTIL=["admin","secretario","viceSecretario"];
+const PRIVS={gravar:"Registar e alterar dados",verUtilizadores:"Ver a lista de utilizadores"};
+const privU=u=>(u&&u.privilegios&&typeof u.privilegios==="object"&&!Array.isArray(u.privilegios))?u.privilegios:{};
+const podeGravarU=u=>!!u&&(PODE_GRAVAR.includes(u.papel)||!!privU(u).gravar);
+const podeVerU=u=>!!u&&(VER_UTIL.includes(u.papel)||!!privU(u).verUtilizadores);
+const privPeloPapel=(papel,k)=>k==="gravar"?PODE_GRAVAR.includes(papel):k==="verUtilizadores"?VER_UTIL.includes(papel):false;
 // Senhas: PBKDF2 (150 000 voltas). Contas antigas (SHA-256 simples) passam a PBKDF2 no próximo login.
 const ALG="pbkdf2";
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
@@ -3447,7 +3464,7 @@ const confereSenha=async(senha,u)=>!!(u&&u.salt&&u.hash)&&(await hashSenha(senha
 async function novaSenha(senha){const salt=novoSalt();return {salt,hash:await hashSenha(senha,salt),alg:ALG}}
 const novoSalt=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toString(16).padStart(2,"0")).join("");
 const normUser=u=>String(u||"").trim().toLowerCase().replace(/[^a-z0-9._-]/g,"");
-function aplicarSessao(u,padrao){S.sessao={user:u.id,nome:u.nome||u.id,papel:u.papel||"leitor",padrao:!!padrao};S.edit=S.editBase&&PODE_GRAVAR.includes(S.sessao.papel)}
+function aplicarSessao(u,padrao){S.sessao={user:u.id,nome:u.nome||u.id,papel:u.papel||"leitor",privilegios:privU(u),padrao:!!padrao};S.edit=S.editBase&&podeGravarU(S.sessao)}
 function restaurarSessao(){
   if(window.TES_REMOTO){
     const r=TES_REMOTO.sessao();if(!r){S.sessao=null;S.edit=S.editBase;return}
@@ -3557,36 +3574,37 @@ document.addEventListener("submit",async ev=>{
   }catch(e){bad(e&&e.code==="invalid_argument"?"Sem permissão para gravar na base de dados.":"Não foi possível entrar. Verifique a ligação.")}
 });
 function vUsers(){
-  const me=S.sessao.user;
+  const me=S.sessao.user,adm=S.sessao.papel==="admin";
   const ac=window.TES_REMOTO?TES_REMOTO.acessos():[];
   const hoje=new Date().toISOString().slice(0,10),okHoje=ac.filter(a=>a.sucesso&&String(a.data).slice(0,10)===hoje).length,lig=window.TES_REMOTO?TES_REMOTO.ligados():[];
   const entradas=ac.filter(a=>a.sucesso);
   const quando=d=>{if(!d)return "Nunca entrou";const t=new Date(String(d).replace(" ","T"));if(isNaN(t))return esc(d);return t.getDate()+" "+M3[t.getMonth()]+" "+t.getFullYear()+", "+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")};
-  return `<div class="head"><div><h2>Utilizadores</h2><p>Quem pode entrar na tesouraria e o registo de cada entrada. Só o administrador vê esta aba.</p></div><div class="head-acts">${xlsBar("utilizadores")}</div></div>
+  return `<div class="head"><div><h2>Utilizadores</h2><p>${adm?"Quem pode entrar na tesouraria, o papel e os privilégios de cada pessoa. Só o administrador altera e repõe senhas.":"Quem pode entrar na tesouraria (só visualização)."}</p></div><div class="head-acts">${xlsBar("utilizadores")}</div></div>
   <div class="kpis kpis4">
     <div class="kpi"><span class="l">Utilizadores</span><span class="v">${S.users.length}</span></div>
     <div class="kpi"><span class="l">Administradores</span><span class="v">${S.users.filter(u=>u.papel==="admin").length}</span></div>
     <div class="kpi"><span class="l">Entradas hoje</span><span class="v">${window.TES_REMOTO?okHoje:"—"}</span></div>
     <div class="kpi"><span class="l">Ligados agora</span><span class="v">${window.TES_REMOTO?lig.length:"—"}</span><span class="h">${esc(lig.map(u=>u.nome).join(", "))}</span></div>
   </div>
-  <div class="grid2 users-grid">
-  <form class="panel quick" data-newuser="1" novalidate><div class="sheet-h"><h3>Registar utilizador</h3><p>Cria um acesso novo. Dê a senha à pessoa; na primeira entrada terá de escolher uma senha só sua.</p></div>
+  <div class="${adm?"grid2 users-grid":""}">
+  ${adm?`<form class="panel quick" data-newuser="1" novalidate><div class="sheet-h"><h3>Registar utilizador</h3><p>Cria um acesso novo. Dê a senha à pessoa; na primeira entrada terá de escolher uma senha só sua.</p></div>
     <div class="fgrid">
     <label class="span2">Nome completo<input class="inp" name="nome" id="nu-nome" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
     <label>Utilizador (para entrar)<input class="inp" name="user" id="nu-user" placeholder="Ex.: quefasse" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
     <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label>
     <div class="span2">${pwField("senha","nu-pass","Senha inicial (a pessoa muda-a na primeira entrada)")}</div></div>
     <p class="err" hidden></p><div class="acts-inline"><button type="submit" class="btn primary">Registar utilizador</button></div>
-    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Responsável · Vice-Responsável · Secretário(a) · Vice-Secretário(a) · Conselheiro(a) · Pastor(a)</span> só visualização</li></ul></form>
+    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Responsável · Vice-Responsável · Secretário(a) · Vice-Secretário(a) · Conselheiro(a) · Pastor(a)</span> só visualização</li><li><span class="role">Privilégios</span> o administrador pode dar a qualquer pessoa “Registar e alterar dados” ou “Ver a lista de utilizadores”, mesmo que o papel não o permita</li></ul></form>`:""}
   <section class="panel"><h3>Contas (${S.users.length})</h3>
-    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Último acesso</th><th>Entradas</th><th></th></tr></thead><tbody>
+    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Privilégios</th><th>Último acesso</th><th>Entradas</th>${adm?"<th></th>":""}</tr></thead><tbody>
     ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>
-      <td><span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span></td>
+      <td>${adm&&u.id!==me?`<select class="inp sel-papel" data-upapel="${esc(u.id)}" aria-label="Papel de ${esc(u.nome||u.id)}">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${esc(l.split(" (")[0])}</option>`).join("")}</select>`:`<span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span>`}</td>
+      <td class="privs">${privsCel(u,adm&&u.id!==me)}</td>
       <td>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</td><td>${window.TES_REMOTO?(u.totalLogins||0):"—"}</td>
-      <td><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button></td></tr>`).join("")}
+      ${adm?`<td class="u-acts"><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button>${u.id!==me?`<button class="btn small" data-act="userSenha" data-id="${esc(u.id)}">Redefinir senha</button>`:""}</td>`:""}</tr>`).join("")}
     </tbody></table></div></section>
   </div>
-  ${window.TES_REMOTO?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
+  ${window.TES_REMOTO&&adm?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
     ${entradas.length?`<div class="scroll flat" style="max-height:420px"><table class="utab"><thead><tr><th class="c-n">Nº</th><th>Data e hora</th><th class="c-nome">Quem entrou</th><th>Papel</th></tr></thead><tbody>
     ${entradas.slice(0,150).map((a,ai)=>`<tr><td class="c-n">${ai+1}</td><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc((PAPEIS[a.papel]||"").split(" (")[0])}</td></tr>`).join("")}
     </tbody></table></div>`:`<div class="empty">Ainda não há entradas registadas.</div>`}</section>`:""}`;
@@ -3608,12 +3626,42 @@ function formUser(u){
   openSheet(`<h3>Editar ${esc(u.nome||u.id)}</h3><p class="muted" style="margin:0">Utilizador: ${esc(u.id)}</p>
    <label>Nome<input class="inp" name="nome" id="fu-nome" value="${esc(u.nome||"")}"></label>
    <label>Papel<select class="inp" name="papel" id="fu-papel" ${me?"disabled":""}>${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${l}</option>`).join("")}</select></label>
-   ${me?`<p class="muted small" style="margin:0">Para mudar a sua própria senha use “Alterar a minha senha” no menu da conta.</p>`:`<details class="pwreset"><summary>Repor a senha desta pessoa</summary>${pwField("senha","fu-pass","Senha nova (a pessoa terá de a mudar ao entrar)")}</details>`}
+   ${me?"":`<fieldset class="fs"><legend>Privilégios</legend>${Object.entries(PRIVS).map(([k,l])=>`<label class="chk"><input type="checkbox" name="priv_${k}" ${privPeloPapel(u.papel,k)||privU(u)[k]?"checked":""} ${privPeloPapel(u.papel,k)?"disabled":""}> ${l}${privPeloPapel(u.papel,k)?' <small class="muted">(já incluído no papel)</small>':""}</label>`).join("")}</fieldset>`}
+   ${me?`<p class="muted small" style="margin:0">Para mudar a sua própria senha use “Alterar a minha senha” no menu da conta.</p>`:`<p class="muted small" style="margin:0">Para redefinir a senha desta pessoa use o botão “Redefinir senha” na tabela.</p>`}
    <div class="acts">${!me&&!(u.papel==="admin"&&admins<2)?`<button type="button" class="btn danger" data-act="userDel" data-id="${esc(u.id)}">Apagar utilizador</button>`:""}<button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
-  async(fd,f)=>{const d={nome:String(fd.get("nome")||"").trim()||u.id};if(!me)d.papel=String(fd.get("papel"));
+  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador altera utilizadores.");const d={nome:String(fd.get("nome")||"").trim()||u.id};if(!me){d.papel=String(fd.get("papel"));const pv={};Object.keys(PRIVS).forEach(k=>{if(fd.get("priv_"+k)&&!privPeloPapel(d.papel,k))pv[k]=true});d.privilegios=pv}
     if(!me&&u.papel==="admin"&&d.papel!=="admin"&&admins<2)return fail(f,"Tem de ficar pelo menos um administrador.");
     const senha=me?"":String(fd.get("senha")||"");if(senha){const es=erroSenha(senha,u.id);if(es)return fail(f,es);Object.assign(d,await credSenha(senha));d.senhaAlterada=!window.TES_REMOTO}
     await S.db.doc("utilizadores/"+u.id).update(d);if(window.TES_REMOTO){if(me&&senha)S.sessao.padrao=false}else if(me&&d.hash){const nu={...u,...d};S.sessao.padrao=false;guardarSessao(nu,false)}return "Utilizador actualizado"});
+}
+function privsCel(u,editavel){
+  return Object.entries(PRIVS).map(([k,l])=>{const pp=privPeloPapel(u.papel,k),on=pp||!!privU(u)[k];
+    return editavel&&!pp?`<label class="chk pchk"><input type="checkbox" data-upriv="${esc(u.id)}" data-k="${k}" ${on?"checked":""}> ${l}</label>`:on?`<span class="chip">${l}</span>`:""}).join("")||'<span class="muted">—</span>'}
+document.addEventListener("change",async ev=>{const t=ev.target;if(!t.dataset||S.sessao?.papel!=="admin")return;
+  if(t.dataset.upapel){const u=S.users.find(x=>x.id===t.dataset.upapel);if(!u)return;
+    const admins=S.users.filter(x=>x.papel==="admin").length;if(u.papel==="admin"&&t.value!=="admin"&&admins<2){t.value="admin";toast("Tem de ficar pelo menos um administrador.");return}
+    try{await S.db.doc("utilizadores/"+u.id).update({papel:t.value});toast("Papel alterado: "+(u.nome||u.id))}catch(e){t.value=u.papel;showErr(e)}return}
+  if(t.dataset.upriv){const u=S.users.find(x=>x.id===t.dataset.upriv);if(!u)return;const pv={...privU(u)};if(t.checked)pv[t.dataset.k]=true;else delete pv[t.dataset.k];
+    try{await S.db.doc("utilizadores/"+u.id).update({privilegios:pv});toast("Privilégios actualizados: "+(u.nome||u.id))}catch(e){t.checked=!t.checked;showErr(e)}}
+});
+function formRepoSenha(u){
+  openSheet(`<div class="sheet-h"><h3>Redefinir a senha de ${esc(u.nome||u.id)}</h3><p>Só o administrador pode fazer isto. Dê a senha nova à pessoa; na próxima entrada terá de escolher uma senha só sua.</p></div>
+   ${pwField("senha","rs-pass","Senha nova")}
+   <label>Repetir a senha nova<input class="inp" type="password" name="senha2" id="rs-pass2" autocomplete="new-password"></label>
+   <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Redefinir senha</button></div>`,
+  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador pode redefinir senhas.");
+    const s=String(fd.get("senha")||""),s2=String(fd.get("senha2")||"");const es=erroSenha(s,u.id);if(es)return fail(f,es);if(s!==s2)return fail(f,"As duas senhas não são iguais.");
+    const d={...await credSenha(s)};d.senhaAlterada=!window.TES_REMOTO;await S.db.doc("utilizadores/"+u.id).update(d);return "Senha redefinida: "+(u.nome||u.id)});
+}
+function vPerfil(){
+  const u=S.users.find(x=>x.id===S.sessao.user)||{id:S.sessao.user,nome:S.sessao.nome,papel:S.sessao.papel,privilegios:S.sessao.privilegios};
+  const quando=d=>{if(!d)return "—";const t=new Date(String(d).replace(" ","T"));return isNaN(t)?esc(d):t.getDate()+" "+M3[t.getMonth()]+" "+t.getFullYear()+", "+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")};
+  const pode=[podeGravarU(u)?"Registar e alterar dados da tesouraria":"Ver todos os dados da tesouraria (sem alterar)",podeVerU(u)?"Ver a lista de utilizadores":null,"Baixar relatórios em Excel, PDF e Word","Alterar a própria senha"].filter(Boolean);
+  return `<div class="head"><div><h2>O meu perfil</h2><p>Os seus dados de acesso. Para mudar o papel, os privilégios ou redefinir a senha fale com o administrador.</p></div></div>
+  <section class="panel perfil"><div class="perfil-top"><span class="av-g">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><div><h3>${esc(u.nome||u.id)}</h3><span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span></div></div>
+    <dl class="perfil-dl"><div><dt>Último acesso</dt><dd>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</dd></div><div><dt>Entradas no sistema</dt><dd>${window.TES_REMOTO?(u.totalLogins||0):"—"}</dd></div></dl>
+    <h4 class="dr-sub">O que pode fazer</h4><ul class="perfil-pode">${pode.map(p=>`<li>${p}</li>`).join("")}</ul>
+    <div><button class="btn primary" data-act="minhaSenha">Alterar a minha senha</button></div></section>`;
 }
 function formMinhaSenha(){
   const u=S.users.find(x=>x.id===S.sessao.user)||{id:S.sessao.user};
@@ -3634,7 +3682,8 @@ function formMinhaSenha(){
 document.addEventListener("click",async ev=>{const a=ev.target.closest("[data-act]");if(!a)return;const act=a.dataset.act;
   if(act==="sair"){terminarSessao();S.tab="resumo";render();return}
   if(act==="minhaSenha"){formMinhaSenha();return}
-  if(act==="userEdit"){const u=S.users.find(x=>x.id===a.dataset.id);if(u)formUser(u);return}
+  if(act==="userEdit"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formUser(u);return}
+  if(act==="userSenha"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formRepoSenha(u);return}
   if(act==="userDel"){if(a.dataset.armed){try{await S.db.doc("utilizadores/"+a.dataset.id).delete();closeSheet();toast("Utilizador apagado")}catch(e){showErr(e)}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}}
 });
 
