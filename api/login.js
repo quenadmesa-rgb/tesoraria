@@ -1,7 +1,7 @@
 // GET  /api/login  -> estado da API ({ok, db})
 // POST /api/login  {user, senha} -> {token, user, padrao}. Cada tentativa fica registada na tabela "acessos".
 import crypto from "node:crypto";
-import { dbConfigurada, getPool, ensureSchema, confereSenha, novaSenha, criarToken, utilizadorPublico, enviar, lerCorpo, ipDe, erroInterno } from "./_lib/core.js";
+import { estadoTentativas, falhasSeguidas, dbConfigurada, getPool, ensureSchema, confereSenha, novaSenha, criarToken, utilizadorPublico, enviar, lerCorpo, ipDe, erroInterno } from "./_lib/core.js";
 
 const normUser = u => String(u || "").trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
 
@@ -22,10 +22,12 @@ export default async function handler(req, res) {
     const registar = (u, ok) => db.query("INSERT INTO acessos (utilizador,nome,papel,sucesso,ip,agente) VALUES (?,?,?,?,?,?)", [user || "?", u?.nome || null, u?.papel || null, ok ? 1 : 0, ip, agente]);
     if (!user || !senha) return enviar(res, 400, { erro: "Escreva o utilizador e a senha." });
 
-    // Limite contra tentativas repetidas: 3 falhas em 15 minutos bloqueiam o utilizador (25 por endereço).
-    const [[f]] = await db.query("SELECT COUNT(*) n FROM acessos WHERE utilizador=? AND sucesso=0 AND data > (NOW() - INTERVAL 15 MINUTE)", [user]);
+    // Tentativas erradas: 3 → espera 1 min, 6 → 5 min, 9 → 15 min, 12 → bloqueada (só o administrador desbloqueia). 25 por endereço em 15 min.
+    const fs = await falhasSeguidas(db, user), est = estadoTentativas(fs.n, fs.seg);
+    if (est.bloqueado) return enviar(res, 423, { erro: "Conta bloqueada por demasiadas tentativas erradas. Peça ao administrador para a desbloquear.", codigo: "bloqueado" });
+    if (est.esperar) { const m = Math.ceil(est.esperar / 60); return enviar(res, 429, { erro: `Demasiadas tentativas. Espere ${m} minuto${m > 1 ? "s" : ""} e tente outra vez.`, esperar: est.esperar }); }
     const [[fi]] = await db.query("SELECT COUNT(*) n FROM acessos WHERE ip=? AND sucesso=0 AND data > (NOW() - INTERVAL 15 MINUTE)", [ip]);
-    if (f.n >= 3 || fi.n >= 25) return enviar(res, 429, { erro: "Demasiadas tentativas. Espere 15 minutos." });
+    if (fi.n >= 25) return enviar(res, 429, { erro: "Demasiadas tentativas. Espere 15 minutos." });
 
     const [[cnt]] = await db.query("SELECT COUNT(*) n FROM utilizadores");
     if (cnt.n === 0) {

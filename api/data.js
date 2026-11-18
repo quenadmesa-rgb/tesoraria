@@ -1,6 +1,6 @@
 // GET /api/data -> todos os dados da tesouraria (precisa de sessão).
 // Os utilizadores vêm sem senhas. O administrador recebe também a lista de todos e o histórico de acessos.
-import { COLECOES, podeVerUtilizadores, getPool, ensureSchema, sessao, utilizadorPublico, enviar, erroInterno, dbConfigurada } from "./_lib/core.js";
+import { COLECOES, podeVerUtilizadores, falhasSeguidas, estadoTentativas, getPool, ensureSchema, sessao, utilizadorPublico, enviar, erroInterno, dbConfigurada } from "./_lib/core.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return enviar(res, 405, { erro: "Método não permitido" });
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     const verTodos = podeVerUtilizadores(eu); // administrador e secretários vêem todos; os outros só o próprio perfil
     const [us] = await db.query(verTodos ? "SELECT * FROM utilizadores" : "SELECT * FROM utilizadores WHERE id=?", verTodos ? [] : [eu.id]);
     out.utilizadores = {};
-    for (const u of us) { const p = utilizadorPublico(u); delete p.id; out.utilizadores[u.id] = p; }
+    for (const u of us) { const p = utilizadorPublico(u); delete p.id; if (admin) { const f = await falhasSeguidas(db, u.id); if (estadoTentativas(f.n, f.seg).bloqueado) p.bloqueado = true; } out.utilizadores[u.id] = p; } // só o administrador sabe quem está bloqueado
     if (admin) {
       const [ac] = await db.query("SELECT id,nome,papel,sucesso,data FROM acessos WHERE sucesso=1 ORDER BY id DESC LIMIT 300");
       out.acessos = ac.map(a => ({ ...a, sucesso: !!a.sucesso }));

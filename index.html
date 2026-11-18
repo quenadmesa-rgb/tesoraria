@@ -1217,7 +1217,7 @@ h2{font-size:20px}.head p{font-size:12px}
       let j={};try{j=await r.json()}catch(e){}
       if(r.status===401&&path!=="login"&&sess&&sess.offline&&senhaMem){setTimeout(sync,0);const er=new Error("a entrar outra vez");er.code="offline";throw er} // vai reentrar sozinha; a alteração fica na fila
       if(r.status===401&&path!=="login"){if(sess&&sess.user)credApagar(sess.user.id);R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
-      if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429?"rate_limited":"server";er.status=r.status;throw er}
+      if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429||r.status===423?"rate_limited":"server";er.status=r.status;throw er}
       return j;
     }
     // Envia para o MySQL o que ficou guardado só no navegador (por falta de ligação).
@@ -1295,8 +1295,9 @@ h2{font-size:20px}.head p{font-size:12px}
           if(!c){const er=new Error("A base de dados está desligada e este utilizador ainda não entrou neste aparelho. Entre num aparelho que já tenha usado, ou ligue a base de dados.");er.code="offline";throw er}
           // também sem base de dados: 3 tentativas erradas em 15 minutos bloqueiam
           const FK="tesouraria-falhas",agora=Date.now();let fl={};try{fl=JSON.parse(localStorage.getItem(FK)||"{}")}catch(e){}
-          const recentes=(fl[user]||[]).filter(t=>agora-t<15*60*1000);
-          if(recentes.length>=3){const er=new Error("Demasiadas tentativas. Espere 15 minutos.");er.code="rate_limited";throw er}
+          const recentes=fl[user]||[],nf=recentes.length,ult=nf?recentes[nf-1]:0; // 3 → 1 min, 6 → 5 min, 9 → 15 min, 12 → bloqueada
+          if(nf>=12){const er=new Error("Conta bloqueada por demasiadas tentativas erradas. Peça ao administrador para a desbloquear.");er.code="rate_limited";throw er}
+          if(nf>=3&&nf%3===0){const min=nf>=9?15:nf>=6?5:1,falta=min*60000-(agora-ult);if(falta>0){const m=Math.ceil(falta/60000);const er=new Error("Demasiadas tentativas. Espere "+m+" minuto"+(m>1?"s":"")+" e tente outra vez.");er.code="rate_limited";throw er}}
           if((await marcaSenha(senha,c.salt))!==c.hash){fl[user]=[...recentes,agora];try{localStorage.setItem(FK,JSON.stringify(fl))}catch(e){}const er=new Error("Utilizador ou senha errados.");er.code="senha";throw er}
           delete fl[user];try{localStorage.setItem(FK,JSON.stringify(fl))}catch(e){}
           sess={token:c.token,user:c.user,padrao:false,offline:true};senhaMem=senha;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
@@ -3620,11 +3621,11 @@ function vUsers(){
     <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Responsável · Vice-Responsável · Secretário(a) · Vice-Secretário(a) · Conselheiro(a) · Pastor(a)</span> só visualização</li><li><span class="role">Privilégios</span> o administrador pode dar a qualquer pessoa “Registar e alterar dados” ou “Ver a lista de utilizadores”, mesmo que o papel não o permita</li></ul></form>`:""}
   <section class="panel"><h3>Contas (${S.users.length})</h3>
     <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Privilégios</th><th>Último acesso</th><th>Entradas</th>${adm?"<th></th>":""}</tr></thead><tbody>
-    ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>
+    ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}${adm&&u.bloqueado?'<span class="chip bad">conta bloqueada</span>':""}</small></span></div></td>
       <td>${adm&&u.id!==me?`<select class="inp sel-papel" data-upapel="${esc(u.id)}" aria-label="Papel de ${esc(u.nome||u.id)}">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${esc(l.split(" (")[0])}</option>`).join("")}</select>`:`<span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span>`}</td>
       <td class="privs">${privsCel(u,adm&&u.id!==me)}</td>
       <td>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</td><td>${window.TES_REMOTO?(u.totalLogins||0):"—"}</td>
-      ${adm?`<td class="u-acts"><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button>${u.id!==me?`<button class="btn small" data-act="userSenha" data-id="${esc(u.id)}">Redefinir senha</button>`:""}</td>`:""}</tr>`).join("")}
+      ${adm?`<td class="u-acts"><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button>${u.id!==me?`<button class="btn small" data-act="userSenha" data-id="${esc(u.id)}">Redefinir senha</button>`:""}${u.bloqueado?`<button class="btn small primary" data-act="userDesbloq" data-id="${esc(u.id)}">Desbloquear</button>`:""}</td>`:""}</tr>`).join("")}
     </tbody></table></div></section>
   </div>
   ${window.TES_REMOTO&&adm?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
@@ -3706,6 +3707,7 @@ document.addEventListener("click",async ev=>{const a=ev.target.closest("[data-ac
   if(act==="sair"){terminarSessao();S.tab="resumo";render();return}
   if(act==="minhaSenha"){formMinhaSenha();return}
   if(act==="userEdit"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formUser(u);return}
+  if(act==="userDesbloq"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(!u)return;try{await S.db.doc("utilizadores/"+u.id).update({desbloquear:true});u.bloqueado=false;toast("Conta desbloqueada: "+(u.nome||u.id));render()}catch(e){showErr(e)}return}
   if(act==="userSenha"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formRepoSenha(u);return}
   if(act==="userDel"){if(a.dataset.armed){try{await S.db.doc("utilizadores/"+a.dataset.id).delete();closeSheet();toast("Utilizador apagado")}catch(e){showErr(e)}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}}
 });

@@ -53,9 +53,10 @@ async function gravarUtilizador(cx, eu, { op, id, data }) {
     await cx.query("INSERT INTO utilizadores (id,nome,papel,privilegios,salt,hash,alg,senha_alterada) VALUES (?,?,?,?,?,?,?,0)", [id, nome, papel, priv, s.salt, s.hash, s.alg]); // tem de mudar a senha na primeira entrada
     return;
   }
-  if (senha) { const s = novaSenha(senha); await cx.query("UPDATE utilizadores SET nome=?,papel=?,salt=?,hash=?,alg=?,senha_alterada=0 WHERE id=?", [nome, papel, s.salt, s.hash, s.alg, id]); } // senha reposta: tem de a mudar ao entrar
+  if (senha) { const s = novaSenha(senha); await cx.query("UPDATE utilizadores SET nome=?,papel=?,salt=?,hash=?,alg=?,senha_alterada=0,desbloqueado_em=NOW() WHERE id=?", [nome, papel, s.salt, s.hash, s.alg, id]); } // senha reposta: tem de a mudar ao entrar
   else await cx.query("UPDATE utilizadores SET nome=?,papel=? WHERE id=?", [nome, papel, id]);
   if (priv != null) await cx.query("UPDATE utilizadores SET privilegios=? WHERE id=?", [priv, id]);
+  if (data.desbloquear === true) await cx.query("UPDATE utilizadores SET desbloqueado_em=NOW() WHERE id=?", [id]); // o administrador desbloqueia a conta
 }
 
 async function mudarSenha(cx, eu, { data }) {

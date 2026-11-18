@@ -14,6 +14,21 @@ export const VER_UTILIZADORES = ["admin", "secretario", "viceSecretario"];
 // Privilégios extra que o administrador pode atribuir a cada pessoa, além do papel
 export const PRIVILEGIOS = ["gravar", "verUtilizadores"];
 export function privDe(u) { let p = u && u.privilegios; if (typeof p === "string") { try { p = JSON.parse(p); } catch { p = null; } } const o = {}; for (const k of PRIVILEGIOS) if (p && p[k] === true) o[k] = true; return o; }
+// Tentativas erradas seguidas (desde a última entrada certa ou desbloqueio):
+//   3 → esperar 1 minuto · 6 → 5 minutos · 9 → 15 minutos · 12 → conta bloqueada até o administrador desbloquear.
+export const ESPERAS = [[12, null], [9, 15], [6, 5], [3, 1]];
+export function estadoTentativas(falhas, segDesdeUltima) {
+  if (falhas >= 12) return { bloqueado: true };
+  if (falhas >= 3 && falhas % 3 === 0) { const min = ESPERAS.find(([k]) => falhas >= k)[1]; const falta = min * 60 - segDesdeUltima; if (falta > 0) return { esperar: falta, min }; }
+  return {};
+}
+export async function falhasSeguidas(db, user) {
+  const [[r]] = await db.query(`SELECT COUNT(*) n, TIMESTAMPDIFF(SECOND, MAX(a.data), NOW()) seg FROM acessos a
+    WHERE a.utilizador=? AND a.sucesso=0
+      AND a.data > GREATEST(COALESCE((SELECT MAX(b.data) FROM acessos b WHERE b.utilizador=? AND b.sucesso=1), '1970-01-01'),
+                            COALESCE((SELECT u.desbloqueado_em FROM utilizadores u WHERE u.id=?), '1970-01-01'))`, [user, user, user]);
+  return { n: Number(r.n) || 0, seg: r.seg == null ? 1e9 : Number(r.seg) };
+}
 export const podeGravar = u => !!u && (PODE_GRAVAR.includes(u.papel) || !!privDe(u).gravar);
 export const podeVerUtilizadores = u => !!u && (VER_UTILIZADORES.includes(u.papel) || !!privDe(u).verUtilizadores);
 const ITER = 150000;
@@ -78,6 +93,7 @@ export function ensureSchema() {
     // "sessao_id": a única sessão válida desta conta (a mesma conta não pode estar ligada duas vezes).
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN sessao_id VARCHAR(32) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN privilegios VARCHAR(255) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
+    try { await db.query("ALTER TABLE utilizadores ADD COLUMN desbloqueado_em DATETIME NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     // ---- Modelo relacional normalizado (1FN–3FN): uma tabela por entidade, chaves primárias e estrangeiras,
     //      sem valores repetidos nem dependências transitivas. Preenchido a partir dos documentos e actualizado a cada gravação.
     for (const v of ["jovens", "ofertas", "saidas", "contribuicoes", "contribuicoes_entradas", "conferencias"]) {
