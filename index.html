@@ -947,6 +947,37 @@ main.wrap{gap:16px}
 /* cartões do Painel: clicáveis */
 .kpi-link{cursor:pointer;transition:box-shadow .15s,border-color .15s}.kpi-link:hover{box-shadow:var(--sh-2,var(--shadow-lg));border-color:var(--kc,var(--line))}.kpi-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .kpi-link .l::after{content:" ›";opacity:.6;font-weight:800}
+/* Utilizadores: cartões */
+.ucards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.ucard{background:var(--surface);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:14px;box-shadow:var(--sh-1);padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ucard.bloq{border-color:color-mix(in srgb,var(--bad) 45%,var(--line));background:color-mix(in srgb,var(--bad-soft) 35%,var(--surface))}
+.uc-top{display:flex;align-items:center;gap:10px;min-width:0}
+.uc-top .av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;background:var(--sunk);color:var(--fg2);flex:none}
+.uc-top .av-adm{background:var(--gold-soft);color:var(--gold)}
+.uc-id{display:flex;flex-direction:column;gap:3px;min-width:0}.uc-id b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uc-chips{display:flex;flex-wrap:wrap;gap:4px}.uc-chips .chip,.uc-chips .role{font-size:9.5px;padding:2px 7px}
+.uc-papel{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);font-weight:600}.uc-papel select{width:100%;min-height:36px}
+.uc-privs{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:10px;background:var(--sunk)}
+.uc-sw{display:flex;align-items:center;gap:10px;font-size:12.5px;cursor:pointer;min-height:30px}
+.uc-sw input{position:absolute;opacity:0;width:1px;height:1px}
+.uc-sw .sw{width:36px;height:20px;border-radius:999px;background:color-mix(in srgb,var(--muted) 45%,transparent);position:relative;flex:none;transition:background .15s}
+.uc-sw .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+.uc-sw input:checked+.sw{background:var(--good)}.uc-sw input:checked+.sw::after{transform:translateX(16px)}
+.uc-sw input:focus-visible+.sw{outline:2px solid var(--gold);outline-offset:2px}
+.uc-priv{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);min-height:24px}.uc-priv i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;background:color-mix(in srgb,var(--muted) 18%,transparent);flex:none}
+.uc-priv.on{color:var(--fg)}.uc-priv.on i{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}.uc-priv small{color:var(--muted);font-size:10.5px}
+.uc-meta{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:10.5px;color:var(--muted)}.uc-meta span{display:flex;flex-direction:column;gap:1px}.uc-meta b{font-size:12px;color:var(--fg);font-weight:600}
+.uc-acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);padding-top:10px;margin-top:auto}
+.uc-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:6px 10px;border-radius:9px;border:1px solid color-mix(in srgb,var(--brand) 22%,var(--line));background:color-mix(in srgb,var(--brand) 6%,var(--surface));color:var(--brand);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.uc-btn:hover{background:color-mix(in srgb,var(--brand) 13%,var(--surface));border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+.uc-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.uc-acts>.uc-btn:only-child{grid-column:1/-1}.uc-btn span{overflow:hidden;text-overflow:ellipsis}
+.uc-btn.principal{grid-column:1/-1;background:var(--brand);border-color:var(--brand);color:var(--brand-fg,#fff)}.uc-btn.principal:hover{filter:brightness(1.1);background:var(--brand)}
+.uc-priv small.extra{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);background:var(--gold-soft);padding:1px 6px;border-radius:999px}
+.priv-sheet .uc-sw{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sunk)}.priv-sheet .uc-sw small{display:block;color:var(--muted);font-size:11px;font-weight:400}
+.uc-btn.desbloq{grid-column:1/-1;background:var(--good);border-color:var(--good);color:#fff}.uc-btn.desbloq:hover{filter:brightness(1.07)}
+.papeis-info summary{cursor:pointer;font-weight:700;font-size:13px}.papeis-info[open] summary{margin-bottom:8px}
+@media (max-width:640px){.ucards{grid-template-columns:1fr;gap:10px}.ucard{padding:12px}.uc-btn{min-height:40px}}
 /* quadros */
 .panel{border:1px solid color-mix(in srgb,var(--line) 60%,transparent);box-shadow:var(--sh-1);padding:16px 18px;border-radius:var(--r)}
 .panel h3{font-size:14.5px}
@@ -1125,7 +1156,7 @@ h2{font-size:20px}.head p{font-size:12px}
       <img class="logo" src="icon-192.png" alt="" width="42" height="42">
       <div class="brandtxt">
         <h1 class="church"><span class="ad">Assembleia de Deus</span> Africana</h1>
-        <span class="youth" title="Direcção da Juventude da Autonomia da Cidade das Águias de Pemba">Tesouraria da Juventude · Águias de Pemba</span>
+        <span class="youth">Autonomia das Águias de Pemba</span><span class="youth youth2">Direcção da Juventude · Tesouraria</span>
       </div>
     </div>
     <div class="pg-title" id="pgTitle"></div>
@@ -1140,14 +1171,14 @@ h2{font-size:20px}.head p{font-size:12px}
   </div>
 </header>
 <nav class="tabs" aria-label="Secções">
-  <div class="side-brand"><img src="icon-192.png" alt="" width="44" height="44"><div><b>Assembleia de Deus Africana</b><span>Tesouraria da Juventude</span></div></div>
+  <div class="side-brand"><img src="icon-192.png" alt="" width="44" height="44"><div><b>Assembleia de Deus Africana</b><span>Autonomia das Águias de Pemba</span><span>Direcção da Juventude</span></div></div>
   <div class="wrap" id="tabs"></div>
-  <div class="side-foot">Direcção da Juventude<br>Águias de Pemba</div>
+  <div class="side-foot">Tesouraria da Juventude<br>Avante na Fé</div>
 </nav>
 <main class="wrap" id="main" tabindex="-1">
   <div class="empty">A carregar os dados da tesouraria…</div>
 </main>
-<footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Direcção da Juventude da Autonomia da Cidade das Águias de Pemba</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
+<footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Autonomia das Águias de Pemba · Direcção da Juventude</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
 <nav class="bottomnav" id="bnav" aria-label="Navegação principal"></nav>
 <div id="maisMenu" class="mais-bg" hidden></div>
 <aside id="drawer" class="drawer" hidden></aside>
@@ -2537,7 +2568,7 @@ function pdfRelatorio(J){
   // cabeçalho (timbre)
   try{doc.addImage(LOGO,"JPEG",ML-10,26,150,75)}catch(e){}
   doc.setFont(F,"bold");doc.setFontSize(12.5);doc.text("ASSEMBLEIA DE DEUS AFRICANA-Avante na Fé",ML+150,80);
-  doc.setFontSize(12);doc.text("Direcção da Juventude da Autonomia da Cidade das Águias de Pemba",W/2,100,{align:"center"});
+  doc.setFontSize(12);doc.text("Autonomia das Águias de Pemba · Direcção da Juventude",W/2,100,{align:"center"});
   doc.setFont(F,"normal");doc.setFontSize(11.5);
   const dt=relData().split("-");const dataTxt=dt.length===3?`${dt[2]}/${dt[1]}/${dt[0]}`:"";
   const px=W-MR;doc.text("Pastor da autonomia",px-60,118,{align:"center"});
@@ -2639,7 +2670,7 @@ function relatorioDocxFiles(){
   b+=`<w:tbl><w:tblPr><w:tblW w:w="9070" w:type="dxa"/><w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid><w:gridCol w:w="3000"/><w:gridCol w:w="6070"/></w:tblGrid><w:tr>
     <w:tc><w:tcPr><w:tcW w:w="3000" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr>${P(logo,{after:0,align:"left"})}</w:tc>
     <w:tc><w:tcPr><w:tcW w:w="6070" w:type="dxa"/><w:vAlign w:val="bottom"/></w:tcPr>${T("ASSEMBLEIA DE DEUS AFRICANA-Avante na Fé",{bold:true,sz:24,align:"left",after:0})}</w:tc></w:tr></w:tbl>`;
-  b+=T("Direcção da Juventude da Autonomia da Cidade das Águias de Pemba",{bold:true,align:"center",after:120});
+  b+=T("Autonomia das Águias de Pemba · Direcção da Juventude",{bold:true,align:"center",after:120});
   const dt=relData().split("-");const dataTxt=dt.length===3?`${dt[2]}/${dt[1]}/${dt[0]}`:"___/___/______";
   b+=T("Pastor da autonomia",{align:"right",after:0})+T("____________________ "+dataTxt,{align:"right",after:0})+T(L.pastor||"________________________",{align:"right",after:200});
   b+=T(AN?"Relatório anual de actividades de "+S.ano:"Relatório de actividades do mês de "+mesN+" de "+S.ano,{bold:true,align:"center",after:200});
@@ -2897,7 +2928,7 @@ function formRegConf(id){
 }
 // PDF da região
 function pdfRegiao(J){
-  const doc=pdfDoc(J,"Região de Pemba","Classificação anual de quotas e estado das contribuições",false,"Ministério da Juventude · Região de Pemba");
+  const doc=pdfDoc(J,"Região de Pemba","Classificação anual de quotas e estado das contribuições",false,"Autonomia das Águias de Pemba · Direcção da Juventude · Região de Pemba");
   const W=doc.internal.pageSize.getWidth(),L=36,CW=W-72;let y=134;
   const bars=(items)=>{const ch=170,pl=L+40,cw=CW-50;if(y+ch+50>780){doc.addPage();y=50}
     const top=Math.max(100,Math.ceil(Math.max(...items.map(i=>i.value))/20)*20);const y0=y+ch,Y=v=>y0-ch*v/top;
@@ -2973,7 +3004,7 @@ function pdfDoc(J,titulo,sub,landscape,linha2){
   const W=doc.internal.pageSize.getWidth();
   doc.setFillColor(18,61,51);doc.rect(0,0,W,74,"F");
   doc.setTextColor(185,132,24);doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text("ASSEMBLEIA DE DEUS AFRICANA - AVANTE NA FÉ",36,32);
-  doc.setTextColor(242,247,243);doc.setFontSize(9.5);doc.setFont("helvetica","normal");doc.text(linha2||"Direcção da Juventude da Autonomia da Cidade das Águias de Pemba · Tesouraria",36,52);
+  doc.setTextColor(242,247,243);doc.setFontSize(9.5);doc.setFont("helvetica","normal");doc.text(linha2||"Autonomia das Águias de Pemba · Direcção da Juventude · Tesouraria",36,52);
   doc.setTextColor(22,33,29);doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text(titulo,36,104);
   doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(93,107,100);
   const hoje=new Date();doc.text((sub?sub+"  ·  ":"")+"Emitido em "+hoje.getDate()+" "+M3[hoje.getMonth()]+" "+hoje.getFullYear(),36,120);
@@ -3119,7 +3150,7 @@ function pdfJovens(J,modo){
   const doc=new J({unit:"pt",format:"a4"});const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),ML=62,MR=56,F="times";
   try{doc.addImage(LOGO,"JPEG",ML-10,26,150,75)}catch(e){}
   doc.setFont(F,"bold");doc.setFontSize(12.5);doc.setTextColor(0,0,0);doc.text("ASSEMBLEIA DE DEUS AFRICANA-Avante na Fé",ML+150,80);
-  doc.setFontSize(12);doc.text("Direcção da Juventude da Autonomia da Cidade das Águias de Pemba",W/2,100,{align:"center"});
+  doc.setFontSize(12);doc.text("Autonomia das Águias de Pemba · Direcção da Juventude",W/2,100,{align:"center"});
   doc.setFontSize(14);doc.text(modo==="jovens"?"Lista dos Jovens":"Lista Completa (Liderança, Conselheiros, Coordenador, Pastores e Jovens)",W/2,132,{align:"center"});
   doc.setFont(F,"normal");doc.setFontSize(11);
   const hoje=new Date();doc.text((modo==="jovens"?"":`${JV.length} pessoas na lista  ·  `)+`Jovens: ${c.total}  ·  ${c.rapazes} rapazes  ·  ${c.raparigas} raparigas  ·  Sede: ${c.sede}  ·  Bindura: ${c.bindura}`,W/2,150,{align:"center"});
@@ -3220,7 +3251,7 @@ async function xlsBaixar(sheets,nome){
   const T=s=>window.TES_TR?TES_TR(String(s)):String(s);
   sheets=sheets.map(([n,rows])=>[T(n),rows.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[T(k),typeof v==="string"?T(v):v])))]);
   const usados=new Set();
-  sheets.forEach(([n,rows])=>{const ws=rows.length?X.utils.json_to_sheet(rows):X.utils.aoa_to_sheet([[T("Sem dados")]]);
+  sheets.forEach(([n,rows])=>{const ws=X.utils.aoa_to_sheet([["ASSEMBLEIA DE DEUS AFRICANA - AVANTE NA FÉ"],["Autonomia das Águias de Pemba · Direcção da Juventude"],[n]]);if(rows.length)X.utils.sheet_add_json(ws,rows,{origin:"A5"});else X.utils.sheet_add_aoa(ws,[[T("Sem dados")]],{origin:"A5"}); // cabeçalho da instituição em todas as folhas
     const keys=rows.length?Object.keys(rows[0]):[];ws["!cols"]=keys.map(k=>({wch:Math.min(48,Math.max(k.length+2,...rows.map(r=>String(r[k]??"").length+2)))}));
     let nm=n.replace(/[\\/?*[\]:]/g,"").slice(0,31)||"Folha",i=2;while(usados.has(nm.toLowerCase()))nm=nm.slice(0,28)+" "+(i++);usados.add(nm.toLowerCase());
     X.utils.book_append_sheet(wb,ws,nm)});
@@ -3550,7 +3581,7 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   <button role="menuitem" data-act="definicoes">Definições</button><button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
 window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();
   // na aba Utilizadores, só redesenha se não houver um formulário a meio (para não apagar o que se escreveu ou um erro)
-  if(S.tab==="utilizadores"&&!S.pending&&!document.querySelector("#main .err:not([hidden])")&&!document.querySelector("#main form input:not([type=hidden])[value]:not([value=''])")){const f=document.querySelector("[data-newuser]");if(!f||![...f.querySelectorAll("input")].some(i=>i.value))render()}}});
+  if(S.tab==="utilizadores"&&!S.pending&&!document.querySelector("#main .err:not([hidden])")&&!document.querySelector("#main form input:not([type=hidden])[value]:not([value=''])")){const f=document.querySelector("[data-newuser]");if((!f||![...f.querySelectorAll("input")].some(i=>i.value))&&!(document.activeElement&&/^(uBusca|uPapelF)$/.test(document.activeElement.id))&&!document.activeElement?.closest?.(".ucard"))render()}}});
 window.addEventListener("tes-erro-envio",e=>toast("Não foi possível enviar uma alteração: "+e.detail));
 document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="menuConta"]'),m=document.querySelector(".contamenu");if(!m)return;
   if(b){const open=m.hidden;m.hidden=!open;b.setAttribute("aria-expanded",String(open));return}
@@ -3561,7 +3592,7 @@ function vLogin(){
     <div class="login-h">
       <span class="chip gold">Tesouraria da Juventude</span>
       <h2>Entrar no sistema</h2>
-      <p class="login-sub">Assembleia de Deus Africana · Águias de Pemba</p>
+      <p class="login-sub">Assembleia de Deus Africana<br>Autonomia das Águias de Pemba · Direcção da Juventude</p>
       <p class="login-txt">Escreva o seu utilizador e a sua senha para aceder à tesouraria.</p>
     </div>
     <div class="login-campos">
@@ -3603,35 +3634,62 @@ function vUsers(){
   const hoje=new Date().toISOString().slice(0,10),okHoje=ac.filter(a=>a.sucesso&&String(a.data).slice(0,10)===hoje).length,lig=window.TES_REMOTO?TES_REMOTO.ligados():[];
   const entradas=ac.filter(a=>a.sucesso);
   const quando=d=>{if(!d)return "Nunca entrou";const t=new Date(String(d).replace(" ","T"));if(isNaN(t))return esc(d);return t.getDate()+" "+M3[t.getMonth()]+" "+t.getFullYear()+", "+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")};
-  return `<div class="head"><div><h2>Utilizadores</h2><p>${adm?"Quem pode entrar na tesouraria, o papel e os privilégios de cada pessoa. Só o administrador altera e repõe senhas.":"Quem pode entrar na tesouraria (só visualização)."}</p></div><div class="head-acts">${xlsBar("utilizadores")}</div></div>
+  const papelNome=p=>(PAPEIS[p]||"").split(" (")[0];
+  // administradores primeiro, depois por nome
+  const lista=[...S.users].sort((a,b)=>(a.papel==="admin"?0:1)-(b.papel==="admin"?0:1)||(a.nome||a.id).localeCompare(b.nome||b.id));
+  const q=S.uBusca?semAcento(S.uBusca):"",pf=S.uPapel||"";
+  const cartao=u=>{const on=lig.some(x=>x.id===u.id),eu=u.id===me,ed=adm&&!eu;
+    const vis=(!q||semAcento(u.nome||u.id).includes(q))&&(!pf||u.papel===pf);
+    const privs=Object.entries(PRIVS).map(([k,l])=>{const pp=privPeloPapel(u.papel,k),ativo=pp||!!privU(u)[k];
+      return `<span class="uc-priv ${ativo?"on":""}"><i aria-hidden="true">${ativo?"✓":"–"}</i>${l}${ativo&&!pp?' <small class="extra">atribuído</small>':""}</span>`}).join("");
+    return `<article class="ucard${u.bloqueado&&adm?" bloq":""}" data-uq="${esc(semAcento(u.nome||u.id))}" data-up="${esc(u.papel)}" ${vis?"":"hidden"}>
+      <div class="uc-top"><span class="av ${u.papel==="admin"?"av-adm":""}">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span>
+        <div class="uc-id"><b>${esc(u.nome||u.id)}${eu?' <span class="muted">(você)</span>':""}</b>
+          <span class="uc-chips"><span class="role ${u.papel==="admin"?"admin":""}">${esc(papelNome(u.papel))}</span>${on?'<span class="chip good">ligado agora</span>':""}${adm&&u.bloqueado?'<span class="chip bad">conta bloqueada</span>':""}</span></div></div>
+      <div class="uc-privs">${privs}</div>
+      ${window.TES_REMOTO?`<div class="uc-meta"><span>Último acesso<b>${quando(u.ultimoLogin)}</b></span><span>Entradas<b>${u.totalLogins||0}</b></span></div>`:""}
+      ${adm?`<div class="uc-acts">${u.bloqueado?`<button class="uc-btn desbloq" data-act="userDesbloq" data-id="${esc(u.id)}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg><span>Desbloquear conta</span></button>`:""}${ed?`<button class="uc-btn principal" data-act="userPriv" data-id="${esc(u.id)}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Papel e privilégios</span></button>`:""}<button class="uc-btn" data-act="userEdit" data-id="${esc(u.id)}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg><span>Editar</span></button>${eu?"":`<button class="uc-btn" data-act="userSenha" data-id="${esc(u.id)}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.7-8.7M16 6l2.5 2.5M14 8l2 2"/></svg><span>Redefinir senha</span></button>`}</div>`:""}
+    </article>`};
+  const papeisUsados=[...new Set(S.users.map(u=>u.papel))];
+  return `<div class="head"><div><h2>Utilizadores</h2><p>${adm?"Quem pode entrar na tesouraria, o papel e os privilégios de cada pessoa. Só o administrador altera e repõe senhas.":"Quem pode entrar na tesouraria (só visualização)."}</p></div><div class="head-acts">${xlsBar("utilizadores")}${adm?`<button class="btn primary" data-act="userNovo">+ Registar utilizador</button>`:""}</div></div>
   <div class="kpis kpis4">
     <div class="kpi"><span class="l">Utilizadores</span><span class="v">${S.users.length}</span></div>
     <div class="kpi"><span class="l">Administradores</span><span class="v">${S.users.filter(u=>u.papel==="admin").length}</span></div>
     <div class="kpi"><span class="l">Entradas hoje</span><span class="v">${window.TES_REMOTO?okHoje:"—"}</span></div>
     <div class="kpi"><span class="l">Ligados agora</span><span class="v">${window.TES_REMOTO?lig.length:"—"}</span><span class="h">${esc(lig.map(u=>u.nome).join(", "))}</span></div>
   </div>
-  <div class="${adm?"grid2 users-grid":""}">
-  ${adm?`<form class="panel quick" data-newuser="1" novalidate><div class="sheet-h"><h3>Registar utilizador</h3><p>Cria um acesso novo. Dê a senha à pessoa; na primeira entrada terá de escolher uma senha só sua.</p></div>
-    <div class="fgrid">
-    <label class="span2">Nome completo<input class="inp" name="nome" id="nu-nome" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
-    <label>Utilizador (para entrar)<input class="inp" name="user" id="nu-user" placeholder="Ex.: quefasse" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
-    <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label>
-    <div class="span2">${pwField("senha","nu-pass","Senha inicial (a pessoa muda-a na primeira entrada)")}</div></div>
-    <p class="err" hidden></p><div class="acts-inline"><button type="submit" class="btn primary">Registar utilizador</button></div>
-    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Responsável · Vice-Responsável · Secretário(a) · Vice-Secretário(a) · Conselheiro(a) · Pastor(a)</span> só visualização</li><li><span class="role">Privilégios</span> o administrador pode dar a qualquer pessoa “Registar e alterar dados” ou “Ver a lista de utilizadores”, mesmo que o papel não o permita</li></ul></form>`:""}
-  <section class="panel"><h3>Contas (${S.users.length})</h3>
-    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Privilégios</th><th>Último acesso</th><th>Entradas</th>${adm?"<th></th>":""}</tr></thead><tbody>
-    ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}${adm&&u.bloqueado?'<span class="chip bad">conta bloqueada</span>':""}</small></span></div></td>
-      <td>${adm&&u.id!==me?`<select class="inp sel-papel" data-upapel="${esc(u.id)}" aria-label="Papel de ${esc(u.nome||u.id)}">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${esc(l.split(" (")[0])}</option>`).join("")}</select>`:`<span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span>`}</td>
-      <td class="privs">${privsCel(u,adm&&u.id!==me)}</td>
-      <td>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</td><td>${window.TES_REMOTO?(u.totalLogins||0):"—"}</td>
-      ${adm?`<td class="u-acts"><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button>${u.id!==me?`<button class="btn small" data-act="userSenha" data-id="${esc(u.id)}">Redefinir senha</button>`:""}${u.bloqueado?`<button class="btn small primary" data-act="userDesbloq" data-id="${esc(u.id)}">Desbloquear</button>`:""}</td>`:""}</tr>`).join("")}
-    </tbody></table></div></section>
-  </div>
+  <section class="panel filtros"><div class="toolbar">
+    <div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" id="uBusca" placeholder="Procurar utilizador…" aria-label="Procurar utilizador" value="${esc(S.uBusca||"")}" autocomplete="off"></div>
+    <div class="filtros-sel"><select class="inp" id="uPapelF" aria-label="Filtrar por papel"><option value="">Todos os papéis</option>${papeisUsados.map(k=>`<option value="${k}" ${pf===k?"selected":""}>${esc(papelNome(k))}</option>`).join("")}</select></div>
+  </div></section>
+  <div class="ucards">${lista.map(cartao).join("")}</div>
+  <p class="muted small" id="uVazio" ${lista.some(u=>(!q||semAcento(u.nome||u.id).includes(q))&&(!pf||u.papel===pf))?"hidden":""}>Nenhum utilizador encontrado.</p>
+  ${adm?`<details class="panel papeis-info"><summary>O que cada papel pode fazer</summary><ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores, mudar papéis e redefinir senhas</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Secretário(a) · Vice-Secretário(a)</span> só visualização, e vêem a lista de utilizadores</li><li><span class="role">Responsável · Vice-Responsável · Conselheiro(a) · Pastor(a)</span> só visualização</li><li><span class="role">Privilégios</span> o administrador pode dar a qualquer pessoa “Registar e alterar dados” ou “Ver a lista de utilizadores”, mesmo que o papel não o permita</li></ul></details>`:""}
   ${window.TES_REMOTO&&adm?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
     ${entradas.length?`<div class="scroll flat" style="max-height:420px"><table class="utab"><thead><tr><th class="c-n">Nº</th><th>Data e hora</th><th class="c-nome">Quem entrou</th><th>Papel</th></tr></thead><tbody>
-    ${entradas.slice(0,150).map((a,ai)=>`<tr><td class="c-n">${ai+1}</td><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc((PAPEIS[a.papel]||"").split(" (")[0])}</td></tr>`).join("")}
+    ${entradas.slice(0,150).map((a,ai)=>`<tr><td class="c-n">${ai+1}</td><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc(papelNome(a.papel))}</td></tr>`).join("")}
     </tbody></table></div>`:`<div class="empty">Ainda não há entradas registadas.</div>`}</section>`:""}`;
+}
+// procurar / filtrar utilizadores sem redesenhar a página
+function filtrarUsers(){const q=semAcento(($("#uBusca")||{}).value||""),pf=($("#uPapelF")||{}).value||"";S.uBusca=($("#uBusca")||{}).value||"";S.uPapel=pf;let n=0;
+  document.querySelectorAll(".ucard").forEach(c=>{const ok=(!q||c.dataset.uq.includes(q))&&(!pf||c.dataset.up===pf);c.hidden=!ok;if(ok)n++});const v=$("#uVazio");if(v)v.hidden=n>0}
+document.addEventListener("input",ev=>{if(ev.target.id==="uBusca")filtrarUsers()});
+document.addEventListener("change",ev=>{if(ev.target.id==="uPapelF")filtrarUsers()});
+// registar utilizador (formulário numa janela)
+function formNovoUser(){
+  openSheet(`<div class="sheet-h"><h3>Registar utilizador</h3><p>Cria um acesso novo. Dê a senha à pessoa; na primeira entrada terá de escolher uma senha só sua.</p></div>
+    <label>Nome completo<input class="inp" name="nome" id="nu-nome" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
+    <div class="fgrid"><label>Utilizador (para entrar)<input class="inp" name="user" id="nu-user" placeholder="Ex.: quefasse" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
+    <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label></div>
+    ${pwField("senha","nu-pass","Senha inicial (a pessoa muda-a na primeira entrada)")}
+    <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Registar utilizador</button></div>`,
+  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador regista utilizadores.");
+    const nome=String(fd.get("nome")||"").trim(),user=normUser(fd.get("user")),senha=String(fd.get("senha")||""),papel=String(fd.get("papel"));
+    if(!nome)return fail(f,"Escreva o nome.");if(!user)return fail(f,"Escreva o utilizador (letras e números, sem espaços).");
+    if(S.users.some(u=>u.id===user))return fail(f,"Já existe um utilizador com esse nome.");
+    const es=erroSenha(senha,user);if(es)return fail(f,es);
+    try{await S.db.doc("utilizadores/"+user).set({nome,papel,...await credSenha(senha),criado:Date.now(),senhaAlterada:true})}catch(e){return fail(f,e&&e.message&&window.TES_REMOTO?e.message:"Não foi possível criar o utilizador.")}
+    return "Utilizador criado: "+user});
 }
 document.addEventListener("submit",async ev=>{
   const f=ev.target.closest("[data-newuser]");if(!f)return;ev.preventDefault();
@@ -3645,16 +3703,29 @@ document.addEventListener("submit",async ev=>{
   try{await S.db.doc("utilizadores/"+user).set({nome,papel,...await credSenha(senha),criado:Date.now(),senhaAlterada:true});f.reset();toast("Utilizador criado: "+user);b.disabled=false}
   catch(e){bad(e&&e.message&&window.TES_REMOTO?e.message:"Não foi possível criar o utilizador.")}
 });
+function formPrivilegios(u){
+  const admins=S.users.filter(x=>x.papel==="admin").length;
+  const sw=(papel)=>Object.entries(PRIVS).map(([k,l])=>{const pp=privPeloPapel(papel,k);
+    return `<label class="uc-sw"><input type="checkbox" name="priv_${k}" ${pp||privU(u)[k]?"checked":""} ${pp?"disabled":""}><span class="sw" aria-hidden="true"></span><span>${l}${pp?"<small>Já incluído no papel escolhido</small>":""}</span></label>`}).join("");
+  openSheet(`<div class="sheet-h"><h3>Papel e privilégios</h3><p>${esc(u.nome||u.id)}. O papel define o que a pessoa pode fazer; os privilégios dão acessos extra.</p></div>
+    <label>Papel<select class="inp" name="papel" id="fp-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${l}</option>`).join("")}</select></label>
+    <fieldset class="fs priv-sheet"><legend>Privilégios extra</legend><div id="fp-privs" style="display:grid;gap:8px">${sw(u.papel)}</div></fieldset>
+    <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
+  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador atribui privilégios.");
+    const papel=String(fd.get("papel"));if(u.papel==="admin"&&papel!=="admin"&&admins<2)return fail(f,"Tem de ficar pelo menos um administrador.");
+    const pv={};Object.keys(PRIVS).forEach(k=>{if(fd.get("priv_"+k)&&!privPeloPapel(papel,k))pv[k]=true});
+    await S.db.doc("utilizadores/"+u.id).update({papel,privilegios:pv});return "Papel e privilégios actualizados: "+(u.nome||u.id)});
+  // ao mudar o papel, os interruptores mostram o que esse papel já inclui
+  const sel=document.getElementById("fp-papel");if(sel)sel.addEventListener("change",()=>{const box=document.getElementById("fp-privs");const marc=Object.fromEntries([...box.querySelectorAll("input")].map(i=>[i.name.slice(5),i.checked&&!i.disabled]));
+    box.innerHTML=Object.entries(PRIVS).map(([k,l])=>{const pp=privPeloPapel(sel.value,k);return `<label class="uc-sw"><input type="checkbox" name="priv_${k}" ${pp||marc[k]?"checked":""} ${pp?"disabled":""}><span class="sw" aria-hidden="true"></span><span>${l}${pp?"<small>Já incluído no papel escolhido</small>":""}</span></label>`}).join("")});
+}
 function formUser(u){
   const me=u.id===S.sessao.user,admins=S.users.filter(x=>x.papel==="admin").length;
   openSheet(`<h3>Editar ${esc(u.nome||u.id)}</h3><p class="muted" style="margin:0">Utilizador: ${esc(u.id)}</p>
    <label>Nome<input class="inp" name="nome" id="fu-nome" value="${esc(u.nome||"")}"></label>
-   <label>Papel<select class="inp" name="papel" id="fu-papel" ${me?"disabled":""}>${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${l}</option>`).join("")}</select></label>
-   ${me?"":`<fieldset class="fs"><legend>Privilégios</legend>${Object.entries(PRIVS).map(([k,l])=>`<label class="chk"><input type="checkbox" name="priv_${k}" ${privPeloPapel(u.papel,k)||privU(u)[k]?"checked":""} ${privPeloPapel(u.papel,k)?"disabled":""}> ${l}${privPeloPapel(u.papel,k)?' <small class="muted">(já incluído no papel)</small>':""}</label>`).join("")}</fieldset>`}
-   ${me?`<p class="muted small" style="margin:0">Para mudar a sua própria senha use “Alterar a minha senha” no menu da conta.</p>`:`<p class="muted small" style="margin:0">Para redefinir a senha desta pessoa use o botão “Redefinir senha” na tabela.</p>`}
+   ${me?`<p class="muted small" style="margin:0">Para mudar a sua própria senha use “Alterar a minha senha” no menu da conta.</p>`:`<p class="muted small" style="margin:0">O papel e os privilégios mudam-se no botão “Papel e privilégios”; a senha no botão “Redefinir senha”.</p>`}
    <div class="acts">${!me&&!(u.papel==="admin"&&admins<2)?`<button type="button" class="btn danger" data-act="userDel" data-id="${esc(u.id)}">Apagar utilizador</button>`:""}<button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
-  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador altera utilizadores.");const d={nome:String(fd.get("nome")||"").trim()||u.id};if(!me){d.papel=String(fd.get("papel"));const pv={};Object.keys(PRIVS).forEach(k=>{if(fd.get("priv_"+k)&&!privPeloPapel(d.papel,k))pv[k]=true});d.privilegios=pv}
-    if(!me&&u.papel==="admin"&&d.papel!=="admin"&&admins<2)return fail(f,"Tem de ficar pelo menos um administrador.");
+  async(fd,f)=>{if(S.sessao.papel!=="admin")return fail(f,"Só o administrador altera utilizadores.");const d={nome:String(fd.get("nome")||"").trim()||u.id};
     const senha=me?"":String(fd.get("senha")||"");if(senha){const es=erroSenha(senha,u.id);if(es)return fail(f,es);Object.assign(d,await credSenha(senha));d.senhaAlterada=!window.TES_REMOTO}
     await S.db.doc("utilizadores/"+u.id).update(d);if(window.TES_REMOTO){if(me&&senha)S.sessao.padrao=false}else if(me&&d.hash){const nu={...u,...d};S.sessao.padrao=false;guardarSessao(nu,false)}return "Utilizador actualizado"});
 }
@@ -3707,6 +3778,8 @@ document.addEventListener("click",async ev=>{const a=ev.target.closest("[data-ac
   if(act==="sair"){terminarSessao();S.tab="resumo";render();return}
   if(act==="minhaSenha"){formMinhaSenha();return}
   if(act==="userEdit"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formUser(u);return}
+  if(act==="userNovo"){if(S.sessao?.papel==="admin")formNovoUser();return}
+  if(act==="userPriv"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formPrivilegios(u);return}
   if(act==="userDesbloq"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(!u)return;try{await S.db.doc("utilizadores/"+u.id).update({desbloquear:true});u.bloqueado=false;toast("Conta desbloqueada: "+(u.nome||u.id));render()}catch(e){showErr(e)}return}
   if(act==="userSenha"){if(S.sessao?.papel!=="admin")return;const u=S.users.find(x=>x.id===a.dataset.id);if(u)formRepoSenha(u);return}
   if(act==="userDel"){if(a.dataset.armed){try{await S.db.doc("utilizadores/"+a.dataset.id).delete();closeSheet();toast("Utilizador apagado")}catch(e){showErr(e)}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}}
