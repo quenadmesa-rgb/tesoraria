@@ -985,6 +985,35 @@ details.criar>summary{padding:11px 14px;font-size:13px}
 .scroll tbody td.c-n{z-index:3!important}
 .rk tbody td.c-n{font-size:12.5px}
 @media (max-width:640px){.tbl-wrap .scroll{max-height:60vh!important}}
+/* ===== Membros: editar dentro da tabela ===== */
+.mtab-ed td{padding:5px 6px!important;vertical-align:middle}
+.inp.tin{min-height:32px!important;height:32px;padding:4px 8px!important;font-size:12.5px!important;border:1.5px solid transparent;background:transparent;border-radius:8px;width:100%;min-width:110px}
+.inp.tin:hover{border-color:var(--line);background:var(--surface)}
+.inp.tin:focus{border-color:var(--gold);background:var(--surface);box-shadow:var(--focus)}
+select.inp.tin{padding-right:26px!important;background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%;min-width:100px}
+.tin-nome{font-weight:700!important;min-width:180px!important}
+.tin-cargo{margin-top:2px;font-size:11.5px!important;color:var(--muted)!important;height:26px!important;min-height:26px!important}
+input[type=date].inp.tin{min-width:140px}
+.mtab-ed tr.em-edicao td{background:color-mix(in srgb,var(--gold-soft) 18%,var(--surface))}
+.btn-edtab{white-space:nowrap}
+@media (max-width:640px){.mtab-ed th:nth-child(3),.mtab-ed td:nth-child(3),.mtab-ed th:nth-child(4),.mtab-ed td:nth-child(4),.mtab-ed th:nth-child(6),.mtab-ed td:nth-child(6),.mtab-ed th:nth-child(7),.mtab-ed td:nth-child(7){display:table-cell!important}}
+/* ===== Cabeçalho fixo ao deslizar a página ===== */
+.cab-flut{position:fixed;z-index:9;overflow:hidden;pointer-events:auto;background:var(--surface);border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-top:0;border-radius:0 0 12px 12px;box-shadow:0 10px 24px rgba(16,32,26,.14);animation:cabIn .14s ease}
+.cab-flut[hidden]{display:none}
+@keyframes cabIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.cab-flut table{border-collapse:separate;border-spacing:0;table-layout:fixed;margin:0}
+.cab-flut th{height:40px;padding:7px 12px;background:color-mix(in srgb,var(--sunk) 80%,var(--surface));color:var(--fg2);font-weight:700;font-size:10px;letter-spacing:.09em;text-transform:uppercase;white-space:nowrap;text-align:left;border-bottom:2px solid var(--brand);cursor:pointer;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis}
+.cab-flut th.c-n{text-align:center;color:var(--fg2);cursor:default;background:color-mix(in srgb,var(--sunk) 92%,var(--surface));box-shadow:inset -1px 0 0 var(--line)}
+.cab-flut .cota th,.cab-flut .reg th{text-align:right}.cab-flut .cota th:nth-child(2){text-align:left}
+.cab-flut th.r,.cab-flut th.c-tot{text-align:right}
+.cab-flut th[data-ord="asc"]::after{content:" ▲";font-size:8px;color:var(--c1)}.cab-flut th[data-ord="desc"]::after{content:" ▼";font-size:8px;color:var(--c1)}
+@media print{.cab-flut{display:none!important}}
+.cab-flut th{position:static!important;left:auto!important;right:auto!important;top:auto!important;min-width:0;box-shadow:none}
+.cab-flut th.fixa{position:relative!important;z-index:2;background:color-mix(in srgb,var(--sunk) 92%,var(--surface))}
+.cab-flut th.c-n.fixa,.cab-flut .cota th:nth-child(2).fixa{box-shadow:inset -1px 0 0 var(--line)}
+.cab-flut th.c-tot.fixa{box-shadow:inset 1px 0 0 var(--line)}
+.tin-nome,.tin-cargo{display:block!important;width:100%!important}
+.kpis{background:var(--bg)!important;box-shadow:0 6px 10px -8px rgba(16,32,26,.12)}
 /* formulários e confirmações sempre por cima do painel de detalhes */
 .sheet-bg{z-index:32!important}.toast{z-index:40!important}.ctip{z-index:45!important}
 /* ===== Painel de detalhes à direita ===== */
@@ -1408,7 +1437,7 @@ function render(){
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
   const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
-  setTimeout(()=>{ferramentasTabela();paginar(false);if(S.drawer)renderDrawer(false)},0);
+  setTimeout(()=>{ferramentasTabela();paginar(false);cabecalhosFlutuantes();if(S.drawer)renderDrawer(false)},0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
 }
 const addBtn=(act,txt,extra="")=>S.edit?`<button class="btn primary" data-act="${act}" ${extra}>+ ${txt}</button>`:"";
@@ -1896,6 +1925,35 @@ document.addEventListener("wheel",ev=>{const sc=ev.target.closest&&ev.target.clo
   document.addEventListener("mouseup",()=>{if(!arr)return;const m=arr.mov,sc=arr.sc;arr=null;sc.classList.remove("a-arrastar");
     if(m){const parar=e=>{e.stopPropagation();e.preventDefault()};window.addEventListener("click",parar,{capture:true,once:true});setTimeout(()=>window.removeEventListener("click",parar,{capture:true}),50)}});
 })();
+// ---------- Cabeçalho fixo ao deslizar a PÁGINA (fica por baixo da barra de topo e dos cartões fixos)
+function linhaTopo(){const h=document.querySelector("header.top"),k=document.querySelector("#main .kpis");let y=h?h.getBoundingClientRect().bottom:0;
+  if(k){const r=k.getBoundingClientRect();if(getComputedStyle(k).position==="sticky"&&r.top<=y+2)y=Math.max(y,r.bottom)}return Math.max(0,y)}
+function cabecalhosFlutuantes(){
+  document.querySelectorAll(".cab-flut").forEach(f=>{if(!f._sc||!document.body.contains(f._sc))f.remove()});
+  document.querySelectorAll("#main .scroll").forEach(sc=>{if(sc._flut&&document.body.contains(sc._flut))return;const tb=sc.querySelector("table");if(!tb||!tb.tHead)return;
+    const f=document.createElement("div");f.className="cab-flut";f.setAttribute("aria-hidden","true");f.hidden=true;
+    f.innerHTML=`<table class="${tb.className}"><thead>${tb.tHead.innerHTML}</thead></table>`;f._sc=sc;sc._flut=f;document.body.appendChild(f);
+    f.addEventListener("click",ev=>{const th=ev.target.closest("th");if(!th)return;const i=[...th.parentNode.children].indexOf(th);const real=tb.tHead.rows[0].cells[i];if(real){real.click();setTimeout(()=>{f.querySelector("thead").innerHTML=tb.tHead.innerHTML;posicionarCabecalhos()},0)}});
+    sc.addEventListener("scroll",posicionarCabecalhos,{passive:true})});
+  posicionarCabecalhos();
+}
+function posicionarCabecalhos(){
+  const topo=linhaTopo();
+  document.querySelectorAll(".cab-flut").forEach(f=>{const sc=f._sc;if(!sc||!document.body.contains(sc)){f.remove();return}
+    const tb=sc.querySelector("table");if(!tb||!tb.tHead){f.hidden=true;return}
+    const r=sc.getBoundingClientRect(),th=tb.tHead.getBoundingClientRect(),hh=th.height;
+    const mostrar=th.top<topo-1&&r.bottom>topo+hh+8&&r.width>0&&!document.querySelector("#sheet:not([hidden])");
+    if(!mostrar){if(!f.hidden)f.hidden=true;return}
+    f.hidden=false;f.style.top=topo+"px";f.style.left=r.left+"px";f.style.width=sc.clientWidth+"px";
+    const ft=f.querySelector("table");ft.style.width=tb.offsetWidth+"px";
+    const orig=[...tb.tHead.rows[0].cells],cop=[...ft.tHead.rows[0].cells];
+    orig.forEach((c,i)=>{if(cop[i]){const w=c.getBoundingClientRect().width+"px";cop[i].style.width=w;cop[i].style.minWidth=w;cop[i].style.maxWidth=w;cop[i].dataset.ord=c.dataset.ord||"";if(!c.dataset.ord)delete cop[i].dataset.ord}});
+    ft.style.transform=`translateX(${-sc.scrollLeft}px)`;
+    const max=Math.max(0,tb.offsetWidth-sc.clientWidth);
+    cop.forEach((c,i)=>{const o=orig[i];if(!o)return;const cs=getComputedStyle(o),esq=o.classList.contains("c-n")||(cs.position==="sticky"&&cs.left!=="auto"),dir=!esq&&cs.position==="sticky"&&cs.right!=="auto";
+      c.style.transform=esq?`translateX(${sc.scrollLeft}px)`:dir?`translateX(${sc.scrollLeft-max}px)`:"";c.classList.toggle("fixa",esq||dir)})});
+}
+window.addEventListener("scroll",posicionarCabecalhos,{passive:true});window.addEventListener("resize",posicionarCabecalhos);
 // ---------- Pesquisa e filtros automáticos em todas as tabelas
 function textoCel(td){if(!td)return "";const s=td.querySelector("select");if(s)return (s.selectedOptions[0]||{}).textContent||"";const i=td.querySelector("input:not([type=checkbox])");if(i)return i.value;const c=td.querySelector("input[type=checkbox]");if(c)return c.checked?"Sim":"Não";return td.textContent.replace(/\s+/g," ").trim()}
 function ferramentasTabela(){
@@ -1949,7 +2007,7 @@ function paginar(reset){
       <button type="button" data-pg="${pg+1}" ${pg===pages?"disabled":""} aria-label="Página seguinte">Próximo ›</button></div>`;
   });
 }
-document.addEventListener("click",ev=>{const b=ev.target.closest(".pager [data-pg]");if(!b||b.disabled)return;const pager=b.closest(".pager");PG[pager.dataset.key]=+b.dataset.pg;paginar(false);
+document.addEventListener("click",ev=>{const b=ev.target.closest(".pager [data-pg]");if(!b||b.disabled)return;const pager=b.closest(".pager");PG[pager.dataset.key]=+b.dataset.pg;paginar(false);setTimeout(posicionarCabecalhos,0);
   const sc=pager.previousElementSibling;if(sc){sc.scrollTop=0;const r=sc.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.6)sc.scrollIntoView({block:"start",behavior:"smooth"})}});
 // pesquisa genérica nas tabelas (ofertas, saídas, entradas das campanhas) e nas contribuições
 document.addEventListener("input",ev=>{const i=ev.target;
@@ -2100,7 +2158,17 @@ function vMembros(){
   const ms=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem));
   const c=contagem(),comTel=ms.filter(m=>m.telefone).length,pagaram=ms.filter(m=>cotaPeriodo(m,S.ano,A)>0).length;
   const lista=ms.filter(m=>membroPassa(m,f));
+  const ed=S.edit&&S.mEdit,selS=(id,v)=>`<select class="inp tin" data-sexo="${id}" aria-label="Sexo">${[["","—"],["M","Rapaz"],["F","Rapariga"],["PAI","Pai"],["MAE","Mãe"]].map(([k,l])=>`<option value="${k}" ${(v||"")===k?"selected":""}>${l}</option>`).join("")}</select>`;
   const rows=lista.map((m,i)=>{const id=idade(m.nascimento),ct=cotaPeriodo(m,S.ano,A);
+    if(ed)return `<tr data-drawer-m="${m.id}" class="em-edicao" data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
+    <td class="c-n">${i+1}</td>
+    <td class="c-nome"><input class="inp tin tin-nome" data-nome="${m.id}" value="${esc(m.nome)}" aria-label="Nome" autocomplete="off"><input class="inp tin tin-cargo" data-cargo="${m.id}" list="dl-cargos" value="${esc(cargoLbl(m.cargo)||"")}" placeholder="Cargo" aria-label="Cargo de ${esc(m.nome)}" autocomplete="off"></td>
+    <td>${selS(m.id,m.sexo)}</td>
+    <td><select class="inp tin" data-local="${m.id}" aria-label="Local"><option value="Sede" ${m.bindura?"":"selected"}>Sede</option><option value="Bindura" ${m.bindura?"selected":""}>Bindura</option></select></td>
+    <td><input class="inp tin" type="tel" data-mcampo="telefone" data-mid="${m.id}" value="${esc(m.telefone||"")}" placeholder="84 000 0000" aria-label="Telefone"></td>
+    <td><input class="inp tin" type="date" data-mcampo="nascimento" data-mid="${m.id}" value="${esc(m.nascimento||"")}" aria-label="Data de nascimento"></td>
+    <td><input class="inp tin" type="date" data-mcampo="entrada" data-mid="${m.id}" value="${esc(m.entrada||"")}" aria-label="Membro desde"></td>
+    <td class="money ${ct?"":"muted"}">${ct?fmt(ct):"—"}</td></tr>`;
     return `<tr data-drawer-m="${m.id}" tabindex="0" class="clicavel" data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
     <td class="c-n">${i+1}</td>
     <td class="c-nome"><button class="mname" data-act="verMembro" data-id="${m.id}"><span class="av">${esc((m.nome||"?").trim().charAt(0).toUpperCase())}</span><span><b>${esc(m.nome)}</b><small>${esc([cargoLbl(m.cargo),m.naoJovem?"Não conta como jovem":""].filter(Boolean).join(" · ")||"Membro")}</small></span></button></td>
@@ -2117,14 +2185,15 @@ function vMembros(){
   </div>
   <section class="panel">
     <div class="toolbar"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="mSearch" type="search" placeholder="Procurar por nome, telefone ou morada" value="${esc(q)}" autocomplete="off" aria-label="Procurar membro"></div>
-      <div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
-    ${lista.length?`<div class="scroll flat"><table class="mtab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>Idade</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
+      ${S.edit?`<button type="button" class="btn ${S.mEdit?"primary":""} btn-edtab" data-act="mEditar" aria-pressed="${!!S.mEdit}">${S.mEdit?"✓ Terminar edição":"✎ Editar na tabela"}</button>`:""}<div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
+    ${lista.length?`<div class="scroll flat">${S.edit&&S.mEdit?dlCargos():""}<table class="mtab${S.edit&&S.mEdit?" mtab-ed":""}"><thead><tr><th class="c-n">Nº</th><th class="c-nome">${S.edit&&S.mEdit?"Nome e cargo":"Nome"}</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>${S.edit&&S.mEdit?"Nascimento":"Idade"}</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted small" id="mCount">${lista.length} ${lista.length===1?"membro":"membros"}${f!=="todos"?" neste filtro":""}.${S.edit?" Toque no nome para ver ou editar os dados.":""}</p>`:`<div class="empty">Nenhum membro neste filtro.${S.edit?" Use “Registar membro” para adicionar.":""}</div>`}
   </section>`;
 }
 document.addEventListener("input",ev=>{if(ev.target.id!=="mSearch")return;S.mq=ev.target.value;const q=nrm(S.mq);let n=0;
   document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".");paginar(true)});
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-mf]");if(!b)return;S.mf=b.dataset.mf;render()});
+document.addEventListener("click",ev=>{if(!ev.target.closest('[data-act="mEditar"]'))return;document.activeElement&&document.activeElement.blur&&document.activeElement.blur();S.mEdit=!S.mEdit;render()});
 function formEvento(e,tipoDef){
   const tipo=e?.tipo||tipoDef||"conferencia";
   openSheet(`<h3>${e?"Editar evento":"Novo evento"}</h3>
@@ -2223,6 +2292,7 @@ document.addEventListener("change",async ev=>{
   if(t.dataset.local){const ch=t.value==="Bindura";try{await S.db.doc("membros/"+t.dataset.local).update(ch?{bindura:true}:{bindura:false,activo:false})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.bindura){const ch=t.checked;try{await S.db.doc("membros/"+t.dataset.bindura).update(ch?{bindura:true}:{bindura:false,activo:false})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.activo){try{await S.db.doc("membros/"+t.dataset.activo).update({activo:t.checked})}catch(e){toast("Não foi possível guardar.")}return}
+  if(t.dataset.mcampo&&t.dataset.mid){try{await S.db.doc("membros/"+t.dataset.mid).update({[t.dataset.mcampo]:t.value.trim()});toast("Guardado")}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.lider!==undefined){saveLider();return}
   if(t.dataset.rel){saveRel(t.dataset.rel,t.value);return}
   if(t.dataset.evtot){
