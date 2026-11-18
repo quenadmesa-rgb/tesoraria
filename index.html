@@ -781,6 +781,16 @@ body{background:radial-gradient(1200px 600px at 100% -10%,color-mix(in srgb,var(
 @media (pointer:coarse){.btn,.bn,.tab,select.inp,input.inp{min-height:44px}.del{min-height:36px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 @media (forced-colors:active){.kpi::before,.kpi::after{forced-color-adjust:none}.btn{border:1px solid ButtonText}}
+/* --- Barras de cumprimento nas tabelas --- */
+.c-cump{min-width:150px}
+.cump{display:flex;align-items:center;gap:8px}
+.cbar{flex:1;display:block;height:8px;border-radius:999px;background:var(--sunk);overflow:hidden;min-width:70px}
+.cbar i{display:block;height:100%;border-radius:999px;background:var(--c1)}
+.cump b{font-size:12px;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.tbl-nota{margin:8px 4px 0}
+.evs .chip{margin-left:6px;vertical-align:1px}
+.rk tbody tr:nth-child(-n+3) td.c-n{color:var(--gold);font-weight:800}
+@media (max-width:640px){.evs th:nth-child(3),.evs td:nth-child(3),.evs th:nth-child(4),.evs td:nth-child(4),.evs th:nth-child(6),.evs td:nth-child(6){display:none}.acts th:nth-child(4),.acts td:nth-child(4),.acts th:nth-child(5),.acts td:nth-child(5),.acts th:nth-child(7),.acts td:nth-child(7){display:none}.rk th:nth-child(5),.rk td:nth-child(5){display:none}}
 /* ===== Botão de idioma PT | EN ===== */
 .lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
 .lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
@@ -1167,8 +1177,8 @@ function vResumo(){
       <p style="margin:10px 0 0"><button class="btn small" data-tab="classificacao">Ver classificação completa</button></p></section>
   </div>
   <details class="panel tabela-dados"><summary>Ver os valores em tabela</summary>
-    <div class="scroll flat"><table><thead><tr><th style="text-align:left">Mês</th><th>Cotas</th><th>Contrib.</th><th>Ofertas</th><th>Entradas</th><th>Saídas</th><th>Saldo do mês</th><th>Acumulado</th></tr></thead><tbody>
-    ${RM.map((r,i)=>`<tr><td style="text-align:left">${MESES[i]}</td><td>${fmt(r.c)}</td><td>${fmt(r.co)}</td><td>${fmt(r.of)}</td><td><b>${fmt(r.ent)}</b></td><td class="out">${fmt(r.sa)}</td><td>${fmt(r.saldo)}</td><td><b>${fmt(acum[i])}</b></td></tr>`).join("")}
+    <div class="scroll flat"><table><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Mês</th><th>Cotas</th><th>Contrib.</th><th>Ofertas</th><th>Entradas</th><th>Saídas</th><th>Saldo do mês</th><th>Acumulado</th></tr></thead><tbody>
+    ${RM.map((r,i)=>`<tr><td class="c-n">${i+1}</td><td style="text-align:left">${MESES[i]}</td><td>${fmt(r.c)}</td><td>${fmt(r.co)}</td><td>${fmt(r.of)}</td><td><b>${fmt(r.ent)}</b></td><td class="out">${fmt(r.sa)}</td><td>${fmt(r.saldo)}</td><td><b>${fmt(acum[i])}</b></td></tr>`).join("")}
     </tbody></table></div><p class="muted small">Os gráficos mensais usam os registos com data. Totais de eventos escritos à mão entram nos cartões de cima, mas não num mês concreto.</p></details>`;
 }
 // ---------- gráficos (SVG, com dica ao passar o rato/tocar)
@@ -1295,7 +1305,8 @@ function vClass(){
   <div class="controls"><div class="seg" role="group" aria-label="Período">${pers.map(([k,l])=>`<button data-per="${k}" aria-pressed="${S.per===k}">${l}</button>`).join("")}</div>
   ${opts?`<select class="inp" id="perVal" aria-label="Escolher período">${opts}</select>`:""}</div>
   ${r.length?`${pod.length?`<div class="podium">${order.map(x=>`<div class="pod ${x.pos===1?"p1":""}"><span class="pos">${x.pos}.º</span><span class="nm">${esc(x.m.nome)}</span><span class="money">${fmt(x.v)}</span></div>`).join("")}</div>`:""}
-  <section class="panel"><ol class="rank">${r.map(x=>rankLi(x,r[0].v)).join("")}</ol>
+  <section class="panel tbl-panel"><div class="scroll"><table class="mov rk"><thead><tr><th class="c-n">Pos.</th><th>Membro</th><th class="r">Cota (MZN)</th><th class="r">% do total</th><th>Comparação</th></tr></thead><tbody>${r.map(x=>`<tr><td class="c-n">${x.pos}.º</td><td class="c-desc">${esc(x.m.nome)}</td><td class="money">${fmt(x.v)}</td><td class="money">${total?Math.round(x.v/total*1000)/10+"%":"—"}</td><td class="c-cump"><span class="cbar"><i style="width:${(x.v/r[0].v*100).toFixed(1)}%"></i></span></td></tr>`).join("")}</tbody>
+    <tfoot><tr><td class="c-n"></td><td>Total (${r.length})</td><td class="money">${fmt(total)}</td><td class="money">100%</td><td></td></tr></tfoot></table></div>
   ${semCota>0?`<p class="muted" style="margin:10px 0 0;font-size:13px">${semCota} ${semCota===1?"membro sem cota":"membros sem cota"} neste período.</p>`:""}</section>`
   :`<div class="empty">Nenhuma cota registada em ${nomePeriodo().toLowerCase()}.</div>`}`;
 }
@@ -1308,7 +1319,7 @@ function vEventos(grupo){
   const desc=grupo==="contribuicao"?"Campanhas de contribuição, como envelopes e contribuição dos líderes.":"Conferências, retiros, cultos especiais e outros eventos, com entradas e saídas de cada um.";
   return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div><div class="head-acts">${xlsBar(grupo==="contribuicao"?"contribuicoes":"conferencias")}${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div></div>
   ${quickEvento(grupo)}
-  ${evs.length?`<div class="cards">${evs.map(cardEvento).join("")}</div>`:`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
+  ${evs.length?tabEventos(evs,grupo==="contribuicao"):`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
 }
 function quickEvento(grupo){
   if(!S.edit)return "";
@@ -1383,10 +1394,8 @@ function vActividades(){
   if(S.edit)html+=`<form class="panel quick" data-qact="1" novalidate><h3>Registar actividade</h3><div class="qgrid act-grid">${actFields(null,"qa")}</div><p class="err" hidden></p><div><button type="submit" class="btn primary">Guardar actividade</button></div></form>`;
   html+=`<section class="panel"><div class="head"><h3>Lista de ${S.ano}</h3><select class="inp" id="actMes" aria-label="Filtrar por mês" style="width:auto"><option value="todos">Todos os meses</option>${MESES.map((m,i)=>`<option value="${i+1}" ${+S.actMes===i+1?"selected":""}>${m}${meses.includes(i+1)?"":" (0)"}</option>`).join("")}</select></div>`;
   if(!lst.length)html+=`<div class="empty" style="margin-top:10px">Ainda não há actividades registadas${S.actMes==="todos"?" neste ano":" neste mês"}.</div>`;
-  else{let cur=null;html+=`<ul class="list">`;lst.forEach(a=>{const m=+a.data.slice(5,7);
-    if(m!==cur){cur=m;const n=all.filter(x=>+x.data.slice(5,7)===m).length;html+=`</ul><div class="month-h"><span>${MESES[m-1]}</span><span>${n} ${n===1?"actividade":"actividades"}</span></div><ul class="list">`}
-    html+=`<li class="${S.edit?"act-item":""}" ${S.edit?`data-editact="${a.id}"`:""}><div class="datebox"><b>${+a.data.slice(8,10)}</b><span>${M3[m-1]}</span></div><div class="grow"><div class="t">${esc(a.nome)}</div><div class="s">${esc(TACT[a.tipo]||"Actividade")}${a.local?" · "+esc(a.local):""}${num(a.participantes)?" · "+num(a.participantes)+" participantes":""}</div>${a.nota?`<div class="s">${esc(a.nota)}</div>`:""}</div></li>`});
-    html+=`</ul>`}
+  else{html+=`<div class="scroll" style="margin-top:10px"><table class="mov acts"><thead><tr><th class="c-n">Nº</th><th>Data / período</th><th>Actividade</th><th>Tipo</th><th>Local</th><th class="r">Participantes</th><th>Observação</th></tr></thead><tbody>${lst.map((a,i)=>`<tr ${S.edit?`data-editact="${a.id}" tabindex="0" class="clicavel" title="Editar"`:""}><td class="c-n">${i+1}</td><td class="nw">${a.periodo?esc(a.periodo):dataPt(a.data)}</td><td class="c-desc">${esc(a.nome)}</td><td>${esc(TACT[a.tipo]||"Actividade")}</td><td>${esc(a.local||"—")}</td><td class="money">${num(a.participantes)||"—"}</td><td class="c-nota">${esc(a.nota||"")}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td class="c-n"></td><td colspan="4">Total (${lst.length} ${lst.length===1?"actividade":"actividades"})</td><td class="money">${sum(lst.map(a=>num(a.participantes)))}</td><td></td></tr></tfoot></table></div>`}
   return html+`</section>`;
 }
 function formActividade(a){
@@ -1407,6 +1416,16 @@ document.addEventListener("submit",async ev=>{
 document.addEventListener("click",ev=>{const it=ev.target.closest("[data-editact]");if(it){const a=S.acts.find(x=>x.id===it.dataset.editact);if(a)formActividade(a)}});
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-reltipo]");if(b){S.relAnual=b.dataset.reltipo==="a";render()}});
 document.addEventListener("change",ev=>{if(ev.target.id==="actMes"){S.actMes=ev.target.value;render()}});
+function tabEventos(evs,co){
+  const rows=evs.map((e,i)=>{const t=eventoTotais(e.id),meta=num(e.meta),p=meta?t.te/meta*100:null;
+    return `<tr data-open="${e.id}" tabindex="0" class="clicavel" title="Abrir"><td class="c-n">${i+1}</td><td class="c-desc">${esc(e.nome)}${co?"":` <span class="chip ${e.tipo==="conferencia"?"gold":""}">${esc(TIPOS[e.tipo]||"Evento")}</span>`}</td><td class="nw">${e.data?dataPt(e.data):"—"}</td>
+      <td class="money">${meta?fmt(meta):"—"}</td><td class="money">${fmt(t.te)}</td><td class="money ${t.ts?"out":""}">${fmt(t.ts)}</td><td class="money">${fmt(t.te-t.ts)}</td>
+      <td class="c-cump">${p==null?'<span class="muted">sem meta</span>':`<div class="cump"><span class="cbar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${corPct(p)}"></i></span><b>${Math.round(p)}%</b></div>`}</td></tr>`}).join("");
+  const T=evs.map(e=>eventoTotais(e.id)),te=sum(T.map(t=>t.te)),ts=sum(T.map(t=>t.ts)),tm=sum(evs.map(e=>num(e.meta)));
+  return `<section class="panel tbl-panel"><div class="scroll"><table class="mov evs"><thead><tr><th class="c-n">Nº</th><th>${co?"Contribuição":"Conferência / evento"}</th><th>Data</th><th class="r">Meta (MZN)</th><th class="r">Recebido (MZN)</th><th class="r">Saídas (MZN)</th><th class="r">Saldo (MZN)</th><th>Cumprimento</th></tr></thead><tbody>${rows}</tbody>
+    <tfoot><tr><td class="c-n"></td><td colspan="2">Total (${evs.length})</td><td class="money">${tm?fmt(tm):"—"}</td><td class="money">${fmt(te)}</td><td class="money">${fmt(ts)}</td><td class="money">${fmt(te-ts)}</td><td>${tm?Math.round(te/tm*100)+"%":""}</td></tr></tfoot></table></div>
+    <p class="muted small tbl-nota">${S.edit?"Toque numa linha para abrir e registar entradas e saídas.":"Toque numa linha para ver o detalhe."}</p></section>`;
+}
 function cardEvento(e){
   const t=eventoTotais(e.id);const meta=num(e.meta);const pct=meta?Math.min(100,t.te/meta*100):0;
   return `<button class="card" data-open="${e.id}">
@@ -1418,7 +1437,7 @@ function cardEvento(e){
 }
 function vEvento(e){
   const t=eventoTotais(e.id);const meta=num(e.meta);
-  const lst=(arr,out)=>arr.length?`<ul class="list">${arr.sort((a,b)=>(b.data||"").localeCompare(a.data||"")).map(v=>movLi(v,out)).join("")}</ul>`:`<p class="muted">Nada registado.</p>`;
+  const lst=(arr,out)=>arr.length?tabMovs(arr,out):`<p class="muted">Nada registado.</p>`;
   return `<button class="back" data-act="voltar">← Voltar</button>
   <div class="head"><div><span class="chip ${e.tipo==="conferencia"?"gold":""}">${TIPOS[e.tipo]||"Evento"}</span><h2 style="margin-top:6px">${esc(e.nome)}</h2><p>${e.data?dataPt(e.data):"Sem data definida"}${e.nota?" · "+esc(e.nota):""}</p></div>
   ${S.edit?`<button class="btn" data-act="editEvento" data-id="${e.id}">Editar evento</button>`:""}</div>
@@ -1451,7 +1470,7 @@ function porMes(arr,out){
   return Object.keys(g).map(Number).sort((a,b)=>b-a).map(k=>`<div class="month-h"><span>${k?MESES[k-1]:"Sem data"}</span><span class="money">${fmt(sum(g[k].map(v=>num(v.valor))))}</span></div><ul class="list">${g[k].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).map(v=>movLi(v,out)).join("")}</ul>`).join("");
 }
 // Teclado: Enter ou Espaço numa linha da tabela abre a edição
-document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-editmov],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
+document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-editmov],tr[data-editact],tr[data-open],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
 // Tabela de movimentos (ofertas / saídas): numeração fixa, cabeçalho fixo e total
 function tabMovs(arr,sai){
   if(!arr.length)return "";
@@ -2155,13 +2174,13 @@ function vRegiao(){
     const tm=sum(cr.map(r=>r.meta||0)),tv=sum(cr.map(r=>r.val));
     const ord=[...cr].sort((a,b)=>(b.p??-1)-(a.p??-1)||b.val-a.val);
     let pos=0,last=null;ord.forEach(r=>{if(r.p==null){r.pos=null;return}if(r.p!==last){pos++;last=r.p}r.pos=pos});
-    confHtml=`<div class="tblwrap scroll"><table class="reg"><thead><tr><th>Pos.</th><th style="text-align:left">Direcção</th><th>Meta (MT)</th><th>Contribuído (MT)</th><th>Falta (MT)</th><th>Cumprimento</th></tr></thead><tbody>
-      ${ord.map(r=>`<tr><td>${r.pos?r.pos+".º":"–"}</td><td style="text-align:left;font-weight:600">${esc(r.d.nome)}</td>
+    confHtml=`<div class="tblwrap scroll"><table class="reg"><thead><tr><th class="c-n">Pos.</th><th style="text-align:left">Direcção</th><th>Meta (MT)</th><th>Contribuído (MT)</th><th>Falta (MT)</th><th>Cumprimento</th></tr></thead><tbody>
+      ${ord.map(r=>`<tr><td class="c-n">${r.pos?r.pos+".º":"–"}</td><td style="text-align:left;font-weight:600">${esc(r.d.nome)}</td>
         <td>${ed?`<input inputmode="decimal" data-cmeta="${r.d.id}" value="${r.meta==null?"":r.meta}" placeholder="Meta" aria-label="Meta de ${esc(r.d.nome)}">`:(r.meta==null?"–":fmt(r.meta))}</td>
         <td>${ed?`<input inputmode="decimal" data-cval="${r.d.id}" value="${r.val||""}" placeholder="0" aria-label="Contribuído por ${esc(r.d.nome)}">`:fmt(r.val)}</td>
         <td data-cfalta="${r.d.id}">${r.meta==null?"–":fmt(r.meta-r.val)}</td>
         <td><strong data-cpct="${r.d.id}">${r.p==null?"sem meta":pct(r.p)}</strong></td></tr>`).join("")}
-      </tbody><tfoot><tr><td></td><td style="text-align:left">Região</td><td data-cft="meta">${fmt(tm)}</td><td data-cft="val">${fmt(tv)}</td><td data-cft="falta">${fmt(tm-sum(cr.filter(r=>r.meta!=null).map(r=>r.val)))}</td><td data-cft="pct">${tm?pct(sum(cr.filter(r=>r.meta!=null).map(r=>r.val))/tm*100):"–"}</td></tr></tfoot></table></div>
+      </tbody><tfoot><tr><td class="c-n"></td><td style="text-align:left">Região</td><td data-cft="meta">${fmt(tm)}</td><td data-cft="val">${fmt(tv)}</td><td data-cft="falta">${fmt(tm-sum(cr.filter(r=>r.meta!=null).map(r=>r.val)))}</td><td data-cft="pct">${tm?pct(sum(cr.filter(r=>r.meta!=null).map(r=>r.val))/tm*100):"–"}</td></tr></tfoot></table></div>
       ${cr.some(r=>r.meta==null)?`<p class="muted" style="margin:0;font-size:13px">As direcções "sem meta" ficam fora da classificação até escrever a meta atribuída.</p>`:""}
       <h3 style="margin-top:6px">Cumprimento da meta por direcção</h3>
       ${vbars(ord.filter(r=>r.p!=null).map(r=>({label:r.pos+".º "+r.d.nome,value:r.p,top:pct(r.p),sub:"meta "+fmt(r.meta)})),{aria:"Cumprimento da meta por direcção"})||`<p class="muted">Escreva as metas para ver o gráfico.</p>`}`;
