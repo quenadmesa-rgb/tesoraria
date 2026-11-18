@@ -806,7 +806,12 @@ body.sem-scroll{overflow:hidden}
           // MySQL desligado: entra com a marca guardada neste aparelho
           const c=credLer()[user];
           if(!c){const er=new Error("A base de dados está desligada e este utilizador ainda não entrou neste aparelho. Entre num aparelho que já tenha usado, ou ligue a base de dados.");er.code="offline";throw er}
-          if((await marcaSenha(senha,c.salt))!==c.hash){const er=new Error("Utilizador ou senha errados.");er.code="senha";throw er}
+          // também sem base de dados: 3 tentativas erradas em 15 minutos bloqueiam
+          const FK="tesouraria-falhas",agora=Date.now();let fl={};try{fl=JSON.parse(localStorage.getItem(FK)||"{}")}catch(e){}
+          const recentes=(fl[user]||[]).filter(t=>agora-t<15*60*1000);
+          if(recentes.length>=3){const er=new Error("Demasiadas tentativas. Espere 15 minutos.");er.code="rate_limited";throw er}
+          if((await marcaSenha(senha,c.salt))!==c.hash){fl[user]=[...recentes,agora];try{localStorage.setItem(FK,JSON.stringify(fl))}catch(e){}const er=new Error("Utilizador ou senha errados.");er.code="senha";throw er}
+          delete fl[user];try{localStorage.setItem(FK,JSON.stringify(fl))}catch(e){}
           sess={token:c.token,user:c.user,padrao:false,offline:true};senhaMem=senha;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
           marcaOnline(false);avisa();COLS.forEach(remit);iniciarSync();return sess}
         sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
