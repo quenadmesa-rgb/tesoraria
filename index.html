@@ -3828,9 +3828,16 @@ document.addEventListener("change",async ev=>{if(ev.target.id!=="bkImport"||!(wi
   catch(e){toast(e&&e.code==="quota_exceeded"?"Sem espaço no navegador para esta cópia.":"Não foi possível importar a cópia.")}});
 // ---------- funcionar sem internet (GitHub Pages)
 if("serviceWorker" in navigator&&window.isSecureContext){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").then(r=>{
-  // Quando há uma versão nova da app, avisa e recarrega ao tocar.
-  r.addEventListener("updatefound",()=>{const w=r.installing;w&&w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){const el=$("#toast");el.innerHTML='Há uma versão nova da app. <button class="linkbtn" onclick="location.reload()">Actualizar</button>';el.hidden=false;clearTimeout(toast.t)}})});
-  setInterval(()=>r.update().catch(()=>{}),60*60*1000)}).catch(()=>{})})}
+  // Versão nova da app: entra sozinha (recarrega quando a pessoa não está a escrever nem com uma janela aberta).
+  let novaPronta=false;
+  const livre=()=>!document.querySelector("#sheet:not([hidden])")&&!(document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName));
+  const aplicar=()=>{if(!novaPronta)return;if(document.hidden||livre())location.reload();else setTimeout(aplicar,4000)};
+  r.addEventListener("updatefound",()=>{const w=r.installing;w&&w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){novaPronta=true;aplicar()}})});
+  if(r.waiting&&navigator.serviceWorker.controller){novaPronta=true;aplicar()}
+  const verificar=()=>r.update().catch(()=>{});
+  setInterval(verificar,5*60*1000); // procura versões novas de 5 em 5 minutos
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)verificar()}); // e sempre que volta à app
+  window.addEventListener("online",verificar)}).catch(()=>{})})}
 // ---------- arranque
 render();
 (async()=>{
