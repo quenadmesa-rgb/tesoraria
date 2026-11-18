@@ -105,7 +105,7 @@ const TABELAS_NORMAIS = ["cargos", "jovens", "cotas", "ofertas", "contribuicoes"
 const D = "DEFAULT CHARSET=utf8mb4";
 const ESQUEMA_NORMAL = [
   `CREATE TABLE cargos (id VARCHAR(40) PRIMARY KEY, nome VARCHAR(80) NOT NULL, ordem INT) ${D}`,
-  `CREATE TABLE jovens (id VARCHAR(64) PRIMARY KEY, nome VARCHAR(200) NOT NULL, sexo ENUM('M','F','PAI','MAE') NULL, cargo_id VARCHAR(40) NULL, local ENUM('Sede','Bindura') NOT NULL DEFAULT 'Sede', activo_bindura BOOLEAN NOT NULL DEFAULT 0, conta_como_jovem BOOLEAN NOT NULL DEFAULT 1, telefone VARCHAR(40) NULL, nascimento DATE NULL, membro_desde DATE NULL, morada VARCHAR(200) NULL, notas TEXT NULL, ordem INT NULL,
+  `CREATE TABLE jovens (id VARCHAR(64) PRIMARY KEY, nome VARCHAR(200) NOT NULL, sexo ENUM('M','F','PAI','MAE') NULL, cargo_id VARCHAR(40) NULL, cargo_outro VARCHAR(120) NULL, local ENUM('Sede','Bindura') NOT NULL DEFAULT 'Sede', activo_bindura BOOLEAN NOT NULL DEFAULT 0, conta_como_jovem BOOLEAN NOT NULL DEFAULT 1, telefone VARCHAR(40) NULL, nascimento DATE NULL, membro_desde DATE NULL, morada VARCHAR(200) NULL, notas TEXT NULL, ordem INT NULL,
     FOREIGN KEY (cargo_id) REFERENCES cargos(id) ON DELETE SET NULL, INDEX idx_jovens_nome (nome)) ${D}`,
   `CREATE TABLE cotas (jovem_id VARCHAR(64) NOT NULL, ano SMALLINT NOT NULL, mes TINYINT NOT NULL, valor DECIMAL(14,2) NOT NULL, PRIMARY KEY (jovem_id,ano,mes), FOREIGN KEY (jovem_id) REFERENCES jovens(id) ON DELETE CASCADE, CHECK (mes BETWEEN 1 AND 12)) ${D}`,
   `CREATE TABLE ofertas (id VARCHAR(64) PRIMARY KEY, data DATE NULL, descricao VARCHAR(200) NULL, nota VARCHAR(500) NULL, valor DECIMAL(14,2) NOT NULL DEFAULT 0, INDEX idx_ofertas_data (data)) ${D}`,
@@ -136,10 +136,10 @@ export async function espelhar(cx, col, id, dados) {
 async function espelharDoc(cx, col, id, d) {
   if (col === "membros") {
     if (!d) { await cx.query("DELETE FROM jovens WHERE id=?", [id]); return; }
-    const cargo = CARGOS_JOVENS.some(c => c[0] === d.cargo) ? d.cargo : null, sexo = ["M", "F", "PAI", "MAE"].includes(d.sexo) ? d.sexo : null;
-    await cx.query(`INSERT INTO jovens (id,nome,sexo,cargo_id,local,activo_bindura,conta_como_jovem,telefone,nascimento,membro_desde,morada,notas,ordem) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
-      ON DUPLICATE KEY UPDATE nome=VALUES(nome),sexo=VALUES(sexo),cargo_id=VALUES(cargo_id),local=VALUES(local),activo_bindura=VALUES(activo_bindura),conta_como_jovem=VALUES(conta_como_jovem),telefone=VALUES(telefone),nascimento=VALUES(nascimento),membro_desde=VALUES(membro_desde),morada=VALUES(morada),notas=VALUES(notas),ordem=VALUES(ordem)`,
-      [id, txt(d.nome) || "(sem nome)", sexo, cargo, d.bindura ? "Bindura" : "Sede", d.bindura && d.activo ? 1 : 0, d.naoJovem ? 0 : 1, txt(d.telefone, 40), dataOk(d.nascimento), dataOk(d.entrada), txt(d.morada), txt(d.notas, 5000), numOk(d.ordem)]);
+    const cargo = CARGOS_JOVENS.some(c => c[0] === d.cargo) ? d.cargo : null, cargoOutro = !cargo && d.cargo ? String(d.cargo).slice(0, 120) : null, sexo = ["M", "F", "PAI", "MAE"].includes(d.sexo) ? d.sexo : null;
+    await cx.query(`INSERT INTO jovens (id,nome,sexo,cargo_id,cargo_outro,local,activo_bindura,conta_como_jovem,telefone,nascimento,membro_desde,morada,notas,ordem) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ON DUPLICATE KEY UPDATE nome=VALUES(nome),sexo=VALUES(sexo),cargo_id=VALUES(cargo_id),cargo_outro=VALUES(cargo_outro),local=VALUES(local),activo_bindura=VALUES(activo_bindura),conta_como_jovem=VALUES(conta_como_jovem),telefone=VALUES(telefone),nascimento=VALUES(nascimento),membro_desde=VALUES(membro_desde),morada=VALUES(morada),notas=VALUES(notas),ordem=VALUES(ordem)`,
+      [id, txt(d.nome) || "(sem nome)", sexo, cargo, cargoOutro, d.bindura ? "Bindura" : "Sede", d.bindura && d.activo ? 1 : 0, d.naoJovem ? 0 : 1, txt(d.telefone, 40), dataOk(d.nascimento), dataOk(d.entrada), txt(d.morada), txt(d.notas, 5000), numOk(d.ordem)]);
     await cx.query("DELETE FROM cotas WHERE jovem_id=?", [id]);
     const rows = [];
     for (const [ano, meses] of Object.entries(d.cotas || {})) for (const [mes, v] of Object.entries(meses || {})) { const n = numOk(v); if (n != null && +ano && +mes >= 1 && +mes <= 12) rows.push([id, +ano, +mes, n]); }

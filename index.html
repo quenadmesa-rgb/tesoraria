@@ -847,6 +847,171 @@ html{scroll-padding-top:calc(var(--hdr,68px) + var(--kpih,0px) + 12px)}
 .kpi.saldo .v small.de{color:rgba(242,247,243,.7)}
 .cota-graf .chart svg{max-height:240px}
 @media (max-width:640px){.cota .c-tot{min-width:96px}.tot-cel .cbar{min-width:60px}}
+/* ===== Cor do sistema (temas) — verde claro por omissão ===== */
+:root,:root[data-tema="claro"]{--side-a:#2fa874;--side-b:#22895c;--side-c:#1a7550;--brand:#1f8a5a;--brand-fg:#f5fbf8;--side-fg:#f4fbf7;--side-mut:rgba(244,251,247,.62)}
+:root[data-tema="azul"]{--side-a:#3b6fd4;--side-b:#2856b8;--side-c:#1d4496;--brand:#2453b3;--brand-fg:#f5f8ff;--side-fg:#f5f8ff;--side-mut:rgba(245,248,255,.62)}
+:root[data-tema="vinho"]{--side-a:#a8375a;--side-b:#8a2442;--side-c:#6e1a34;--brand:#8a2442;--brand-fg:#fff6f8;--side-fg:#fff6f8;--side-mut:rgba(255,246,248,.62)}
+:root[data-tema="escuro"]{--side-a:#154539;--side-b:#123d33;--side-c:#0d3027;--brand:#123d33;--brand-fg:#f2f7f3;--side-fg:#f2f7f3;--side-mut:rgba(242,247,243,.55)}
+header.top,body:has(#tabs:empty) header.top{background:linear-gradient(180deg,var(--side-a),var(--side-b))}
+body::before{background:var(--side-a)}
+.kpi.saldo{background:linear-gradient(140deg,var(--side-a) 0%,var(--side-c) 80%)}
+.avbtn .dot{border-color:var(--side-b)}
+.mais-ico{background:var(--brand)}
+.pager button[aria-current="page"]{background:var(--brand)}
+@media (min-width:1024px){
+  nav.tabs{background:linear-gradient(180deg,var(--side-a) 0%,var(--side-b) 55%,var(--side-c) 100%)}
+  body:not(:has(#tabs:empty))::after{background:linear-gradient(180deg,var(--side-a) 0%,var(--side-b) 55%,var(--side-c) 100%)}
+  body:not(:has(#tabs:empty)) header.top{background:color-mix(in srgb,var(--surface) 92%,transparent)}
+  .tab{color:var(--side-mut)}.tab:hover{color:var(--side-fg);background:rgba(255,255,255,.1)}
+  .tab[aria-current="true"]{color:#fff;background:rgba(255,255,255,.18)}
+  .tgl{color:color-mix(in srgb,var(--side-fg) 55%,transparent)}
+  .side-brand{border-bottom-color:rgba(255,255,255,.16)}.side-foot{color:var(--side-mut);border-top-color:rgba(255,255,255,.14)}
+}
+.temas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tema-op{flex-direction:row!important;align-items:center;gap:10px!important;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-weight:600;color:var(--fg)!important}
+.tema-op:has(input:checked){border-color:var(--brand);background:color-mix(in srgb,var(--brand) 8%,var(--surface))}
+.tema-op input{accent-color:var(--brand)}
+.tema-cor{width:22px;height:22px;border-radius:7px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.4)}
+/* ===== Região: gráficos modernos ===== */
+.reg-graficos{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.reg-graficos{grid-template-columns:1fr}}
+.reg-mes{background:var(--sunk);border-radius:14px;padding:14px 14px 6px}
+.reg-mes .dr-sub{margin:0 0 6px}
+.rk-bars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.rk-bars li{display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px;align-items:center;cursor:default}
+.rk-pos{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:800 13px var(--display);background:var(--sunk);color:var(--fg2)}
+.rk-pos.ouro{background:linear-gradient(135deg,#f6d77a,#d4a12a);color:#3b2a00}
+.rk-pos.prata{background:linear-gradient(135deg,#e6e9ee,#b3bac4);color:#2a2f36}
+.rk-pos.bronze{background:linear-gradient(135deg,#efc29b,#c47d45);color:#3a1d05}
+.rk-corpo{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rk-linha{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.rk-nome{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-val{font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;white-space:nowrap}
+.rk-val em{font-style:normal;color:var(--muted);font-weight:600;font-size:11.5px;margin-left:6px}
+.rk-trilho{height:10px;border-radius:999px;background:var(--sunk);overflow:hidden}
+.rk-trilho span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--c1) 70%,#fff),var(--c1));transform-origin:left;animation:rkCresce .6s cubic-bezier(.2,.8,.2,1) both}
+.rk-bars li:first-child .rk-trilho span{background:linear-gradient(90deg,#f0c654,var(--c2))}
+@keyframes rkCresce{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.mt-bars{display:flex;flex-direction:column;gap:14px;position:relative;padding-top:18px}
+.mt-escala{position:relative;height:0}.mt-escala span{position:absolute;top:-18px;transform:translateX(-50%);font-size:10.5px;font-weight:700;color:var(--muted)}
+.mt-cab{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px;flex-wrap:wrap}
+.mt-num{font-variant-numeric:tabular-nums;font-weight:700}.mt-num small{color:var(--muted);font-weight:500}.mt-num em{font-style:normal;margin-left:6px}
+.mt-trilho{position:relative;height:12px;border-radius:999px;background:var(--sunk)}
+.mt-trilho span{display:block;height:100%;border-radius:999px;animation:rkCresce .6s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.mt-trilho i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--fg);opacity:.35;border-radius:2px}
+@media (prefers-reduced-motion:reduce){.rk-trilho span,.mt-trilho span{animation:none}}
+/* =====================================================================
+   REDESENHO FINAL — compacto, limpo e consistente (sobrepõe-se ao anterior)
+   ===================================================================== */
+:root{--sh-1:0 1px 2px rgba(16,32,26,.05),0 2px 10px rgba(16,32,26,.05);--sh-2:0 8px 28px rgba(16,32,26,.12);--r:14px}
+main.wrap{gap:16px}
+@media (min-width:1024px){main.wrap{padding:22px 28px 56px}}
+.head{gap:10px 16px}.head h2{font-size:19px;font-weight:800}.head p{font-size:12px;margin-top:2px}
+/* cartões compactos */
+.kpis,.kpis.kpis4,.kpis.kpis5{gap:10px;padding:6px 0 8px}
+.kpi{min-height:0!important;padding:11px 14px!important;gap:2px!important;border-radius:12px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:var(--sh-1)}
+.kpi::before{inset:11px 11px auto auto!important;width:26px!important;height:26px!important;border-radius:8px!important}
+.kpi::after{top:20px!important;right:20px!important;width:8px!important;height:8px!important}
+.kpi .l{font-size:9.5px!important;letter-spacing:.09em;min-height:0!important;padding-right:34px!important;line-height:1.35}
+.kpi .v{font-size:18px!important;margin-top:6px!important;line-height:1.15}
+.kpi.saldo .v{font-size:19px!important}
+.kpi .h{font-size:10.5px!important;margin-top:1px}
+@media (max-width:640px){.kpis .kpi{flex:0 0 136px!important;padding:9px 11px!important}.kpi .v{font-size:15px!important}.kpi.saldo .v{font-size:16px!important}.kpi::before{width:22px!important;height:22px!important}.kpi::after{top:18px!important;right:18px!important}}
+/* quadros */
+.panel{border:1px solid color-mix(in srgb,var(--line) 60%,transparent);box-shadow:var(--sh-1);padding:16px 18px;border-radius:var(--r)}
+.panel h3{font-size:14.5px}
+.panel.filtros{padding:10px 12px}
+.tbl-panel{padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+.scroll{border-radius:12px;border:1px solid color-mix(in srgb,var(--line) 75%,transparent);box-shadow:var(--sh-1)}
+.tbl-wrap{position:relative}
+.pager{margin-top:6px;box-shadow:var(--sh-1);border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+.tbl-tools{box-shadow:var(--sh-1);border-color:color-mix(in srgb,var(--line) 70%,transparent)}
+/* botões e campos mais finos */
+.btn{min-height:34px;padding:6px 12px;font-size:12.5px;border-radius:9px}
+.xbar .btn{min-height:32px;padding:5px 10px;font-size:12px}
+select.inp,input.inp{min-height:36px;font-size:13px;padding:7px 11px}
+textarea.inp{font-size:13px}
+.seg button{padding:6px 11px;font-size:12px}
+@media (pointer:coarse){.btn,select.inp,input.inp{min-height:40px}}
+/* barra lateral e cabeçalho */
+@media (min-width:1024px){.side-brand b{color:#fff!important;font-size:13.5px}.side-brand span{color:var(--side-mut)}.tab{font-size:12.5px;padding:8px 11px}.tab .ti{width:17px;height:17px}}
+.church .ad{color:#fff}
+header.top .church{color:#fff}
+/* tabelas */
+.scroll thead th{background:color-mix(in srgb,var(--sunk) 80%,var(--surface))}
+.scroll tbody td{font-size:12.5px}
+.chip{font-size:10px;padding:2px 7px}
+/* formulários rápidos */
+.panel.quick{border-top:0;background:var(--surface)}
+.panel.quick h3{font-size:14px}
+details.criar>summary{padding:11px 14px;font-size:13px}
+.kpi.saldo .v{color:#fff!important}.kpi.saldo::after{background:#fff!important}.kpi.saldo::before{background:rgba(255,255,255,.18)!important}
+:root[data-tema="escuro"] .kpi.saldo .v{color:var(--gold)!important}
+/* com paginação, a tabela mostra a página inteira (sem cortar linhas); só desliza para os lados */
+.tbl-wrap .scroll{max-height:none}
+/* formulários e confirmações sempre por cima do painel de detalhes */
+.sheet-bg{z-index:32!important}.toast{z-index:40!important}.ctip{z-index:45!important}
+/* ===== Painel de detalhes à direita ===== */
+.drawer{position:fixed;inset:0;z-index:24;pointer-events:none}
+.drawer[hidden]{display:none}
+.dr-bg{position:absolute;inset:0;background:rgba(8,20,16,.18);pointer-events:auto;animation:drFade .18s ease}
+.dr-in{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-12px 0 40px rgba(16,32,26,.18);pointer-events:auto;overflow-y:auto;padding:20px 22px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;animation:drIn .22s cubic-bezier(.2,.8,.2,1);outline:none}
+@keyframes drIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}@keyframes drFade{from{opacity:0}to{opacity:1}}
+.dr-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.dr-top h3{font-size:18px;margin:6px 0 2px;line-height:1.25;overflow-wrap:anywhere}
+.dr-top p{margin:0;color:var(--muted);font-size:12.5px}
+.dr-top .sheet-x{position:static;flex:0 0 auto}
+.dr-valor{font:800 30px var(--display);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.dr-valor.out{color:var(--bad)}
+.dr-grelha{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dr-campo{background:var(--surface);padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.dr-campo span{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.dr-campo b{font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.dr-campo a{color:var(--c1)}
+.dr-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.dr-kpis div{background:var(--sunk);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.dr-kpis span{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.dr-kpis b{font:800 16px var(--display);font-variant-numeric:tabular-nums}.dr-kpis b.out{color:var(--bad)}
+.dr-meta small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+.dr-sub{margin:4px 0 -6px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.dr-lista{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dr-lista li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px}
+.dr-lista li:last-child{border-bottom:0}.dr-lista small{display:block;color:var(--muted);font-size:11.5px}
+.dr-meses{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.dr-meses div{border:1px solid var(--line);border-radius:9px;padding:6px 4px;text-align:center;display:flex;flex-direction:column;gap:2px}
+.dr-meses span{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;letter-spacing:.05em}
+.dr-meses b{font-size:12px;font-variant-numeric:tabular-nums}
+.dr-meses .pago{background:color-mix(in srgb,var(--c1) 12%,var(--surface));border-color:color-mix(in srgb,var(--c1) 35%,var(--line))}
+.dr-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line);position:sticky;bottom:-24px;background:var(--surface);padding-bottom:4px}
+.dr-acts .btn{flex:1 1 auto;justify-content:center}
+.chip.good{background:var(--good-soft);color:var(--good)}
+@media (min-width:1024px){.dr-bg{background:transparent;pointer-events:none}}
+@media (max-width:640px){.dr-in{width:100%;top:auto;max-height:88vh;border-radius:18px 18px 0 0;border-left:0;animation:drUp .22s ease}.dr-grelha{grid-template-columns:1fr}@keyframes drUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}}
+/* --- Barra de pesquisa e filtros das tabelas --- */
+.tbl-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-start;margin-bottom:10px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.tbl-tools .search{flex:1 1 240px;max-width:380px}
+.tbl-tools select.inp{width:auto;min-height:36px;font-size:12.5px;padding:6px 30px 6px 10px;max-width:220px}
+.tbl-tools select.inp.activo{border-color:var(--c1);background-color:color-mix(in srgb,var(--c1) 8%,var(--surface));font-weight:600}
+.tbl-tools .search .inp{min-height:36px;font-size:12.5px}
+.tbl-limpar{min-height:36px!important;font-size:12px!important}
+@media (max-width:640px){.tbl-tools{padding:8px}.tbl-tools .search{max-width:none;flex-basis:100%}.tbl-tools select.inp{flex:1 1 45%;max-width:none}}
+/* ===== Tabelas modernas: letra menor, ordenar por coluna, linha seleccionada ===== */
+:root{--row:38px}
+body{font-size:13px}
+.scroll tbody td{font-size:12.5px}
+.scroll thead th{font-size:10px;letter-spacing:.09em;height:40px;cursor:pointer;user-select:none;transition:background .15s}
+.scroll thead th.c-n{cursor:default}
+.scroll thead th:hover:not(.c-n){background:color-mix(in srgb,var(--sunk) 70%,var(--line))}
+.scroll thead th::after{content:"";display:inline-block;width:0;margin-left:4px;opacity:.35}
+.scroll thead th[data-ord="asc"]::after{content:"▲";width:auto;font-size:8px;opacity:.9;color:var(--c1)}
+.scroll thead th[data-ord="desc"]::after{content:"▼";width:auto;font-size:8px;opacity:.9;color:var(--c1)}
+.scroll tbody tr.sel td,.scroll tbody tr.sel td.c-n,.scroll tbody tr.sel td.c-tot{background:color-mix(in srgb,var(--c1) 12%,var(--surface))!important}
+.scroll tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--c1)}
+.scroll tbody tr.clicavel:hover td{cursor:pointer}
+.mov th,.mov td{padding:7px 12px}
+h2{font-size:20px}.head p{font-size:12px}
+.kpi .v{font-size:20px}.kpi.saldo .v{font-size:22px}.kpi .l{font-size:10px}.kpi{min-height:92px}
+@media (max-width:640px){body{font-size:12.5px}h2{font-size:17px}.kpi .v{font-size:16px}.kpi.saldo .v{font-size:18px}}
 /* ===== Botão de idioma PT | EN ===== */
 .lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
 .lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
@@ -890,6 +1055,7 @@ html{scroll-padding-top:calc(var(--hdr,68px) + var(--kpih,0px) + 12px)}
 <footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Direcção da Juventude da Autonomia da Cidade das Águias de Pemba</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
 <nav class="bottomnav" id="bnav" aria-label="Navegação principal"></nav>
 <div id="maisMenu" class="mais-bg" hidden></div>
+<aside id="drawer" class="drawer" hidden></aside>
 <div id="sheet" hidden></div>
 <div id="toast" class="toast" hidden></div>
 <script src="i18n.js"></script>
@@ -1077,6 +1243,11 @@ html{scroll-padding-top:calc(var(--hdr,68px) + var(--kpih,0px) + 12px)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
+// Cor do sistema (Definições): aplicada antes de desenhar
+const TEMAS={claro:["Verde claro","#22895c"],azul:["Azul","#1e4fb8"],vinho:["Vinho","#8a2442"],escuro:["Verde escuro (antigo)","#123d33"]};
+function temaActual(){try{const t=localStorage.getItem("tes-tema");return TEMAS[t]?t:"claro"}catch(e){return "claro"}}
+function aplicarTema(){const t=temaActual();document.documentElement.dataset.tema=t;const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",TEMAS[t][1])}
+aplicarTema();
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const M3=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const TABS=[["resumo","Painel"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
@@ -1189,7 +1360,7 @@ function render(){
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
   const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
-  setTimeout(()=>paginar(false),0);
+  setTimeout(()=>{ferramentasTabela();paginar(false);if(S.drawer)renderDrawer(false)},0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
 }
 const addBtn=(act,txt,extra="")=>S.edit?`<button class="btn primary" data-act="${act}" ${extra}>+ ${txt}</button>`:"";
@@ -1355,7 +1526,7 @@ function vCotas(){
       return S.edit?`<td><input inputmode="decimal" aria-label="${esc(m.nome)} ${MESES[i-1]}" data-cota="${m.id}" data-mes="${i}" value="${val}" placeholder="–"></td>`
         :`<td class="${val?"":"zero"}">${val===""?"–":val}</td>`}).join("");
     const q=S.cotaBusca?semAcento(S.cotaBusca):"",oculto=q?!semAcento(m.nome).includes(q):!dentro;
-    return `<tr data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}${S.edit?`<button data-act="editMembro" data-id="${m.id}">${esc(m.nome)}</button>`:esc(m.nome)}</td>${cells}
+    return `<tr data-drawer-m="${m.id}" data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}<button data-act="verMembro" data-id="${m.id}">${esc(m.nome)}</button></td>${cells}
       <td class="c-tot"><div class="tot-cel"><b data-rowtot="${m.id}">${fmt(t)}</b><span class="cbar"><i style="width:${(t/maxT*100).toFixed(1)}%"></i></span></div></td></tr>`}).join("");
   const nota=f==="com"&&semCota?`<p class="muted small tbl-nota">${semCota} ${semCota===1?"membro sem cota está oculto":"membros sem cota estão ocultos"} em ${A}. <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></p>`:"";
   const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><div class="scroll"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
@@ -1508,7 +1679,7 @@ function vActividades(){
   if(S.edit)html+=`<form class="panel quick" data-qact="1" novalidate><h3>Registar actividade</h3><div class="qgrid act-grid">${actFields(null,"qa")}</div><p class="err" hidden></p><div><button type="submit" class="btn primary">Guardar actividade</button></div></form>`;
   html+=`<section class="panel"><div class="head"><h3>Lista de ${S.ano}</h3><select class="inp" id="actMes" aria-label="Filtrar por mês" style="width:auto"><option value="todos">Todos os meses</option>${MESES.map((m,i)=>`<option value="${i+1}" ${+S.actMes===i+1?"selected":""}>${m}${meses.includes(i+1)?"":" (0)"}</option>`).join("")}</select></div>`;
   if(!lst.length)html+=`<div class="empty" style="margin-top:10px">Ainda não há actividades registadas${S.actMes==="todos"?" neste ano":" neste mês"}.</div>`;
-  else{html+=`<div class="scroll" style="margin-top:10px"><table class="mov acts"><thead><tr><th class="c-n">Nº</th><th>Data / período</th><th>Actividade</th><th>Tipo</th><th>Local</th><th class="r">Participantes</th><th>Observação</th></tr></thead><tbody>${lst.map((a,i)=>`<tr ${S.edit?`data-editact="${a.id}" tabindex="0" class="clicavel" title="Editar"`:""}><td class="c-n">${i+1}</td><td class="nw">${a.periodo?esc(a.periodo):dataPt(a.data)}</td><td class="c-desc">${esc(a.nome)}</td><td>${esc(TACT[a.tipo]||"Actividade")}</td><td>${esc(a.local||"—")}</td><td class="money">${num(a.participantes)||"—"}</td><td class="c-nota">${esc(a.nota||"")}</td></tr>`).join("")}</tbody>
+  else{html+=`<div class="scroll" style="margin-top:10px"><table class="mov acts"><thead><tr><th class="c-n">Nº</th><th>Data / período</th><th>Actividade</th><th>Tipo</th><th>Local</th><th class="r">Participantes</th><th>Observação</th></tr></thead><tbody>${lst.map((a,i)=>`<tr data-drawer-act="${a.id}" tabindex="0" class="clicavel" title="Ver detalhes"><td class="c-n">${i+1}</td><td class="nw">${a.periodo?esc(a.periodo):dataPt(a.data)}</td><td class="c-desc">${esc(a.nome)}</td><td>${esc(TACT[a.tipo]||"Actividade")}</td><td>${esc(a.local||"—")}</td><td class="money">${num(a.participantes)||"—"}</td><td class="c-nota">${esc(a.nota||"")}</td></tr>`).join("")}</tbody>
     <tfoot><tr><td class="c-n"></td><td colspan="4">Total (${lst.length} ${lst.length===1?"actividade":"actividades"})</td><td class="money">${sum(lst.map(a=>num(a.participantes)))}</td><td></td></tr></tfoot></table></div>`}
   return html+`</section>`;
 }
@@ -1532,7 +1703,7 @@ document.addEventListener("click",ev=>{const b=ev.target.closest("[data-reltipo]
 document.addEventListener("change",ev=>{if(ev.target.id==="actMes"){S.actMes=ev.target.value;render()}});
 function tabEventos(evs,co){
   const rows=evs.map((e,i)=>{const t=eventoTotais(e.id),meta=num(e.meta),p=meta?t.te/meta*100:null;
-    return `<tr data-open="${e.id}" tabindex="0" class="clicavel" title="Abrir"><td class="c-n">${i+1}</td><td class="c-desc">${esc(e.nome)}${co?"":` <span class="chip ${e.tipo==="conferencia"?"gold":""}">${esc(TIPOS[e.tipo]||"Evento")}</span>`}</td><td class="nw">${e.data?dataPt(e.data):"—"}</td>
+    return `<tr data-drawer-ev="${e.id}" tabindex="0" class="clicavel" title="Ver detalhes"><td class="c-n">${i+1}</td><td class="c-desc">${esc(e.nome)}${co?"":` <span class="chip ${e.tipo==="conferencia"?"gold":""}">${esc(TIPOS[e.tipo]||"Evento")}</span>`}</td><td class="nw">${e.data?dataPt(e.data):"—"}</td>
       <td class="money">${meta?fmt(meta):"—"}</td><td class="money">${fmt(t.te)}</td><td class="money ${t.ts?"out":""}">${fmt(t.ts)}</td><td class="money">${fmt(t.te-t.ts)}</td>
       <td class="c-cump">${p==null?'<span class="muted">sem meta</span>':`<div class="cump"><span class="cbar"><i style="width:${Math.min(100,p).toFixed(1)}%;background:${corPct(p)}"></i></span><b>${Math.round(p)}%</b></div>`}</td></tr>`}).join("");
   const T=evs.map(e=>eventoTotais(e.id)),te=sum(T.map(t=>t.te)),ts=sum(T.map(t=>t.ts)),tm=sum(evs.map(e=>num(e.meta)));
@@ -1586,7 +1757,112 @@ function porMes(arr,out){
   return Object.keys(g).map(Number).sort((a,b)=>b-a).map(k=>`<div class="month-h"><span>${k?MESES[k-1]:"Sem data"}</span><span class="money">${fmt(sum(g[k].map(v=>num(v.valor))))}</span></div><ul class="list">${g[k].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).map(v=>movLi(v,out)).join("")}</ul>`).join("");
 }
 // Teclado: Enter ou Espaço numa linha da tabela abre a edição
-document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-editmov],tr[data-editact],tr[data-open],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
+document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-drawer-mov],tr[data-drawer-act],tr[data-drawer-ev],tr[data-drawer-m],tr[data-editmov],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
+// ---------- Painel de detalhes à direita (tocar numa linha) + ordenar colunas
+const drawerEl=()=>document.getElementById("drawer");
+function dCampo(l,v){return v==null||v===""?"":`<div class="dr-campo"><span>${l}</span><b>${v}</b></div>`}
+function fecharDrawer(){const d=drawerEl();if(!d)return;d.hidden=true;d.innerHTML="";S.drawer=null;document.body.classList.remove("com-drawer");document.querySelectorAll("tr.sel").forEach(r=>r.classList.remove("sel"))}
+function abrirDrawer(tipo,id){S.drawer={tipo,id,tab:S.tab,ev:S.evento||null};renderDrawer(true)}
+function renderDrawer(foco){
+  const d=drawerEl();if(!d||!S.drawer)return;if(S.drawer.tab!==S.tab||(S.drawer.ev||null)!==(S.evento||null)){fecharDrawer();return}const {tipo,id}=S.drawer;let h="";
+  if(tipo==="mov")h=drMov(S.movs.find(v=>v.id===id));
+  else if(tipo==="act")h=drAct(S.acts.find(a=>a.id===id));
+  else if(tipo==="ev")h=drEv(S.eventos.find(e=>e.id===id));
+  else if(tipo==="m")h=drMembro(S.membros.find(m=>m.id===id));
+  if(!h){fecharDrawer();return}
+  d.innerHTML=`<div class="dr-bg" data-drfechar></div><div class="dr-in" role="dialog" aria-modal="false" aria-label="Detalhes" tabindex="-1">${h}</div>`;d.hidden=false;document.body.classList.add("com-drawer");
+  document.querySelectorAll("tr.sel").forEach(r=>r.classList.remove("sel"));
+  const sel={mov:"data-drawer-mov",act:"data-drawer-act",ev:"data-drawer-ev",m:"data-drawer-m"}[tipo];const r=document.querySelector(`tr[${sel}="${id}"]`);if(r)r.classList.add("sel");
+  if(foco)setTimeout(()=>d.querySelector(".dr-in")?.focus(),30);
+}
+const drTopo=(chip,titulo,sub)=>`<div class="dr-top"><div><span class="chip ${chip[1]||""}">${chip[0]}</span><h3>${titulo}</h3>${sub?`<p>${sub}</p>`:""}</div><button class="sheet-x" data-drfechar aria-label="Fechar">✕</button></div>`;
+function drMov(v){if(!v)return "";const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null,sai=v.tipo==="saida";
+  const tipoL={oferta:"Oferta",saida:"Saída",contribuicao:"Entrada de contribuição"}[v.tipo]||v.tipo;
+  return drTopo([tipoL,sai?"bad":"good"],esc(v.nome||"(sem descrição)"),v.data?dataPt(v.data):"Sem data")+
+  `<div class="dr-valor ${sai?"out":""}">${sai?"−":""}${fmt(num(v.valor))}</div>
+  <div class="dr-grelha">${dCampo("Data",v.data?dataPt(v.data):"—")}${dCampo("Mês",v.data?MESES[+v.data.slice(5,7)-1]:"—")}${dCampo("Tipo",tipoL)}
+    ${sai?dCampo("Origem",ev?esc(ev.nome):ORIGENS[v.origem]||"Cota"):""}${v.tipo==="contribuicao"&&ev?dCampo("Campanha",esc(ev.nome)):""}${dCampo("Nota",esc(v.nota||"")||"—")}
+    ${v.extra?Object.entries(v.extra).map(([k,x])=>dCampo(esc(k),esc(x))).join(""):""}</div>
+  ${S.edit?`<div class="dr-acts"><button class="btn primary" data-drop="editMov" data-id="${v.id}">✎ Editar</button><button class="btn" data-drop="dupMov" data-id="${v.id}">⧉ Duplicar</button>${ev?`<button class="btn" data-open="${ev.id}">Abrir ${ev.tipo==="contribuicao"?"campanha":"evento"}</button>`:""}<button class="btn danger" data-act="apagarMov" data-id="${v.id}">Apagar</button></div>`:""}`}
+function drAct(a){if(!a)return "";
+  return drTopo([TACT[a.tipo]||"Actividade","gold"],esc(a.nome),a.periodo?esc(a.periodo):dataPt(a.data))+
+  `<div class="dr-grelha">${dCampo("Data",dataPt(a.data))}${a.periodo?dCampo("Período",esc(a.periodo)):""}${dCampo("Tipo",esc(TACT[a.tipo]||"—"))}${dCampo("Local",esc(a.local||"—"))}${dCampo("Participantes",num(a.participantes)||"—")}${dCampo("Observação",esc(a.nota||"")||"—")}
+    ${a.extra?Object.entries(a.extra).map(([k,x])=>dCampo(esc(k),esc(x))).join(""):""}</div>
+  ${S.edit?`<div class="dr-acts"><button class="btn primary" data-drop="editAct" data-id="${a.id}">✎ Editar</button><button class="btn danger" data-act="apagarAct" data-id="${a.id}">Apagar</button></div>`:""}`}
+function drEv(e){if(!e)return "";const t=eventoTotais(e.id),meta=num(e.meta),p=meta?t.te/meta*100:null;
+  const ult=[...t.ent].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).slice(0,6);
+  return drTopo([TIPOS[e.tipo]||"Evento",e.tipo==="conferencia"?"gold":""],esc(e.nome),(e.data?dataPt(e.data):"Sem data")+(e.nota?" · "+esc(e.nota):""))+
+  `<div class="dr-kpis"><div><span>Recebido</span><b>${fmt(t.te)}</b></div><div><span>Saídas</span><b class="${t.ts?"out":""}">${fmt(t.ts)}</b></div><div><span>Saldo</span><b>${fmt(t.te-t.ts)}</b></div>${meta?`<div><span>Meta</span><b>${fmt(meta)}</b></div>`:""}</div>
+  ${p!=null?`<div class="dr-meta"><div class="meta-barra"><span style="width:${Math.min(100,p).toFixed(1)}%;background:${corPct(p)}"></span></div><small>${Math.round(p)}% da meta${t.te<meta?" · falta "+fmt(meta-t.te):" · meta atingida"}</small></div>`:""}
+  <h4 class="dr-sub">Últimas entradas (${t.ent.length})</h4>${ult.length?`<ul class="dr-lista">${ult.map(v=>`<li><span>${esc(v.nome||"—")}<small>${v.data?dataPt(v.data):""}</small></span><b>${fmt(num(v.valor))}</b></li>`).join("")}</ul>`:`<p class="muted small">Ainda sem entradas.</p>`}
+  <div class="dr-acts"><button class="btn primary" data-open="${e.id}">Abrir ${e.tipo==="contribuicao"?"campanha":"evento"}</button>${S.edit?`<button class="btn" data-act="editEvento" data-id="${e.id}">✎ Editar</button><button class="btn danger" data-act="apagarEvento" data-id="${e.id}">Apagar</button>`:""}</div>`}
+function drMembro(m){if(!m)return "";const A=S.ano,MS=[1,2,3,4,5,6,7,8,9,10,11,12],tot=cotaPeriodo(m,A,MS),id=idade(m.nascimento);
+  const rk=ranking(MS).find(r=>r.m.id===m.id);
+  return drTopo([cargoLbl(m.cargo)||"Membro",m.cargo?"gold":""],esc(m.nome),[sexoLbl(m.sexo),m.bindura?"Bindura":"Sede",m.naoJovem?"não conta como jovem":""].filter(Boolean).join(" · "))+
+  `<div class="dr-kpis"><div><span>Cotas ${A}</span><b>${fmt(tot)}</b></div><div><span>Posição</span><b>${rk?rk.pos+".º":"—"}</b></div><div><span>Meses pagos</span><b>${MS.filter(i=>cotaM(m,A,i)>0).length}/12</b></div></div>
+  <div class="dr-meses">${MS.map(i=>{const v=cotaM(m,A,i);return `<div class="${v?"pago":""}"><span>${M3[i-1]}</span><b>${v?fmt(v).replace(" MT",""):"–"}</b></div>`}).join("")}</div>
+  <div class="dr-grelha">${dCampo("Telefone",m.telefone?`<a href="tel:${esc(String(m.telefone).replace(/\s/g,""))}">${esc(m.telefone)}</a>`:"—")}${dCampo("Idade",id!==""?id+" anos":"—")}${dCampo("Nascimento",m.nascimento?dataPt(m.nascimento):"—")}${dCampo("Membro desde",m.entrada?dataPt(m.entrada):"—")}${dCampo("Morada",esc(m.morada||"—"))}${dCampo("Notas",esc(m.notas||"")||"—")}
+    ${m.extra?Object.entries(m.extra).map(([k,x])=>dCampo(esc(k),esc(x))).join(""):""}</div>
+  <div class="dr-acts">${S.edit?`<button class="btn primary" data-act="editMembro" data-id="${m.id}">✎ Editar dados</button>`:""}${m.telefone?`<a class="btn" href="tel:${esc(String(m.telefone).replace(/\s/g,""))}">☎ Ligar</a>`:""}<button class="btn" data-drop="verCotas" data-id="${m.id}">Ver nas cotas</button>${S.edit?`<button class="btn danger" data-act="apagarMembro" data-id="${m.id}">Remover</button>`:""}</div>`}
+document.addEventListener("click",ev=>{
+  if(ev.target.closest("[data-drfechar]")){fecharDrawer();return}
+  const op=ev.target.closest("[data-drop]");
+  if(op){const id=op.dataset.id,k=op.dataset.drop;
+    if(k==="editMov"){const v=S.movs.find(x=>x.id===id);if(v)formMov(v.tipo,v.eventoId,v)}
+    else if(k==="dupMov"){const v=S.movs.find(x=>x.id===id);if(v){const {id:_,...d}=v;formMov(v.tipo,v.eventoId,null);setTimeout(()=>{const f=$("#sheetForm");if(!f)return;const set=(s,x)=>{const i=f.querySelector(s);if(i)i.value=x};set("#f-mnome",d.nome||"");set("#f-valor",num(d.valor)||"");set("#f-mnota",d.nota||"")},60)}}
+    else if(k==="editAct"){const a=S.acts.find(x=>x.id===id);if(a)formActividade(a)}
+    else if(k==="verCotas"){const m=S.membros.find(x=>x.id===id);fecharDrawer();S.tab="cotas";S.cotaBusca=m?m.nome:"";render()}
+    return}
+  if(ev.target.closest("[data-open]")||ev.target.closest('[data-act="editMembro"],[data-act="editEvento"]'))setTimeout(fecharDrawer,0);
+  if(ev.target.closest("input,select,textarea,a,button,label"))return;
+  const r=ev.target.closest("tr[data-drawer-mov],tr[data-drawer-act],tr[data-drawer-ev],tr[data-drawer-m]");
+  if(r){const t=r.dataset.drawerMov?["mov",r.dataset.drawerMov]:r.dataset.drawerAct?["act",r.dataset.drawerAct]:r.dataset.drawerEv?["ev",r.dataset.drawerEv]:["m",r.dataset.drawerM];
+    if(S.drawer&&S.drawer.tipo===t[0]&&S.drawer.id===t[1])fecharDrawer();else abrirDrawer(t[0],t[1])}
+});
+document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="verMembro"]');if(b)abrirDrawer("m",b.dataset.id)});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&S.drawer&&$("#sheet").hidden)fecharDrawer()});
+// Ordenar por coluna (tocar no cabeçalho)
+function valorCel(td){if(!td)return "";const i=td.querySelector("input");const s=(i?i.value:td.textContent).trim().replace(/^[^\p{L}\p{N}\-−]+/u,"");const n=s.replace(/[^\d,.\-−]/g,"").replace("−","-").replace(/\s/g,"");
+  if(/^-?\d[\d.,]*$/.test(n)&&/\d/.test(s)&&!/[a-zà-ú]{3,}/i.test(s.replace(/MT|MZN/g,"")))return numX(n);
+  const dm=s.match(/^(\d{1,2}) (Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez) (\d{4})$/);if(dm)return +dm[3]*10000+(M3.indexOf(dm[2])+1)*100+ +dm[1];
+  return s}
+document.addEventListener("click",ev=>{const th=ev.target.closest(".scroll thead th");if(!th||th.classList.contains("c-n")||!th.textContent.trim())return;
+  const tb=th.closest("table"),idx=[...th.parentNode.children].indexOf(th),body=tb.tBodies[0];if(!body)return;
+  const dir=th.dataset.ord==="asc"?"desc":"asc";tb.querySelectorAll("thead th").forEach(x=>{delete x.dataset.ord;x.removeAttribute("aria-sort")});th.dataset.ord=dir;th.setAttribute("aria-sort",dir==="asc"?"ascending":"descending");
+  const rows=[...body.rows];rows.sort((a,b)=>{const x=valorCel(a.cells[idx]),y=valorCel(b.cells[idx]);const c=typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y),"pt",{sensitivity:"base",numeric:true});return dir==="asc"?c:-c});
+  rows.forEach(r=>body.appendChild(r));let n=0;rows.forEach(r=>{const c=r.querySelector("td.c-n");if(c&&c.textContent.trim()!==""&&!/º/.test(c.textContent))c.textContent=++n});
+  paginar(true)});
+
+// ---------- Pesquisa e filtros automáticos em todas as tabelas
+function textoCel(td){if(!td)return "";const s=td.querySelector("select");if(s)return (s.selectedOptions[0]||{}).textContent||"";const i=td.querySelector("input:not([type=checkbox])");if(i)return i.value;const c=td.querySelector("input[type=checkbox]");if(c)return c.checked?"Sim":"Não";return td.textContent.replace(/\s+/g," ").trim()}
+function ferramentasTabela(){
+  document.querySelectorAll("#main .scroll").forEach(sc=>{const tb=sc.querySelector("table");if(!tb||!tb.tBodies[0])return;
+    if(tb.matches(".mtab,.evs")||(tb.matches(".cota")&&!tb.matches(".reg")))return; // estas páginas têm barra própria
+    const rows=[...tb.tBodies[0].rows];if(rows.length<3)return;
+    let tools=sc.previousElementSibling&&sc.previousElementSibling.classList.contains("tbl-tools")?sc.previousElementSibling:null;
+    if(tools&&tools.dataset.auto)return;
+    if(!tools){tools=document.createElement("div");tools.className="tbl-tools";tools.innerHTML=`<div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" data-tblsearch placeholder="Procurar na tabela…" autocomplete="off" aria-label="Procurar na tabela"></div>`;sc.before(tools)}
+    tools.dataset.auto="1";
+    const ths=[...tb.tHead.rows[0].cells];
+    ths.forEach((th,i)=>{if(th.classList.contains("c-n"))return;const nome=th.textContent.replace(/[▲▼]/g,"").trim();if(!nome)return;
+      if(/^(data|data e hora|data \/ periodo|descricao|nome|membro|observacao|nota|notas|actividade|contribuicao|conferencia|conferencia \/ evento|direccao|quem entrou|telefone|ultimo acesso|idade|membro desde|total|valor.*|meta.*|recebido.*|saidas.*|saldo.*|cumprimento|participantes|pos\.|% .*|cota.*|comparacao)$/.test(nrm(nome)))return;
+      const vals=[...new Set(rows.map(r=>textoCel(r.cells[i])).filter(v=>v&&v!=="—"&&v!=="–"))];
+      const categ=/^(mes|tipo|origem|local|sexo|cargo|papel|estado|activo.*|conta como jovem)$/.test(nrm(nome));
+      if(vals.length<2||vals.length>15||(!categ&&vals.length>Math.max(2,rows.length*.6)))return;
+      if(vals.every(v=>/^[\d\s.,−\-%]+(MT|MZN)?$/.test(v)))return; // colunas de valores não viram filtro
+      vals.sort((a,b)=>{const m=x=>MESES.indexOf(x);return m(a)>=0&&m(b)>=0?m(a)-m(b):a.localeCompare(b)});
+      const sel=document.createElement("select");sel.className="inp";sel.dataset.colf=i;sel.setAttribute("aria-label","Filtrar por "+nome);
+      sel.innerHTML=`<option value="">${esc(nome.charAt(0)+nome.slice(1).toLowerCase())}: todos</option>`+vals.map(v=>`<option>${esc(v)}</option>`).join("");tools.appendChild(sel)});
+    const lim=document.createElement("button");lim.type="button";lim.className="btn ghost tbl-limpar";lim.textContent="Limpar";lim.hidden=true;tools.appendChild(lim);
+  });
+}
+function filtrarTabela(tools){const sc=tools.nextElementSibling;if(!sc)return;const tb=sc.querySelector("table");if(!tb)return;
+  const q=nrm(tools.querySelector("[data-tblsearch]")?.value||""),fs=[...tools.querySelectorAll("[data-colf]")].filter(s=>s.value);
+  [...tb.tBodies[0].rows].forEach(r=>{r.hidden=!((!q||nrm([...r.cells].map(textoCel).join(" ")).includes(q))&&fs.every(s=>textoCel(r.cells[+s.dataset.colf])===s.value))});
+  const lim=tools.querySelector(".tbl-limpar");if(lim)lim.hidden=!q&&!fs.length;
+  tools.querySelectorAll("[data-colf]").forEach(s=>s.classList.toggle("activo",!!s.value));paginar(true)}
+document.addEventListener("change",ev=>{const s=ev.target.closest&&ev.target.closest("[data-colf]");if(s)filtrarTabela(s.closest(".tbl-tools"))});
+document.addEventListener("click",ev=>{const b=ev.target.closest(".tbl-limpar");if(!b)return;const t=b.closest(".tbl-tools");t.querySelectorAll("[data-colf]").forEach(s=>s.value="");const i=t.querySelector("[data-tblsearch]");if(i)i.value="";filtrarTabela(t)});
 // ---------- Paginação das tabelas: N linhas por página (Definições), "Anterior · 1 2 3 · Próximo", barra fixa
 const PG={};
 function linhasPorPag(){try{const v=+localStorage.getItem("tes-linhas");return v>=5&&v<=100?v:10}catch(e){return 10}}
@@ -1602,7 +1878,7 @@ function paginar(reset){
     if(vis.length<=N){rows.forEach(r=>r.classList.remove("pg-off"));if(pager)pager.remove();return}
     const pages=Math.ceil(vis.length/N);if(reset)PG[key]=1;const pg=Math.min(Math.max(1,PG[key]||1),pages);PG[key]=pg;
     rows.forEach(r=>r.classList.add("pg-off"));vis.slice((pg-1)*N,pg*N).forEach(r=>r.classList.remove("pg-off"));
-    if(!pager){pager=document.createElement("nav");pager.className="pager";pager.setAttribute("aria-label","Páginas da tabela");sc.after(pager)}
+    if(!pager){if(!sc.parentElement.classList.contains("tbl-wrap")){const w=document.createElement("div");w.className="tbl-wrap";sc.before(w);w.appendChild(sc)}pager=document.createElement("nav");pager.className="pager";pager.setAttribute("aria-label","Páginas da tabela");sc.after(pager)}
     pager.dataset.key=key;
     pager.innerHTML=`<span class="pg-info"><b>${(pg-1)*N+1}–${Math.min(pg*N,vis.length)}</b> de ${vis.length}</span><div class="pg-btns">
       <button type="button" data-pg="${pg-1}" ${pg===1?"disabled":""} aria-label="Página anterior">‹ Anterior</button>
@@ -1614,7 +1890,7 @@ document.addEventListener("click",ev=>{const b=ev.target.closest(".pager [data-p
   const sc=pager.previousElementSibling;if(sc){sc.scrollTop=0;const r=sc.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.6)sc.scrollIntoView({block:"start",behavior:"smooth"})}});
 // pesquisa genérica nas tabelas (ofertas, saídas, entradas das campanhas) e nas contribuições
 document.addEventListener("input",ev=>{const i=ev.target;
-  if(i.matches&&i.matches("[data-tblsearch]")){const q=nrm(i.value),sc=i.closest(".tbl-tools").nextElementSibling;if(!sc)return;sc.querySelectorAll("tbody tr").forEach(r=>{r.hidden=!!q&&!nrm(r.textContent).includes(q)});paginar(true);return}
+  if(i.matches&&i.matches("[data-tblsearch]")){filtrarTabela(i.closest(".tbl-tools"));return}
   if(i.id==="evSearch"){S.evq=i.value;const q=nrm(i.value);document.querySelectorAll(".evs tbody tr").forEach(r=>{r.hidden=!!q&&!nrm(r.textContent).includes(q)});paginar(true)}});
 // Definições (por aparelho)
 function formDefinicoes(){
@@ -1623,9 +1899,10 @@ function formDefinicoes(){
     <fieldset class="fs"><legend>Tabelas</legend>
       <label>Linhas por página em cada tabela<select class="inp" name="linhas" id="def-linhas">${[5,10,15,20,25,50,100].map(v=>`<option value="${v}" ${v===n?"selected":""}>${v} linhas</option>`).join("")}</select></label>
       <p class="muted small" style="margin:0">As tabelas mostram este número de linhas por página, com “Anterior”, as páginas e “Próximo”.</p></fieldset>
+    <fieldset class="fs"><legend>Cor do sistema</legend><div class="temas" role="radiogroup" aria-label="Cor do sistema">${Object.entries(TEMAS).map(([k,[l,c]])=>`<label class="tema-op"><input type="radio" name="tema" value="${k}" ${temaActual()===k?"checked":""}><span class="tema-cor" style="background:${c}"></span><span>${l}</span></label>`).join("")}</div></fieldset>
     <fieldset class="fs"><legend>Idioma</legend><div class="lang def-lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt">Português</button><button type="button" data-lang="en">English</button></div></fieldset>
     <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
-  async fd=>{try{localStorage.setItem("tes-linhas",String(+fd.get("linhas")||10))}catch(e){}aplicarLinhas();Object.keys(PG).forEach(k=>delete PG[k]);render();return "Definições guardadas"});
+  async fd=>{try{localStorage.setItem("tes-linhas",String(+fd.get("linhas")||10));if(fd.get("tema"))localStorage.setItem("tes-tema",String(fd.get("tema")))}catch(e){}aplicarTema();aplicarLinhas();Object.keys(PG).forEach(k=>delete PG[k]);render();return "Definições guardadas"});
   setTimeout(()=>document.querySelectorAll(".def-lang [data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===(window.TES_LANG?TES_LANG():"pt")))),0);
 }
 document.addEventListener("click",ev=>{if(ev.target.closest('[data-act="definicoes"]'))formDefinicoes()});
@@ -1639,7 +1916,7 @@ function tabMovs(arr,sai){
   if(!arr.length)return "";
   const l=[...arr].sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
   const rows=l.map((v,i)=>{const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null,orig=sai?(ev?ev.nome:ORIGENS[v.origem]||"Cota"):"";
-    return `<tr ${S.edit?`data-editmov="${v.id}" tabindex="0" class="clicavel" title="Editar"`:""}><td class="c-n">${i+1}</td><td class="nw">${v.data?dataPt(v.data):"—"}</td><td>${v.data?MESES[+v.data.slice(5,7)-1]:"—"}</td><td class="c-desc">${esc(v.nome||"(sem descrição)")}</td>${sai?`<td>${esc(orig)}</td>`:""}<td class="c-nota">${esc(v.nota||"")}</td><td class="money ${sai?"out":""}">${fmt(num(v.valor))}</td>${S.edit?`<td class="c-acc"><button class="del" data-del="${v.id}" aria-label="Apagar ${esc(v.nome||"registo")}">Apagar</button></td>`:""}</tr>`}).join("");
+    return `<tr data-drawer-mov="${v.id}" tabindex="0" class="clicavel" title="Ver detalhes"><td class="c-n">${i+1}</td><td class="nw">${v.data?dataPt(v.data):"—"}</td><td>${v.data?MESES[+v.data.slice(5,7)-1]:"—"}</td><td class="c-desc">${esc(v.nome||"(sem descrição)")}</td>${sai?`<td>${esc(orig)}</td>`:""}<td class="c-nota">${esc(v.nota||"")}</td><td class="money ${sai?"out":""}">${fmt(num(v.valor))}</td>${S.edit?`<td class="c-acc"><button class="del" data-del="${v.id}" aria-label="Apagar ${esc(v.nome||"registo")}">Apagar</button></td>`:""}</tr>`}).join("");
   const busca=l.length>5?`<div class="tbl-tools"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" data-tblsearch placeholder="Procurar por descrição, nota ou data…" autocomplete="off" aria-label="Procurar na tabela"></div></div>`:"";
   return busca+`<div class="scroll"><table class="mov"><thead><tr><th class="c-n">Nº</th><th>Data</th><th>Mês</th><th>Descrição</th>${sai?"<th>Origem</th>":""}<th>Nota</th><th class="r">Valor (MZN)</th>${S.edit?'<th><span class="sr">Acções</span></th>':""}</tr></thead><tbody>${rows}</tbody>
     <tfoot><tr><td class="c-n"></td><td colspan="${sai?5:4}">Total (${l.length} ${l.length===1?"registo":"registos"})</td><td class="money">${fmt(sum(l.map(v=>num(v.valor))))}</td>${S.edit?"<td></td>":""}</tr></tfoot></table></div>`;
@@ -1725,7 +2002,7 @@ function formMembro(m){
      <label>Morada / bairro<input class="inp" name="morada" id="f-morada" value="${esc(m?.morada||"")}" placeholder="Ex.: Cariacó" autocomplete="off"></label>
    </div></fieldset>
    <fieldset class="fs"><legend>Na juventude</legend><div class="fgrid">
-     <label>Cargo<select class="inp" name="cargo" id="f-cargo">${sel(m?.cargo||"",[["","—"],...CARGOJ])}</select></label>
+     <label>Cargo<input class="inp" name="cargo" id="f-cargo" list="dl-cargos" value="${esc(cargoLbl(m?.cargo)||"")}" placeholder="Escreva ou escolha um cargo" autocomplete="off">${dlCargos()}</label>
      <label>Local<select class="inp" name="local" id="f-local">${sel(m?.bindura?"Bindura":"Sede",[["Sede","Sede"],["Bindura","Bloco de Bindura"]])}</select></label>
      <label>Membro desde<input class="inp" type="date" name="entrada" id="f-entrada" value="${esc(m?.entrada||"")}"></label>
      <div class="checks span2">
@@ -1739,7 +2016,7 @@ function formMembro(m){
   async(fd,f)=>{const nome=String(fd.get("nome")).trim();if(!nome)return fail(f,"Escreva o nome do membro.");
     if(!m&&S.membros.some(x=>nrm(x.nome)===nrm(nome))&&!confirm("Já existe um membro chamado "+nome+". Registar outro com o mesmo nome?"))return false;
     const bindura=fd.get("local")==="Bindura";
-    const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),cargo:String(fd.get("cargo")||""),bindura,activo:bindura&&!!fd.get("activo"),
+    const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),cargo:cargoKey(fd.get("cargo")),bindura,activo:bindura&&!!fd.get("activo"),
       telefone:String(fd.get("telefone")||"").trim(),nascimento:String(fd.get("nascimento")||""),entrada:String(fd.get("entrada")||""),morada:String(fd.get("morada")||"").trim(),notas:String(fd.get("notas")||"").trim()};
     const ex={};for(const [k,v] of fd.entries())if(k.startsWith("x:"))ex[k.slice(2)]=String(v).trim();if(Object.keys(ex).length)d.extra=ex;
     if(m){await S.db.doc("membros/"+m.id).update(d);return "Membro actualizado"}
@@ -1755,9 +2032,9 @@ function vMembros(){
   const c=contagem(),comTel=ms.filter(m=>m.telefone).length,pagaram=ms.filter(m=>cotaPeriodo(m,S.ano,A)>0).length;
   const lista=ms.filter(m=>membroPassa(m,f));
   const rows=lista.map((m,i)=>{const id=idade(m.nascimento),ct=cotaPeriodo(m,S.ano,A);
-    return `<tr data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
+    return `<tr data-drawer-m="${m.id}" tabindex="0" class="clicavel" data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
     <td class="c-n">${i+1}</td>
-    <td class="c-nome"><button class="mname" ${S.edit?`data-act="editMembro"`:"disabled"} data-id="${m.id}"><span class="av">${esc((m.nome||"?").trim().charAt(0).toUpperCase())}</span><span><b>${esc(m.nome)}</b><small>${esc([cargoLbl(m.cargo),m.naoJovem?"Não conta como jovem":""].filter(Boolean).join(" · ")||"Membro")}</small></span></button></td>
+    <td class="c-nome"><button class="mname" data-act="verMembro" data-id="${m.id}"><span class="av">${esc((m.nome||"?").trim().charAt(0).toUpperCase())}</span><span><b>${esc(m.nome)}</b><small>${esc([cargoLbl(m.cargo),m.naoJovem?"Não conta como jovem":""].filter(Boolean).join(" · ")||"Membro")}</small></span></button></td>
     <td>${esc(sexoLbl(m.sexo)||"—")}</td><td>${m.bindura?`Bindura${m.activo?' <span class="chip good">activo</span>':""}`:"Sede"}</td>
     <td>${m.telefone?`<a href="tel:${esc(String(m.telefone).replace(/\s/g,""))}">${esc(m.telefone)}</a>`:'<span class="muted">—</span>'}</td>
     <td>${id!==""?id+" anos":'<span class="muted">—</span>'}</td><td>${m.entrada?dataPt(m.entrada):'<span class="muted">—</span>'}</td>
@@ -1872,7 +2149,7 @@ document.addEventListener("change",async ev=>{
   if(t.dataset.cmeta||t.dataset.cval){const dir=t.dataset.cmeta||t.dataset.cval,campo=t.dataset.cmeta?"meta":"valor";const raw=t.value.trim();const v=raw===""?null:num(raw);
     try{await regUpdate({conferencias:{[S.regConf]:{dados:{[dir]:{[campo]:v}}}}});toast("Guardado")}catch(e){}return}
   if(t.dataset.nome){const v=t.value.trim();if(!v){toast("O nome não pode ficar vazio.");return}try{await S.db.doc("membros/"+t.dataset.nome).update({nome:v});toast("Nome guardado")}catch(e){toast("Não foi possível guardar.")}return}
-  if(t.dataset.cargo){try{await S.db.doc("membros/"+t.dataset.cargo).update({cargo:t.value})}catch(e){toast("Não foi possível guardar.")}return}
+  if(t.dataset.cargo){try{await S.db.doc("membros/"+t.dataset.cargo).update({cargo:cargoKey(t.value)})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.sexo){try{await S.db.doc("membros/"+t.dataset.sexo).update({sexo:t.value})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.local){const ch=t.value==="Bindura";try{await S.db.doc("membros/"+t.dataset.local).update(ch?{bindura:true}:{bindura:false,activo:false})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.bindura){const ch=t.checked;try{await S.db.doc("membros/"+t.dataset.bindura).update(ch?{bindura:true}:{bindura:false,activo:false})}catch(e){toast("Não foi possível guardar.")}return}
@@ -1934,7 +2211,10 @@ const CARGOS=[["responsavel","Responsável"],["viceResponsavel","Vice-Responsáv
 const sexoLbl=s=>s==="M"?"Rapaz":s==="F"?"Rapariga":s==="PAI"?"Pai":s==="MAE"?"Mãe":"";
 const CARGOJ=[["responsavel","Responsável"],["viceResponsavel","Vice-Responsável"],["secretario","Secretário(a)"],["viceSecretario","Vice-Secretário(a)"],["coordenador","Membro Coordenador"],["blocoResponsavel","Responsável do Bloco"],["blocoViceResponsavel","Vice-Responsável do Bloco"],["blocoSecretario","Secretário(a) do Bloco"],["blocoViceSecretario","Vice-Secretário(a) do Bloco"],["blocoCoordenador","Membro Coordenador do Bloco"],["conselheiro","Conselheiro(a)"],["coordenadorGeral","Coordenador(a)"],["pastor","Pastor(a)"],["diacono","Diácono(isa)"]];
 const IGREJA=["conselheiro","coordenadorGeral","pastor","diacono"];
-const cargoLbl=k=>(CARGOJ.find(x=>x[0]===k)||[,""])[1];
+const cargoLbl=k=>{const c=CARGOJ.find(x=>x[0]===k);return c?c[1]:(k||"")};
+// texto escrito → chave conhecida (se corresponder a um cargo habitual) ou o próprio texto
+const cargoKey=t=>{t=String(t||"").trim();if(!t)return "";const n=x=>String(x).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\(.*?\)/g,"").trim();const c=CARGOJ.find(([k,l])=>n(l)===n(t)||n(k)===n(t));return c?c[0]:t};
+const dlCargos=()=>`<datalist id="dl-cargos">${CARGOJ.map(([k,l])=>`<option value="${esc(l)}"></option>`).join("")}</datalist>`;
 const jovens=()=>listaCompleta().filter(m=>!IGREJA.includes(m.cargo));
 const listaCompleta=()=>{const js=S.membros.filter(m=>!m.naoJovem);const ix=m=>{const i=CARGOJ.findIndex(x=>x[0]===m.cargo);return i<0?99:i};
   return js.map((m,i)=>[m,i]).sort((a,b)=>ix(a[0])-ix(b[0])||a[1]-b[1]).map(x=>x[0])};
@@ -1948,7 +2228,7 @@ function vJovens(){
   const inp=(k,l)=>`<label>${l}<input class="inp" data-lider="${k}" id="lid-${k}" value="${esc(L[k]||"")}" ${ed?"":"disabled"} autocomplete="off"></label>`;
   const LC=listaCompleta();
   const rows=LC.map((m,i)=>`<tr><td class="c-n">${i+1}</td><td class="name" style="text-align:left">${ed?`<input class="inp nm" data-nome="${m.id}" value="${esc(m.nome)}" aria-label="Nome" autocomplete="off">`:esc(m.nome)}</td>
-    <td>${ed?`<select class="inp sm" data-cargo="${m.id}" aria-label="Cargo de ${esc(m.nome)}"><option value="">—</option>${CARGOJ.map(([k,l])=>`<option value="${k}" ${m.cargo===k?"selected":""}>${l}</option>`).join("")}</select>`:(cargoLbl(m.cargo)||"—")}</td>
+    <td>${ed?`<input class="inp sm cargo-in" data-cargo="${m.id}" list="dl-cargos" value="${esc(cargoLbl(m.cargo)||"")}" placeholder="—" aria-label="Cargo de ${esc(m.nome)}" autocomplete="off">`:(esc(cargoLbl(m.cargo))||"—")}</td>
     <td>${ed?`<select class="inp sm" data-sexo="${m.id}" aria-label="Sexo de ${esc(m.nome)}"><option value="" ${!m.sexo?"selected":""}>—</option><option value="M" ${m.sexo==="M"?"selected":""}>Rapaz</option><option value="F" ${m.sexo==="F"?"selected":""}>Rapariga</option><option value="PAI" ${m.sexo==="PAI"?"selected":""}>Pai</option><option value="MAE" ${m.sexo==="MAE"?"selected":""}>Mãe</option></select>`:(sexoLbl(m.sexo)||"—")}</td>
     <td>${ed?`<select class="inp sm" data-local="${m.id}" aria-label="Local de ${esc(m.nome)}"><option value="Sede" ${!m.bindura?"selected":""}>Sede</option><option value="Bindura" ${m.bindura?"selected":""}>Bindura</option></select>`:(m.bindura?"Bindura":"Sede")}</td>
     <td><input type="checkbox" data-activo="${m.id}" ${m.activo?"checked":""} ${ed&&m.bindura?"":"disabled"} aria-label="Participa activamente"></td></tr>`).join("");
@@ -1966,7 +2246,7 @@ function vJovens(){
   </div>
   ${c.semSexo?`<div class="banner">${c.semSexo} ${c.semSexo===1?"jovem ainda não tem":"jovens ainda não têm"} o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.</div>`:""}
   <section class="panel"><div class="head"><h3>Lista completa (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button><button class="btn" data-pdf="jovens" data-k="jovens">PDF só jovens (${c.total})</button>${xlsBar("membros")}${addBtn("novoMembro","Pessoa")}</div></div>
-    <div class="scroll" style="margin-top:10px"><table class="jov"><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="scroll" style="margin-top:10px">${ed?dlCargos():""}<table class="jov"><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted" style="font-size:12px;margin:8px 0 0">Ordem: líderes da Sede, líderes do Bloco, conselheiros, coordenador, pastores e diáconos, e depois os restantes. Toque no nome para o corrigir. A lista "só jovens" e as contagens não incluem conselheiros, coordenador, pastores nem diáconos. Os jovens desta lista também aparecem na tabela de cotas.</p></section>
   ${(()=>{const nj=S.membros.filter(m=>m.naoJovem);return nj.length?`<section class="panel"><h3>Só na tabela de cotas (não contam como jovens)</h3><ul class="list">${nj.map(m=>`<li><div class="grow"><div class="t">${esc(m.nome)}</div></div>${ed?`<button class="btn small" data-jovem="${m.id}" data-v="1">Contar como jovem</button>`:""}</li>`).join("")}</ul></section>`:""})()}`;
 }
@@ -2314,6 +2594,32 @@ function hbars(items,opts={}){
     g+=`<text x="${labelW+bw+8}" y="${y+rowH/2+4}" style="fill:var(--fg);font-size:12px;font-variant-numeric:tabular-nums">${esc(it.text)}</text>`});
   return `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:480px" role="img" aria-label="${esc(opts.aria||"Gráfico de barras")}">${g}</svg></div>`;
 }
+// ---------- Gráficos da Região (modernos)
+function rankBarras(items){ // items: {nome, valor, pct, pos, sub}
+  if(!items.length)return `<div class="empty">Ainda não há direcções com valores.</div>`;
+  const max=Math.max(1,...items.map(i=>i.valor));
+  return `<ol class="rk-bars">${items.map((it,i)=>{const w=it.valor/max*100,med=it.pos===1?"ouro":it.pos===2?"prata":it.pos===3?"bronze":"";
+    return `<li data-tip="<b>${esc(it.nome)}</b>${fmt(it.valor)} · ${pct(it.pct)} da região"><span class="rk-pos ${med}">${it.pos?it.pos+"º":"–"}</span>
+      <div class="rk-corpo"><div class="rk-linha"><span class="rk-nome">${esc(it.nome)}</span><span class="rk-val">${fmt(it.valor)}<em>${pct(it.pct)}</em></span></div>
+      <div class="rk-trilho"><span style="width:${Math.max(it.valor>0?2:0,w).toFixed(1)}%;animation-delay:${i*40}ms"></span></div></div></li>`}).join("")}</ol>`;
+}
+function colsMes(vals,rotulo){
+  const W=640,H=230,pl=44,pr=8,pt=18,pb=26,sc=escala(0,Math.max(...vals)),y=v=>pt+(H-pt-pb)*(1-(v-sc.lo)/(sc.hi-sc.lo)),bw=(W-pl-pr)/12,w=Math.min(30,bw*.58);
+  let g=eixoY(sc,y,W-pr,pl);const mx=Math.max(...vals);
+  vals.forEach((v,i)=>{const x=pl+i*bw+(bw-w)/2,h=Math.max(0,y(0)-y(v));
+    g+=`<path d="${barPath(x,y(0),w,h)}" fill="${v===mx&&v>0?"var(--c2)":"var(--c1)"}" opacity="${v?1:.25}"/>`;
+    if(v>0)g+=`<text x="${x+w/2}" y="${y(v)-5}" text-anchor="middle" class="dl" style="font-size:10px">${fk(v)}</text>`;
+    g+=`<text x="${x+w/2}" y="${H-7}" text-anchor="middle">${M3[i]}</text><rect class="hit" x="${pl+i*bw}" y="${pt}" width="${bw}" height="${H-pt-pb}" data-tip="<b>${MESES[i]}</b>${esc(rotulo)}: ${fmt(v)}"/>`});
+  return `<div class="chart"><svg class="bc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(rotulo)} por mês">${g}</svg></div>`;
+}
+function metaBarras(items){ // items: {nome, meta, valor, p, pos}
+  if(!items.length)return `<p class="muted">Escreva as metas para ver o gráfico.</p>`;
+  const top=Math.max(100,...items.map(i=>i.p||0));
+  return `<div class="mt-bars"><div class="mt-escala"><span style="left:${100/top*100}%">100%</span></div>${items.map(it=>{const w=Math.min(100,(it.p||0)/top*100);
+    return `<div class="mt-linha" data-tip="<b>${esc(it.nome)}</b>${fmt(it.valor)} de ${fmt(it.meta)} (${pct(it.p)})"><div class="mt-cab"><span><b>${it.pos?it.pos+"º":""}</b> ${esc(it.nome)}</span><span class="mt-num">${fmt(it.valor)} <small>/ ${fmt(it.meta)}</small> <em style="color:${corPct(it.p)}">${pct(it.p)}</em></span></div>
+      <div class="mt-trilho"><span style="width:${w.toFixed(1)}%;background:${corPct(it.p)}"></span><i style="left:${100/top*100}%"></i></div></div>`}).join("")}</div>
+    <div class="legend"><span><i style="background:var(--bad)"></i>abaixo de 50%</span><span><i style="background:var(--bar-blue)"></i>50% a 79%</span><span><i style="background:var(--good)"></i>80% ou mais</span></div>`;
+}
 function vRegiao(){
   S.regPer="anual";
   const ed=S.edit,dirs=regDirs(),R=REG();
@@ -2347,14 +2653,15 @@ function vRegiao(){
       </tbody><tfoot><tr><td class="c-n"></td><td style="text-align:left">Região</td><td data-cft="meta">${fmt(tm)}</td><td data-cft="val">${fmt(tv)}</td><td data-cft="falta">${fmt(tm-sum(cr.filter(r=>r.meta!=null).map(r=>r.val)))}</td><td data-cft="pct">${tm?pct(sum(cr.filter(r=>r.meta!=null).map(r=>r.val))/tm*100):"–"}</td></tr></tfoot></table></div>
       ${cr.some(r=>r.meta==null)?`<p class="muted" style="margin:0;font-size:13px">As direcções "sem meta" ficam fora da classificação até escrever a meta atribuída.</p>`:""}
       <h3 style="margin-top:6px">Cumprimento da meta por direcção</h3>
-      ${vbars(ord.filter(r=>r.p!=null).map(r=>({label:r.pos+".º "+r.d.nome,value:r.p,top:pct(r.p),sub:"meta "+fmt(r.meta)})),{aria:"Cumprimento da meta por direcção"})||`<p class="muted">Escreva as metas para ver o gráfico.</p>`}`;
+      ${metaBarras(ord.filter(r=>r.p!=null).map(r=>({nome:r.d.nome,meta:r.meta,valor:r.val,p:r.p,pos:r.pos})))}`;
   }
   return `<div class="head"><div><h2>Região de Pemba</h2><p>Quotas enviadas por cada direcção e cumprimento das metas das conferências. Tudo editável.</p></div>
     <div class="head-acts">${xlsBar("regiao")}<button class="btn" data-pdf="regiao">Baixar PDF da região</button></div></div>
   <section class="panel" style="display:flex;flex-direction:column;gap:12px">
     <div class="head"><h3>Classificação anual regional de quotas ${S.ano}</h3></div>
     <p class="muted" style="margin:0;font-size:13px">${perNome} · total da região ${fmt(tot)}</p>
-    ${vbars(rows.map(r=>({label:(r.pos?r.pos+".º ":"")+r.d.nome,value:r.pct,top:pct(r.pct),sub:fmt(r.v)})),{aria:"Quotas por direcção"})||`<p class="muted">Ainda não há direcções.</p>`}
+    <div class="reg-graficos"><div>${rankBarras(rows.map(r=>({nome:r.d.nome,valor:r.v,pct:r.pct,pos:r.pos})))}</div>
+    <div class="reg-mes"><h4 class="dr-sub">Total da região por mês</h4>${colsMes(M3.map((_,i)=>sum(regDirs().map(d=>regQ(d.id,i+1)||0))),"Quotas da região")}</div></div>
   </section>
   <section class="panel" style="display:flex;flex-direction:column;gap:10px">
     <div class="head"><h3>Quotas por direcção em ${S.ano}</h3>${ed?`<button class="btn small primary" data-act="regAddDir">+ Direcção</button>`:""}</div>
@@ -2732,7 +3039,7 @@ function numX(v){if(typeof v==="number")return isFinite(v)?v:0;let s=String(v??"
   const n=parseFloat(s);return isFinite(n)?n:0}
 const pega=(r,...al)=>{for(const k of Object.keys(r)){const n=nrm(k);if(al.some(a=>n===a||n.startsWith(a)))return r[k]}return ""};
 const sexoDe=v=>{const n=nrm(v);return !n?"":/^(m|rapaz|masc|homem|boy)/.test(n)?"M":/^(f|rapariga|fem|mulher|girl)/.test(n)?"F":/^(pai|father)/.test(n)?"PAI":/^(mae|mother)/.test(n)?"MAE":""};
-const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n)||CARGOJ.find(([k,l])=>nrm(l).replace(/\(.*\)/,"").trim()===n.replace(/\(.*\)/,"").trim());return c?c[0]:""};
+const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n)||CARGOJ.find(([k,l])=>nrm(l).replace(/\(.*\)/,"").trim()===n.replace(/\(.*\)/,"").trim());return c?c[0]:String(v).trim()};
 const tactDe=v=>{const n=nrm(v);if(!n)return "outro";const e=Object.entries(TACT).find(([k,l])=>nrm(k)===n||nrm(l)===n);if(e)return e[0];
   return /culto|vigil/.test(n)?"culto":/estudo|biblic/.test(n)?"estudo":/ensaio|louvor|coro/.test(n)?"louvor":/evangel/.test(n)?"evangelizacao":/visita/.test(n)?"visita":/reuni|comit|assembleia/.test(n)?"reuniao":/confratern|conviv|festa/.test(n)?"confraternizacao":/desport|futebol|jogo/.test(n)?"desporto":/social|doac|ajuda/.test(n)?"social":"outro"};
 const ridX=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
@@ -2785,7 +3092,7 @@ function tipoTabela(t,kind){
   return null;
 }
 // linhas de totais/resumo das folhas (nunca são pessoas nem registos)
-const ehTotal=s=>/^(total|totais|subtotal|sub-total|saldo|soma|acumulado|disponivel|saidas|saida \(|entradas \(|media|percentagem|%|resumo|geral)\b/.test(nrm(s));
+const ehTotal=s=>{const n=nrm(s);return n.length>70||/^(total|totais|subtotal|sub-total|saldo|soma|acumulado|disponivel|saidas|saida \(|entradas \(|media|percentagem|%|resumo|geral|regiao|atencao|nota|notas|obs|observacao|fonte)\b/.test(n)||/:\s/.test(String(s))&&n.split(" ").length>5};
 const exemplo=s=>/^ex\.?:/i.test(String(s||"").trim());
 function xlsInterpretar(wb,kind,X){
   const ops=[],R={membrosNovos:0,membrosAct:0,cotas:0,ofertas:0,saidas:0,contribs:0,contribEntradas:0,confs:0,quotas:0,lider:0,acts:0,ignorados:0,tabelas:0,naoReconhecidas:[]};

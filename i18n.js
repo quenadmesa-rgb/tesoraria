@@ -175,6 +175,10 @@
     "Ainda não há actividades registadas neste ano.": "No activities recorded this year yet.", "Ainda não há actividades registadas neste mês.": "No activities recorded this month yet.", "Ainda não há eventos registados.": "No events recorded yet.",
     "Nenhuma actividade ou evento registado neste mês. Será usado o texto abaixo.": "No activity or event recorded this month. The text below will be used.", "Membro adicionado": "Member added", "Nome de quem": "Name of",
     "A última cópia de segurança foi há {n} dias.": "The last backup was {n} days ago.",
+    "Procurar na tabela…": "Search the table…", "Limpar": "Clear", "Procurar na tabela": "Search the table",
+    "Ver detalhes": "View details", "Detalhes": "Details", "✎ Editar": "✎ Edit", "⧉ Duplicar": "⧉ Duplicate", "Abrir campanha": "Open campaign", "Abrir evento": "Open event", "Entrada de contribuição": "Contribution entry",
+    "Campanha": "Campaign", "Período": "Period", "Últimas entradas ({n})": "Latest entries ({n})", "Ainda sem entradas.": "No entries yet.", "{n}% da meta · falta {n} MT": "{n}% of target · {n} MT to go", "{n}% da meta · meta atingida": "{n}% of target · target reached",
+    "Posição": "Position", "Meses pagos": "Months paid", "Nascimento": "Birth", "✎ Editar dados": "✎ Edit details", "☎ Ligar": "☎ Call", "Ver nas cotas": "View in dues", "Remover": "Remove", "não conta como jovem": "not counted as youth",
     "Total de cotas {n}": "Total dues {n}", "Saídas da cota": "Dues expenses", "depois das saídas": "after expenses", "Pagaram cota": "Paid dues", "de {n}": "of {n}", "Média por quem pagou": "Average per payer",
     "{n}% do total": "{n}% of total", "ano completo": "full year", "Cotas recebidas e saídas por mês": "Dues received and expenses by month", "Toque numa barra para ver os valores": "Tap a bar to see the values",
     "Com cota ({n})": "With dues ({n})", "Sem cota ({n})": "Without dues ({n})", "Todos ({n})": "All ({n})", "Ordenar": "Sort", "Maior total primeiro": "Highest total first", "Nome (A–Z)": "Name (A–Z)", "Ordem de registo": "Registration order",
@@ -216,6 +220,8 @@
   // textos com nomes de pessoas ou eventos
   const PAD = [
     [/^\+ (.+)$/, m => "+ " + (trCore(m[1]) ?? m[1])],
+    [/^(.+): todos$/, m => { const t = trCore(m[1].charAt(0).toUpperCase() + m[1].slice(1)) ?? m[1]; return t + ": all"; }],
+    [/^Filtrar por (.+)$/, m => "Filter by " + (trCore(m[1]) ?? m[1])],
     [/^Bem-vindo, (.+)$/, m => "Welcome, " + m[1]], [/^Conta de (.+)$/, m => m[1] + "'s account"], [/^Sessão iniciada: (.+)$/, m => "Signed in: " + m[1]], [/^(.+) \(você\)$/, m => m[1] + " (you)"],
     [/^Editar (.+)$/, m => "Edit " + m[1]], [/^Cargo de (.+)$/, m => "Role of " + m[1]], [/^Sexo de (.+)$/, m => "Sex of " + m[1]], [/^Local de (.+)$/, m => "Location of " + m[1]],
     [/^(\d+) pessoas? ligadas?: (.+)$/, m => m[1] + (m[1] === "1" ? " person" : " people") + " online: " + m[2]], [/^Evento: (.+)$/, m => "Event: " + m[1]], [/^Contribuição: (.+)$/, m => "Contribution: " + m[1]],
