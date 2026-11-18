@@ -892,6 +892,7 @@ body::before{background:var(--side-a)}
 .rk-trilho span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,color-mix(in srgb,var(--c1) 70%,#fff),var(--c1));transform-origin:left;animation:rkCresce .6s cubic-bezier(.2,.8,.2,1) both}
 .rk-bars li:first-child .rk-trilho span{background:linear-gradient(90deg,#f0c654,var(--c2))}
 @keyframes rkCresce{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.mt-resumo{display:flex;flex-wrap:wrap;gap:8px}.mt-resumo span{display:flex;flex-direction:column;gap:2px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--sunk);min-width:130px}.mt-resumo small{font-size:11px;color:var(--muted)}.mt-resumo b{font-size:15px;font-variant-numeric:tabular-nums}
 .mt-bars{display:flex;flex-direction:column;gap:14px;position:relative;padding-top:18px}
 .mt-escala{position:relative;height:0}.mt-escala span{position:absolute;top:-18px;transform:translateX(-50%);font-size:10.5px;font-weight:700;color:var(--muted)}
 .mt-cab{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px;flex-wrap:wrap}
@@ -1586,12 +1587,12 @@ function vCotas(){
     <div class="legend"><span><i style="background:var(--c1)"></i>Cotas</span><span><i style="background:var(--c4)"></i>Saídas da cota</span></div></div>${barsChart(mensal,sai)}</section>`;
   // filtros
   let ms=todos.filter(m=>f==="todos"||(f==="com"?tot(m)>0:tot(m)===0));
-  ms=[...ms].sort(ord==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ord==="ordem"?(a,b)=>num(a.ordem)-num(b.ordem):(a,b)=>tot(b)-tot(a)||a.nome.localeCompare(b.nome));
+  ms=[...ms].sort(ord==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ord==="nomez"?(a,b)=>b.nome.localeCompare(a.nome):ord==="ordem"?(a,b)=>num(a.ordem)-num(b.ordem):ord==="menor"?(a,b)=>tot(a)-tot(b)||a.nome.localeCompare(b.nome):(a,b)=>tot(b)-tot(a)||a.nome.localeCompare(b.nome));
   const FIL=[["com","Com cota ("+pagaram+")"],["sem","Sem cota ("+semCota+")"],["todos","Todos ("+todos.length+")"]];
   const barra=`<section class="panel filtros"><div class="toolbar">
     <div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" id="cotaBusca" placeholder="Procurar membro…" aria-label="Procurar membro" value="${esc(S.cotaBusca||"")}" autocomplete="off"></div>
     <div class="seg" role="group" aria-label="Mostrar">${FIL.map(([k,l])=>`<button type="button" data-cotaf="${k}" aria-pressed="${f===k}">${l}</button>`).join("")}</div>
-    <div class="filtros-sel"><label><span>Ordenar</span><select class="inp" id="cotaOrd">${[["valor","Maior total primeiro"],["nome","Nome (A–Z)"],["ordem","Ordem de registo"]].map(([k,l])=>`<option value="${k}" ${ord===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
+    <div class="filtros-sel"><label><span>Ordenar</span><select class="inp" id="cotaOrd">${[["valor","Maior → menor total"],["menor","Menor → maior total"],["nome","Nome (A–Z)"],["nomez","Nome (Z–A)"],["ordem","Ordem de registo"]].map(([k,l])=>`<option value="${k}" ${ord===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
   </div></section>`;
   const maxT=Math.max(1,...ms.map(tot));
   const head=`<tr><th class="c-n">Nº</th><th>Membro</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th class="c-tot">Total</th></tr>`;
@@ -1656,7 +1657,7 @@ function vEventos(grupo){
   const anoF=S.evano||"todos",fF=S.evf||"todos",ordF=S.evord||"recentes";
   let lista=todos.filter(e=>(anoF==="todos"||(e.data&&+e.data.slice(0,4)===+anoF))&&(fF==="todos"||est(e)===fF));
   const tot=e=>eventoTotais(e.id).te,cumpr=e=>{const m=num(e.meta);return m?tot(e)/m:-1};
-  lista=[...lista].sort(ordF==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ordF==="recebido"?(a,b)=>tot(b)-tot(a):ordF==="cumprimento"?(a,b)=>cumpr(b)-cumpr(a):(a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
+  lista=[...lista].sort(ordF==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ordF==="nomez"?(a,b)=>b.nome.localeCompare(a.nome):ordF==="recebido"?(a,b)=>tot(b)-tot(a):ordF==="recebidoa"?(a,b)=>tot(a)-tot(b):ordF==="cumprimento"?(a,b)=>cumpr(b)-cumpr(a):ordF==="cumprimentoa"?(a,b)=>cumpr(a)-cumpr(b):ordF==="antigas"?(a,b)=>(a.data||"9").localeCompare(b.data||"9")||(a.criado||0)-(b.criado||0):(a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
   const TT=lista.map(e=>eventoTotais(e.id)),te=sum(TT.map(t=>t.te)),ts=sum(TT.map(t=>t.ts)),tm=sum(lista.map(e=>num(e.meta)));
   const nAt=todos.filter(e=>est(e)==="atingida").length;
   const anos=[...new Set(todos.map(e=>e.data?+e.data.slice(0,4):null).filter(Boolean))].sort((a,b)=>b-a);
@@ -1671,7 +1672,7 @@ function vEventos(grupo){
       <div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="evSearch" type="search" placeholder="${co?"Procurar contribuição…":"Procurar evento…"}" value="${esc(S.evq||"")}" autocomplete="off" aria-label="Procurar"></div>
       <div class="seg" role="group" aria-label="Estado">${FILT.map(([k,l])=>`<button type="button" data-evf="${k}" aria-pressed="${fF===k}">${l}</button>`).join("")}</div>
       <div class="filtros-sel"><label><span>Ano</span><select class="inp" id="evAno"><option value="todos">Todos</option>${anos.map(a=>`<option value="${a}" ${+anoF===a?"selected":""}>${a}</option>`).join("")}</select></label>
-      <label><span>Ordenar</span><select class="inp" id="evOrd">${[["recentes","Mais recentes"],["nome","Nome (A–Z)"],["recebido","Maior recebido"],["cumprimento","Maior cumprimento"]].map(([k,l])=>`<option value="${k}" ${ordF===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
+      <label><span>Ordenar</span><select class="inp" id="evOrd">${[["recentes","Mais recentes"],["antigas","Mais antigas"],["nome","Nome (A–Z)"],["nomez","Nome (Z–A)"],["recebido","Maior → menor recebido"],["recebidoa","Menor → maior recebido"],["cumprimento","Maior → menor cumprimento"],["cumprimentoa","Menor → maior cumprimento"]].map(([k,l])=>`<option value="${k}" ${ordF===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
     </div></section>`:"";
   const titulo=co?"Contribuições":"Conferências e eventos";
   const desc=grupo==="contribuicao"?"Campanhas de contribuição, como envelopes e contribuição dos líderes.":"Conferências, retiros, cultos especiais e outros eventos, com entradas e saídas de cada um.";
@@ -1903,9 +1904,18 @@ function valorCel(td){if(!td)return "";const i=td.querySelector("input");const s
   if(/^-?\d[\d.,]*$/.test(n)&&/\d/.test(s)&&!/[a-zà-ú]{3,}/i.test(s.replace(/MT|MZN/g,"")))return numX(n);
   const dm=s.match(/^(\d{1,2}) (Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez) (\d{4})$/);if(dm)return +dm[3]*10000+(M3.indexOf(dm[2])+1)*100+ +dm[1];
   return s}
+// Cargo: ordenar pela hierarquia (Responsável, Vice-Responsável, Secretário(a)…); cargos escritos à mão no fim
+function valorCargo(td){const t=nrm(textoCel(td));if(!t||t==="—")return 999;const i=CARGOJ.findIndex(([k,l])=>nrm(l)===t||nrm(k)===t);return i<0?500:i}
+function ordenarTabela(tb,idx,dir){const body=tb.tBodies[0];if(!body)return;const th=tb.tHead.rows[0].cells[idx];if(!th)return;
+  tb.querySelectorAll("thead th").forEach(x=>{delete x.dataset.ord;x.removeAttribute("aria-sort")});th.dataset.ord=dir;th.setAttribute("aria-sort",dir==="asc"?"ascending":"descending");
+  const cargo=/^cargo/.test(nrm(th.textContent.replace(/[▲▼]/g,"")));
+  const rows=[...body.rows];rows.sort((a,b)=>{const x=cargo?valorCargo(a.cells[idx]):valorCel(a.cells[idx]),y=cargo?valorCargo(b.cells[idx]):valorCel(b.cells[idx]);const c=typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y),"pt",{sensitivity:"base",numeric:true});return dir==="asc"?c:-c});
+  rows.forEach(r=>body.appendChild(r));let k=0;rows.forEach(r=>{const c=r.querySelector("td.c-n");if(c&&c.textContent.trim()!==""&&!/º/.test(c.textContent))c.textContent=++k});
+  const sel=tb.closest(".tbl-wrap,.scroll")?.parentElement?.querySelector("[data-ordem]");if(sel)sel.value=idx+"|"+dir;
+  paginar(true);if(typeof posicionarCabecalhos==="function")setTimeout(posicionarCabecalhos,0)}
 document.addEventListener("click",ev=>{const th=ev.target.closest(".scroll thead th");if(!th||th.classList.contains("c-n")||!th.textContent.trim())return;
   const tb=th.closest("table"),idx=[...th.parentNode.children].indexOf(th),body=tb.tBodies[0];if(!body)return;
-  const dir=th.dataset.ord==="asc"?"desc":"asc";tb.querySelectorAll("thead th").forEach(x=>{delete x.dataset.ord;x.removeAttribute("aria-sort")});th.dataset.ord=dir;th.setAttribute("aria-sort",dir==="asc"?"ascending":"descending");
+  const dir=th.dataset.ord==="asc"?"desc":"asc";ordenarTabela(tb,idx,dir);return;tb.querySelectorAll("thead th").forEach(x=>{delete x.dataset.ord;x.removeAttribute("aria-sort")});th.dataset.ord=dir;th.setAttribute("aria-sort",dir==="asc"?"ascending":"descending");
   const rows=[...body.rows];rows.sort((a,b)=>{const x=valorCel(a.cells[idx]),y=valorCel(b.cells[idx]);const c=typeof x==="number"&&typeof y==="number"?x-y:String(x).localeCompare(String(y),"pt",{sensitivity:"base",numeric:true});return dir==="asc"?c:-c});
   rows.forEach(r=>body.appendChild(r));let n=0;rows.forEach(r=>{const c=r.querySelector("td.c-n");if(c&&c.textContent.trim()!==""&&!/º/.test(c.textContent))c.textContent=++n});
   paginar(true)});
@@ -1974,6 +1984,14 @@ function ferramentasTabela(){
       vals.sort((a,b)=>{const m=x=>MESES.indexOf(x);return m(a)>=0&&m(b)>=0?m(a)-m(b):a.localeCompare(b)});
       const sel=document.createElement("select");sel.className="inp";sel.dataset.colf=i;sel.setAttribute("aria-label","Filtrar por "+nome);
       sel.innerHTML=`<option value="">${esc(nome.charAt(0)+nome.slice(1).toLowerCase())}: todos</option>`+vals.map(v=>`<option>${esc(v)}</option>`).join("");tools.appendChild(sel)});
+    const opts=[];ths.forEach((th,i)=>{if(th.classList.contains("c-n"))return;const nome=th.textContent.replace(/[▲▼]/g,"").trim();if(!nome)return;
+      const cargo=/^cargo/.test(nrm(nome)),numCol=!cargo&&rows.slice(0,8).some(r=>typeof valorCel(r.cells[i])==="number");
+      const cap=nome.charAt(0)+nome.slice(1).toLowerCase();
+      if(cargo)opts.push([i+"|asc",cap+": hierarquia"],[i+"|desc",cap+": hierarquia inversa"]);
+      else if(numCol)opts.push([i+"|desc",cap+": maior → menor"],[i+"|asc",cap+": menor → maior"]);
+      else opts.push([i+"|asc",cap+": A → Z"],[i+"|desc",cap+": Z → A"])});
+    if(opts.length){const so=document.createElement("select");so.className="inp sel-ordem";so.dataset.ordem="1";so.setAttribute("aria-label","Ordenar por");
+      so.innerHTML='<option value="">⇅ Ordenar por…</option>'+opts.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("");tools.appendChild(so)}
     const lim=document.createElement("button");lim.type="button";lim.className="btn ghost tbl-limpar";lim.textContent="Limpar";lim.hidden=true;tools.appendChild(lim);
   });
 }
@@ -1983,6 +2001,7 @@ function filtrarTabela(tools){const sc=tools.nextElementSibling;if(!sc)return;co
   const lim=tools.querySelector(".tbl-limpar");if(lim)lim.hidden=!q&&!fs.length;
   tools.querySelectorAll("[data-colf]").forEach(s=>s.classList.toggle("activo",!!s.value));paginar(true)}
 document.addEventListener("change",ev=>{const s=ev.target.closest&&ev.target.closest("[data-colf]");if(s)filtrarTabela(s.closest(".tbl-tools"))});
+document.addEventListener("change",ev=>{const so=ev.target.closest&&ev.target.closest("[data-ordem]");if(!so||!so.value)return;const sc=so.closest(".tbl-tools").nextElementSibling;const tb=sc&&sc.querySelector("table");if(!tb)return;const [i,d]=so.value.split("|");ordenarTabela(tb,+i,d)});
 document.addEventListener("click",ev=>{const b=ev.target.closest(".tbl-limpar");if(!b)return;const t=b.closest(".tbl-tools");t.querySelectorAll("[data-colf]").forEach(s=>s.value="");const i=t.querySelector("[data-tblsearch]");if(i)i.value="";filtrarTabela(t)});
 // ---------- Paginação das tabelas: N linhas por página (Definições), "Anterior · 1 2 3 · Próximo", barra fixa
 const PG={};
@@ -2158,7 +2177,8 @@ function vMembros(){
   const A=[1,2,3,4,5,6,7,8,9,10,11,12],f=S.mf||"todos",q=S.mq||"";
   const ms=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem));
   const c=contagem(),comTel=ms.filter(m=>m.telefone).length,pagaram=ms.filter(m=>cotaPeriodo(m,S.ano,A)>0).length;
-  const lista=ms.filter(m=>membroPassa(m,f));
+  const mo=S.mOrd||"ordem",idd=m=>m.nascimento||"9999",ent=m=>m.entrada||"0000";
+  const lista=ms.filter(m=>membroPassa(m,f)).sort(mo==="nome"?(a,b)=>a.nome.localeCompare(b.nome):mo==="nomez"?(a,b)=>b.nome.localeCompare(a.nome):mo==="cotad"?(a,b)=>cotaPeriodo(b,S.ano,A)-cotaPeriodo(a,S.ano,A):mo==="cotaa"?(a,b)=>cotaPeriodo(a,S.ano,A)-cotaPeriodo(b,S.ano,A):mo==="novos"?(a,b)=>idd(b).localeCompare(idd(a)):mo==="velhos"?(a,b)=>idd(a).localeCompare(idd(b)):mo==="recentes"?(a,b)=>ent(b).localeCompare(ent(a)):mo==="antigos"?(a,b)=>ent(a).localeCompare(ent(b)):(a,b)=>num(a.ordem)-num(b.ordem));
   if(S.mEdit===undefined)S.mEdit=true;
   const ed=S.edit&&S.mEdit,selS=(id,v)=>`<select class="inp tin" data-sexo="${id}" aria-label="Sexo">${[["","—"],["M","Rapaz"],["F","Rapariga"],["PAI","Pai"],["MAE","Mãe"]].map(([k,l])=>`<option value="${k}" ${(v||"")===k?"selected":""}>${l}</option>`).join("")}</select>`;
   const rows=lista.map((m,i)=>{const id=idade(m.nascimento),ct=cotaPeriodo(m,S.ano,A);
@@ -2187,7 +2207,7 @@ function vMembros(){
   </div>
   <section class="panel">
     <div class="toolbar"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="mSearch" type="search" placeholder="Procurar por nome, telefone ou morada" value="${esc(q)}" autocomplete="off" aria-label="Procurar membro"></div>
-      ${S.edit?`<button type="button" class="btn ${S.mEdit?"primary":""} btn-edtab" data-act="mEditar" aria-pressed="${!!S.mEdit}">${S.mEdit?"✓ Terminar edição":"✎ Editar na tabela"}</button>`:""}<div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
+      ${S.edit?`<button type="button" class="btn ${S.mEdit?"primary":""} btn-edtab" data-act="mEditar" aria-pressed="${!!S.mEdit}">${S.mEdit?"✓ Terminar edição":"✎ Editar na tabela"}</button>`:""}<label class="filtros-sel"><span class="sr">Ordenar</span><select class="inp sel-ordem" id="mOrd" aria-label="Ordenar por">${[["ordem","⇅ Ordem de registo"],["nome","Nome (A–Z)"],["nomez","Nome (Z–A)"],["cotad","Maior → menor cota"],["cotaa","Menor → maior cota"],["novos","Mais novos primeiro"],["velhos","Mais velhos primeiro"],["recentes","Membros mais recentes"],["antigos","Membros mais antigos"]].map(([k,l])=>`<option value="${k}" ${(S.mOrd||"ordem")===k?"selected":""}>${l}</option>`).join("")}</select></label><div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
     ${lista.length?`<div class="scroll flat">${S.edit&&S.mEdit?dlCargos():""}<table class="mtab${S.edit&&S.mEdit?" mtab-ed":""}"><thead><tr><th class="c-n">Nº</th><th class="c-nome">${S.edit&&S.mEdit?"Nome e cargo":"Nome"}</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>${S.edit&&S.mEdit?"Nascimento":"Idade"}</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted small" id="mCount">${lista.length} ${lista.length===1?"membro":"membros"}${f!=="todos"?" neste filtro":""}.${S.edit?" Toque no nome para ver ou editar os dados.":""}</p>`:`<div class="empty">Nenhum membro neste filtro.${S.edit?" Use “Registar membro” para adicionar.":""}</div>`}
   </section>`;
@@ -2195,6 +2215,7 @@ function vMembros(){
 document.addEventListener("input",ev=>{if(ev.target.id!=="mSearch")return;S.mq=ev.target.value;const q=nrm(S.mq);let n=0;
   document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".");paginar(true)});
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-mf]");if(!b)return;S.mf=b.dataset.mf;render()});
+document.addEventListener("change",ev=>{if(ev.target.id==="mOrd"){S.mOrd=ev.target.value;render()}});
 document.addEventListener("click",ev=>{if(!ev.target.closest('[data-act="mEditar"]'))return;document.activeElement&&document.activeElement.blur&&document.activeElement.blur();S.mEdit=!S.mEdit;render()});
 function formEvento(e,tipoDef){
   const tipo=e?.tipo||tipoDef||"conferencia";
@@ -2271,7 +2292,7 @@ document.addEventListener("click",async ev=>{
   if(act==="regAddDir"){formRegDir();return}
   if(act==="regAddConf"){formRegConf(null);return}
   if(act==="regEditConf"){formRegConf(S.regConf);return}
-  if(act==="regDelConf"){if(a.dataset.armed){try{await regUpdate({conferencias:{[a.dataset.id]:{removida:true}}});closeSheet();toast("Conferência apagada")}catch(e){}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}return}
+  if(act==="regDelConf"){if(a.dataset.armed){try{await regUpdate({conferencias:{[a.dataset.id]:{...regConfBase(a.dataset.id),removida:true}}});closeSheet();toast("Conferência apagada")}catch(e){}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}return}
   if(act==="relReset"){if(a.dataset.armed){try{await S.db.doc("relatorios/"+relKey()).delete();toast("Textos de modelo repostos")}catch(e){toast("Não foi possível repor.")}}else{a.dataset.armed="1";a.textContent="Confirmar: apagar os textos deste mês"}return}
   if(act==="apagarMov"){if(a.dataset.armed){try{await S.db.doc("movimentos/"+a.dataset.id).delete();closeSheet();toast("Apagado")}catch(e){showErr(e)}}else{a.dataset.armed="1";a.textContent="Confirmar apagar"}}
   if(act==="apagarMembro"){if(a.dataset.armed){try{await S.db.doc("membros/"+a.dataset.id).delete();closeSheet();toast("Membro removido")}catch(e){showErr(e)}}else{a.dataset.armed="1";a.textContent="Confirmar remoção (apaga as cotas)"}}
@@ -2287,7 +2308,7 @@ document.addEventListener("change",async ev=>{
   if(t.dataset.regq){const raw=t.value.trim();const v=raw===""?null:num(raw);try{await regUpdate({quotas:{[S.ano]:{[t.dataset.regq]:{[t.dataset.mes]:v}}}});toast("Quota guardada")}catch(e){}return}
   if(t.dataset.regdir){const nome=t.value.trim();if(!nome){toast("O nome não pode ficar vazio.");return}const dirs=(REG().direcoes||[]).map(d=>d.id===t.dataset.regdir?{...d,nome}:d);try{await regUpdate({direcoes:dirs});toast("Nome guardado")}catch(e){}return}
   if(t.dataset.cmeta||t.dataset.cval){const dir=t.dataset.cmeta||t.dataset.cval,campo=t.dataset.cmeta?"meta":"valor";const raw=t.value.trim();const v=raw===""?null:num(raw);
-    try{await regUpdate({conferencias:{[S.regConf]:{dados:{[dir]:{[campo]:v}}}}});toast("Guardado")}catch(e){}return}
+    try{await regUpdate({conferencias:{[S.regConf]:{...regConfBase(S.regConf),dados:{[dir]:{[campo]:v}}}}});toast("Guardado")}catch(e){}return}
   if(t.dataset.nome){const v=t.value.trim();if(!v){toast("O nome não pode ficar vazio.");return}try{await S.db.doc("membros/"+t.dataset.nome).update({nome:v});toast("Nome guardado")}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.cargo){try{await S.db.doc("membros/"+t.dataset.cargo).update({cargo:cargoKey(t.value)})}catch(e){toast("Não foi possível guardar.")}return}
   if(t.dataset.sexo){try{await S.db.doc("membros/"+t.dataset.sexo).update({sexo:t.value})}catch(e){toast("Não foi possível guardar.")}return}
@@ -2770,9 +2791,9 @@ function vRegiao(){
       <td class="tot" data-regrow="${d.id}">${fmt(t)}</td><td data-regpct="${d.id}">${anoTot?pct(t/anoTot*100):"–"}</td></tr>`}).join("");
   const colt=`<tr><td class="c-n"></td><td>Total da região</td>${M3.map((_,i)=>`<td data-regcol="${i+1}">${fmt(sum(dirs.map(d=>regQ(d.id,i+1)||0)))}</td>`).join("")}<td data-regall>${fmt(anoTot)}</td><td>100%</td></tr>`;
   // conferências
-  const confs=Object.entries(R.conferencias||{}).filter(([,c])=>c&&!c.removida).sort((a,b)=>num(b[1].criado)-num(a[1].criado));
+  const confs=regConfs();
   if(!S.regConf||!confs.some(([id])=>id===S.regConf))S.regConf=confs.length?confs[0][0]:null;
-  const cf=S.regConf?R.conferencias[S.regConf]:null;
+  const cf=S.regConf?(confs.find(([id])=>id===S.regConf)||[])[1]:null;
   let confHtml="";
   if(cf){
     const dados=cf.dados||{};
@@ -2780,7 +2801,9 @@ function vRegiao(){
     const tm=sum(cr.map(r=>r.meta||0)),tv=sum(cr.map(r=>r.val));
     const ord=[...cr].sort((a,b)=>(b.p??-1)-(a.p??-1)||b.val-a.val);
     let pos=0,last=null;ord.forEach(r=>{if(r.p==null){r.pos=null;return}if(r.p!==last){pos++;last=r.p}r.pos=pos});
-    confHtml=`<div class="tblwrap scroll"><table class="reg"><thead><tr><th class="c-n">Pos.</th><th style="text-align:left">Direcção</th><th>Meta (MT)</th><th>Contribuído (MT)</th><th>Falta (MT)</th><th>Cumprimento</th></tr></thead><tbody>
+    const evc=cf.evento?S.eventos.find(e=>e.id===cf.evento):null,evt=evc?eventoTotais(evc.id):null,evm=evc&&evc.meta!=null&&evc.meta!==""?num(evc.meta):null;
+    const resumoCf=`<div class="mt-resumo">${evm!=null?`<span><small>Meta da conferência</small><b>${fmt(evm)}</b></span>`:""}${evt?`<span><small>Recebido (separador Conferências)</small><b>${fmt(evt.te)}</b></span>`:""}${evm&&evt?`<span><small>Cumprimento</small><b style="color:${corPct(evt.te/evm*100)}">${pct(evt.te/evm*100)}</b></span>`:""}<span><small>Metas das direcções</small><b>${fmt(tm)}</b></span><span><small>Contribuído pelas direcções</small><b>${fmt(tv)}</b></span></div>`;
+    confHtml=resumoCf+(tm||tv?"":`<p class="muted" style="margin:0;font-size:13px">${ed?"Escreva a meta e o valor contribuído de cada direcção (guarda sozinho) ou importe o Excel das metas.":"Ainda não foram escritas metas por direcção."}</p>`)+`<div class="tblwrap scroll"><table class="reg"><thead><tr><th class="c-n">Pos.</th><th style="text-align:left">Direcção</th><th>Meta (MT)</th><th>Contribuído (MT)</th><th>Falta (MT)</th><th>Cumprimento</th></tr></thead><tbody>
       ${ord.map(r=>`<tr><td class="c-n">${r.pos?r.pos+".º":"–"}</td><td style="text-align:left;font-weight:600">${esc(r.d.nome)}</td>
         <td>${ed?`<input inputmode="decimal" data-cmeta="${r.d.id}" value="${r.meta==null?"":r.meta}" placeholder="Meta" aria-label="Meta de ${esc(r.d.nome)}">`:(r.meta==null?"–":fmt(r.meta))}</td>
         <td>${ed?`<input inputmode="decimal" data-cval="${r.d.id}" value="${r.val||""}" placeholder="0" aria-label="Contribuído por ${esc(r.d.nome)}">`:fmt(r.val)}</td>
@@ -2811,6 +2834,15 @@ function vRegiao(){
     ${cf?confHtml:`<div class="empty">Ainda não há conferências. ${ed?"Use “+ Conferência”.":""}</div>`}
   </section>`;
 }
+// Conferências da região: as próprias + as do separador Conferências que ainda não estão na região
+function regConfs(){const R=REG(),own=Object.entries(R.conferencias||{}).filter(([,c])=>c&&!c.removida);
+  const ligados=new Set(own.map(([,c])=>c.evento).filter(Boolean)),nomes=new Set(own.map(([,c])=>nrm(c.nome)));
+  const apagados=new Set(Object.values(R.conferencias||{}).filter(c=>c&&c.removida&&c.evento).map(c=>c.evento));
+  const ev=(S.eventos||[]).filter(e=>e.tipo==="conferencia"&&/^conferencia/.test(nrm(e.nome))&&!ligados.has(e.id)&&!apagados.has(e.id)&&!nomes.has(nrm(e.nome))&&((e.meta!=null&&e.meta!=="")||eventoTotais(e.id).te>0))
+    .map(e=>["e"+e.id,{nome:e.nome,ano:e.data?+e.data.slice(0,4):S.ano,criado:num(e.criado),dados:{},evento:e.id,virtual:true}]);
+  return [...own,...ev].sort((a,b)=>num(b[1].criado)-num(a[1].criado))}
+// ao gravar numa conferência que veio do separador Conferências, cria-a na região
+function regConfBase(id){const c=(regConfs().find(([k])=>k===id)||[])[1];return c&&c.virtual?{nome:c.nome,ano:c.ano,criado:c.criado,evento:c.evento}:{}}
 async function regUpdate(d){try{await S.db.doc("regiao/pemba").update(d)}catch(e){try{if(!S.regiao||!Object.keys(S.regiao).length){await S.db.doc("regiao/pemba").set(d)}else throw e}catch(e2){toast(e2&&e2.code==="invalid_argument"?"Sem permissão para alterar.":"Não foi possível guardar.");throw e2}}}
 function formRegDir(){
   openSheet(`<h3>Nova direcção</h3><label>Nome<input class="inp" name="nome" id="f-rdnome" placeholder="Ex.: Chiure" autocomplete="off"></label>
@@ -2820,13 +2852,13 @@ function formRegDir(){
     await regUpdate({direcoes:dirs});return "Direcção acrescentada"});
 }
 function formRegConf(id){
-  const c=id?REG().conferencias[id]:null;
+  const c=id?(regConfs().find(([k])=>k===id)||[])[1]:null;
   openSheet(`<h3>${c?"Editar conferência":"Nova conferência"}</h3>
    <label>Nome<input class="inp" name="nome" id="f-rcnome" value="${esc(c?.nome||"")}" placeholder="Ex.: Conferência da Juventude" autocomplete="off"></label>
    <label>Ano<input class="inp" inputmode="numeric" name="ano" id="f-rcano" value="${c?.ano||S.ano}"></label>
    <div class="acts">${c?`<button type="button" class="btn danger" data-act="regDelConf" data-id="${id}">Apagar</button>`:""}<button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
   async(fd,f)=>{const nome=String(fd.get("nome")).trim();if(!nome)return fail(f,"Escreva o nome.");const ano=num(fd.get("ano"))||S.ano;
-    if(c){await regUpdate({conferencias:{[id]:{nome,ano}}});return "Conferência actualizada"}
+    if(c){await regUpdate({conferencias:{[id]:{...regConfBase(id),nome,ano}}});return "Conferência actualizada"}
     const nid="c"+Date.now().toString(36);await regUpdate({conferencias:{[nid]:{nome,ano,criado:Date.now(),dados:{}}}});S.regConf=nid;return "Conferência criada"});
 }
 // PDF da região
@@ -3329,6 +3361,7 @@ function xlsInterpretar(wb,kind,X){
           const nome=String(c.direcao??c.nome??"").trim();if(!nome)continue;const d=dirDe(nome);
           if(!t._conf){const tit=String(t.titulo||"").replace(/\s*\(?(19|20)\d{2}\)?\s*$/,"").trim(),anoC=+(String(t.titulo).match(/(19|20)\d{2}/)||[])[0]||ano;reg.conferencias=reg.conferencias||{};
             const generico=!tit||tit===t.folha&&/^(folha|sheet|metas|conferencias?|regiao)/i.test(nrm(tit));
+            if(generico&&kind==="regmetas"&&S.regConf&&!reg.conferencias[S.regConf]){const b=regConfBase(S.regConf);if(b.nome)reg.conferencias[S.regConf]={...b,dados:{}}}
             let cid=generico&&kind==="regmetas"&&S.regConf&&reg.conferencias[S.regConf]?S.regConf:Object.keys(reg.conferencias).find(k=>!reg.conferencias[k].removida&&nrm(reg.conferencias[k].nome)===nrm(tit));
             if(!cid){cid="c"+ridX();reg.conferencias[cid]={nome:generico?"Conferência importada":tit,ano:anoC,criado:Date.now(),dados:{}};R.confsNovas=(R.confsNovas||0)+1}t._conf=cid}
           const cf=reg.conferencias[t._conf];cf.dados=cf.dados||{};const x={...(cf.dados[d.id]||{})};
