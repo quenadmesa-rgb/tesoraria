@@ -713,6 +713,7 @@ body.sem-scroll{overflow:hidden}
     try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){cache={}}
     try{pend=JSON.parse(localStorage.getItem(PK)||"[]");if(!Array.isArray(pend))pend=[]}catch(e){pend=[]}
     const guardaPend=()=>{try{localStorage.setItem(PK,JSON.stringify(pend))}catch(e){}};
+    if(pend.some(p=>(p.ops||[]).some(o=>o.col==="utilizadores"))){pend=pend.filter(p=>!(p.ops||[]).some(o=>o.col==="utilizadores"));guardaPend()} // versões antigas: nunca guardar senhas na fila
     const avisa=()=>setTimeout(()=>window.dispatchEvent(new Event("tes-online")),0);
     const marcaOnline=v=>{if(R.online!==v){R.online=v;avisa()}};
     // op "sair": liberta a conta (botão Sair); op "ausente": fechar/recarregar a página só tira a pessoa da lista de ligados.
@@ -766,6 +767,11 @@ body.sem-scroll{overflow:hidden}
     }
     const iniciarSync=()=>{clearInterval(timer);timer=setInterval(()=>{if(document.visibilityState==="visible")sync()},20000)};
     async function enviar(ops,local){
+      // Contas e senhas nunca ficam na fila do aparelho: só se gravam com a base de dados ligada.
+      if(ops.some(o=>o.col==="utilizadores")){
+        try{await api("doc",{method:"POST",body:JSON.stringify({ops})})}
+        catch(e){if(e.code==="offline"){const er=new Error("Sem ligação à base de dados. Registe ou altere utilizadores quando ela estiver ligada.");er.code="offline";throw er}throw e}
+        local&&local();guardaCache();[...new Set(ops.map(o=>o.col))].forEach(c=>setTimeout(()=>remit(c),0));setTimeout(sync,300);return}
       const antes=JSON.stringify(cache);local&&local();guardaCache();
       const cols=[...new Set(ops.map(o=>o.col).filter(Boolean))];cols.forEach(c=>setTimeout(()=>remit(c),0));
       if(pend.length){pend.push({ops,u:sess?.user?.id,t:Date.now()});guardaPend();avisa();enviarPendentes();return} // mantém a ordem das alterações
@@ -1343,6 +1349,7 @@ function openSheet(html,onSubmit,opt={}){
     catch(e){b.disabled=false;showErr(e)}});
 }
 function showErr(e){const p=$("#sheetErr");if(!p)return toast("Não foi possível guardar.");p.hidden=false;
+  if(e&&window.TES_REMOTO&&e.message&&(e.code==="offline"||e.status===400||e.status===403||e.status===404||e.status===409)){p.textContent=e.message;return}
   p.textContent=e&&e.code==="invalid_argument"?"Não tem permissão para alterar estes dados ("+(document.getElementById("accessBox")?.textContent||"")+"). Detalhe: "+(e.message||e.code):e&&e.code==="quota_exceeded"?"A base de dados está cheia. Apague registos antigos.":"Não foi possível guardar. Verifique a ligação e tente outra vez."}
 function closeSheet(){const el=$("#sheet");el.hidden=true;el.innerHTML="";if(S.pending)render()}
 const today=()=>new Date().toISOString().slice(0,10);
@@ -2525,7 +2532,9 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
   ${window.TES_REMOTO?`<div class="cm-lig"><span class="cm-t">Ligados agora (${lista.length})</span><ul>${lista.map(u=>`<li><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===S.sessao.user?" (você)":""}</b><small>${esc((PAPEIS[u.papel]||"").split(" (")[0])}</small></span></li>`).join("")}</ul></div>`:""}
   <button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
-window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();if(S.tab==="utilizadores"&&!S.pending)render()}});
+window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();
+  // na aba Utilizadores, só redesenha se não houver um formulário a meio (para não apagar o que se escreveu ou um erro)
+  if(S.tab==="utilizadores"&&!S.pending&&!document.querySelector("#main .err:not([hidden])")&&!document.querySelector("#main form input:not([type=hidden])[value]:not([value=''])")){const f=document.querySelector("[data-newuser]");if(!f||![...f.querySelectorAll("input")].some(i=>i.value))render()}}});
 window.addEventListener("tes-erro-envio",e=>toast("Não foi possível enviar uma alteração: "+e.detail));
 document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="menuConta"]'),m=document.querySelector(".contamenu");if(!m)return;
   if(b){const open=m.hidden;m.hidden=!open;b.setAttribute("aria-expanded",String(open));return}
