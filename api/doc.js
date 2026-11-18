@@ -2,7 +2,7 @@
 //   op: "set" (substitui), "update" (junta campos), "delete", "senha" (a própria senha: {atual,nova}),
 //       "importar" (só administrador: copia uma cópia de segurança completa para o MySQL).
 // Permissões: "leitor" só lê; "tesoureiro" grava tudo menos utilizadores; "admin" grava tudo.
-import { COLECOES, PAPEIS, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada } from "./_lib/core.js";
+import { COLECOES, PAPEIS, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada, espelhar } from "./_lib/core.js";
 
 const idOk = id => typeof id === "string" && /^[A-Za-z0-9._-]{1,64}$/.test(id);
 const proibido = m => Object.assign(new Error(m), { status: 403 });
@@ -11,7 +11,7 @@ const invalido = m => Object.assign(new Error(m), { status: 400 });
 async function gravarDoc(cx, eu, { op, col, id, data }) {
   if (!COLECOES.includes(col)) throw invalido("Colecção desconhecida: " + col);
   if (!idOk(id)) throw invalido("Identificador inválido.");
-  if (op === "delete") { await cx.query(`DELETE FROM \`${col}\` WHERE id=?`, [id]); return; }
+  if (op === "delete") { await cx.query(`DELETE FROM \`${col}\` WHERE id=?`, [id]); await espelhar(cx, col, id, null); return; }
   if (!data || typeof data !== "object" || Array.isArray(data)) throw invalido("Dados inválidos.");
   let novo = data;
   if (op === "update") {
@@ -21,6 +21,7 @@ async function gravarDoc(cx, eu, { op, col, id, data }) {
     novo = merge(velho, data);
   } else if (op !== "set") throw invalido("Operação desconhecida.");
   await cx.query(`INSERT INTO \`${col}\` (id,dados,actualizado_por) VALUES (?,?,?) ON DUPLICATE KEY UPDATE dados=VALUES(dados), actualizado_por=VALUES(actualizado_por)`, [id, JSON.stringify(novo), eu.id]);
+  await espelhar(cx, col, id, novo); // tabelas cotas / lideranca / regiao_* sempre actualizadas
 }
 
 async function gravarUtilizador(cx, eu, { op, id, data }) {

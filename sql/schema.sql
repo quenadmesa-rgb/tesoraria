@@ -81,3 +81,12 @@ CREATE TABLE IF NOT EXISTS acessos (            -- cada entrada no sistema (com 
   INDEX idx_acessos_utilizador (utilizador),
   INDEX idx_acessos_data (data)
 ) DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------------
+-- Tabelas "espelho" (a API reescreve-as a cada gravação, para consultar sem JSON)
+CREATE TABLE IF NOT EXISTS cotas (membro_id VARCHAR(64) NOT NULL, membro VARCHAR(200), ano SMALLINT NOT NULL, mes TINYINT NOT NULL, valor DECIMAL(14,2) NOT NULL DEFAULT 0, PRIMARY KEY (membro_id,ano,mes));
+CREATE TABLE IF NOT EXISTS lideranca (cargo VARCHAR(40) NOT NULL PRIMARY KEY, cargo_nome VARCHAR(80), nome VARCHAR(200));
+CREATE TABLE IF NOT EXISTS regiao_direccoes (id VARCHAR(64) NOT NULL PRIMARY KEY, nome VARCHAR(200), ordem INT);
+CREATE TABLE IF NOT EXISTS regiao_quotas (direccao_id VARCHAR(64) NOT NULL, direccao VARCHAR(200), ano SMALLINT NOT NULL, mes TINYINT NOT NULL, valor DECIMAL(14,2) NOT NULL DEFAULT 0, PRIMARY KEY (direccao_id,ano,mes));
+CREATE TABLE IF NOT EXISTS regiao_conferencias (id VARCHAR(64) NOT NULL, direccao_id VARCHAR(64) NOT NULL, conferencia VARCHAR(200), ano SMALLINT, direccao VARCHAR(200), meta DECIMAL(14,2) NULL, valor DECIMAL(14,2) NULL, PRIMARY KEY (id,direccao_id));
+-- Vistas (criadas pela API): jovens, ofertas, saidas, contribuicoes, contribuicoes_entradas, conferencias

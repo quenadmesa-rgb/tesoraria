@@ -69,6 +69,25 @@ export function ensureSchema() {
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN visto_em DATETIME NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     // "sessao_id": a única sessão válida desta conta (a mesma conta não pode estar ligada duas vezes).
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN sessao_id VARCHAR(32) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
+    // ---- Tabelas "espelho" (actualizadas a cada gravação) para consultar no MySQL sem ler JSON
+    await db.query(`CREATE TABLE IF NOT EXISTS cotas (membro_id VARCHAR(64) NOT NULL, membro VARCHAR(200), ano SMALLINT NOT NULL, mes TINYINT NOT NULL, valor DECIMAL(14,2) NOT NULL DEFAULT 0, PRIMARY KEY (membro_id,ano,mes), INDEX idx_cotas_ano (ano,mes)) DEFAULT CHARSET=utf8mb4`);
+    await db.query(`CREATE TABLE IF NOT EXISTS lideranca (cargo VARCHAR(40) NOT NULL PRIMARY KEY, cargo_nome VARCHAR(80), nome VARCHAR(200)) DEFAULT CHARSET=utf8mb4`);
+    await db.query(`CREATE TABLE IF NOT EXISTS regiao_direccoes (id VARCHAR(64) NOT NULL PRIMARY KEY, nome VARCHAR(200), ordem INT) DEFAULT CHARSET=utf8mb4`);
+    await db.query(`CREATE TABLE IF NOT EXISTS regiao_quotas (direccao_id VARCHAR(64) NOT NULL, direccao VARCHAR(200), ano SMALLINT NOT NULL, mes TINYINT NOT NULL, valor DECIMAL(14,2) NOT NULL DEFAULT 0, PRIMARY KEY (direccao_id,ano,mes)) DEFAULT CHARSET=utf8mb4`);
+    await db.query(`CREATE TABLE IF NOT EXISTS regiao_conferencias (id VARCHAR(64) NOT NULL, direccao_id VARCHAR(64) NOT NULL, conferencia VARCHAR(200), ano SMALLINT, direccao VARCHAR(200), meta DECIMAL(14,2) NULL, valor DECIMAL(14,2) NULL, PRIMARY KEY (id,direccao_id)) DEFAULT CHARSET=utf8mb4`);
+    // ---- Vistas legíveis (aparecem como tabelas no MySQL)
+    const J = (p, t = "VARCHAR(200)") => `CAST(JSON_UNQUOTE(JSON_EXTRACT(dados,'$.${p}')) AS CHAR(200))`;
+    const N = p => `CAST(IF(JSON_TYPE(JSON_EXTRACT(dados,'$.${p}')) IN ('INTEGER','DOUBLE','DECIMAL'),JSON_EXTRACT(dados,'$.${p}'),NULL) AS DECIMAL(14,2))`;
+    const vistas = {
+      jovens: `SELECT id, ${J("nome")} AS nome, ${J("cargo")} AS cargo, ${J("sexo")} AS sexo, IF(JSON_EXTRACT(dados,'$.bindura')=true,'Bindura','Sede') AS local, IF(JSON_EXTRACT(dados,'$.activo')=true,'Sim','Não') AS activo_bindura, IF(JSON_EXTRACT(dados,'$.naoJovem')=true,'Não','Sim') AS conta_como_jovem, ${J("telefone")} AS telefone, ${J("nascimento")} AS nascimento, ${J("entrada")} AS membro_desde, ${J("morada")} AS morada FROM membros`,
+      ofertas: `SELECT id, ${J("data")} AS data, ${J("nome")} AS descricao, ${J("nota")} AS nota, ${N("valor")} AS valor FROM movimentos WHERE JSON_UNQUOTE(JSON_EXTRACT(dados,'$.tipo'))='oferta'`,
+      saidas: `SELECT id, ${J("data")} AS data, ${J("nome")} AS descricao, ${J("origem")} AS origem, ${J("eventoId")} AS evento_id, ${N("valor")} AS valor, ${J("nota")} AS nota FROM movimentos WHERE JSON_UNQUOTE(JSON_EXTRACT(dados,'$.tipo'))='saida'`,
+      contribuicoes_entradas: `SELECT id, ${J("eventoId")} AS contribuicao_id, ${J("nome")} AS nome, ${N("valor")} AS valor, ${J("data")} AS data FROM movimentos WHERE JSON_UNQUOTE(JSON_EXTRACT(dados,'$.tipo'))='contribuicao'`,
+      contribuicoes: `SELECT id, ${J("nome")} AS contribuicao, ${J("data")} AS data, ${N("meta")} AS meta, ${N("entradasManual")} AS recebido_manual, ${N("saidasManual")} AS saidas_manual FROM eventos WHERE JSON_UNQUOTE(JSON_EXTRACT(dados,'$.tipo'))='contribuicao'`,
+      conferencias: `SELECT id, ${J("nome")} AS conferencia, ${J("tipo")} AS tipo, ${J("data")} AS data, ${N("meta")} AS meta, ${N("entradasManual")} AS recebido_manual, ${N("saidasManual")} AS saidas_manual, ${J("nota")} AS origem_do_valor FROM eventos WHERE JSON_UNQUOTE(JSON_EXTRACT(dados,'$.tipo'))<>'contribuicao'`,
+    };
+    for (const [v, sql] of Object.entries(vistas)) await db.query(`CREATE OR REPLACE VIEW \`${v}\` AS ${sql}`);
+    await espelharTudo(db);
     await db.query(`CREATE TABLE IF NOT EXISTS acessos (
       id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       utilizador VARCHAR(64) NOT NULL,
@@ -83,6 +102,41 @@ export function ensureSchema() {
     ) DEFAULT CHARSET=utf8mb4`);
   })().catch(e => { schemaPronto = null; throw e; });
   return schemaPronto;
+}
+
+// ---- Espelho: reescreve as tabelas cotas / lideranca / regiao_* a partir dos documentos JSON
+const CARGOS_LID = { responsavel: "Responsável", viceResponsavel: "Vice-Responsável", secretario: "Secretário(a)", viceSecretario: "Vice-Secretário(a)", coord1: "Membro Coordenador 1", coord2: "Membro Coordenador 2", coord3: "Membro Coordenador 3", cons1: "Família Conselheira", pastor: "Pastor da autonomia" };
+const numOk = v => { const n = typeof v === "number" ? v : parseFloat(String(v ?? "").replace(/\s/g, "").replace(",", ".")); return isFinite(n) ? n : null; };
+export async function espelhar(cx, col, id, dados) {
+  if (col === "membros") {
+    await cx.query("DELETE FROM cotas WHERE membro_id=?", [id]);
+    if (!dados) return;
+    const rows = [];
+    for (const [ano, meses] of Object.entries(dados.cotas || {})) for (const [mes, v] of Object.entries(meses || {})) { const n = numOk(v); if (n != null && +ano && +mes) rows.push([id, String(dados.nome || "").slice(0, 200), +ano, +mes, n]); }
+    if (rows.length) await cx.query("INSERT INTO cotas (membro_id,membro,ano,mes,valor) VALUES ?", [rows]);
+  } else if (col === "config" && id === "lideranca") {
+    await cx.query("DELETE FROM lideranca");
+    const rows = Object.entries(dados || {}).filter(([k]) => CARGOS_LID[k]).map(([k, v]) => [k, CARGOS_LID[k], String(v || "").slice(0, 200)]);
+    if (rows.length) await cx.query("INSERT INTO lideranca (cargo,cargo_nome,nome) VALUES ?", [rows]);
+  } else if (col === "regiao" && id === "pemba") {
+    await cx.query("DELETE FROM regiao_direccoes"); await cx.query("DELETE FROM regiao_quotas"); await cx.query("DELETE FROM regiao_conferencias");
+    if (!dados) return;
+    const dirs = (dados.direcoes || []).filter(d => d && !d.removida), nomes = Object.fromEntries(dirs.map(d => [d.id, d.nome]));
+    if (dirs.length) await cx.query("INSERT INTO regiao_direccoes (id,nome,ordem) VALUES ?", [dirs.map(d => [d.id, String(d.nome || "").slice(0, 200), +d.ordem || 0])]);
+    const q = [];
+    for (const [ano, porDir] of Object.entries(dados.quotas || {})) for (const [dir, meses] of Object.entries(porDir || {})) if (nomes[dir] != null) for (const [mes, v] of Object.entries(meses || {})) { const n = numOk(v); if (n != null) q.push([dir, nomes[dir], +ano, +mes, n]); }
+    if (q.length) await cx.query("INSERT INTO regiao_quotas (direccao_id,direccao,ano,mes,valor) VALUES ?", [q]);
+    const c = [];
+    for (const [cid, conf] of Object.entries(dados.conferencias || {})) if (conf && !conf.removida) for (const [dir, x] of Object.entries(conf.dados || {})) if (nomes[dir] != null) c.push([cid, dir, String(conf.nome || "").slice(0, 200), +conf.ano || null, nomes[dir], numOk(x?.meta), numOk(x?.valor)]);
+    if (c.length) await cx.query("INSERT INTO regiao_conferencias (id,direccao_id,conferencia,ano,direccao,meta,valor) VALUES ?", [c]);
+  }
+}
+async function espelharTudo(db) {
+  const ler = async (t, w = "") => { const [r] = await db.query(`SELECT id,dados FROM \`${t}\` ${w}`); return r.map(x => [x.id, typeof x.dados === "string" ? JSON.parse(x.dados) : x.dados]); };
+  await db.query("DELETE FROM cotas");
+  for (const [id, d] of await ler("membros")) await espelhar(db, "membros", id, d);
+  const lid = await ler("config", "WHERE id='lideranca'"); await espelhar(db, "config", "lideranca", lid[0]?.[1] || null);
+  const reg = await ler("regiao", "WHERE id='pemba'"); await espelhar(db, "regiao", "pemba", reg[0]?.[1] || null);
 }
 
 // ---- senhas (iguais às do site: PBKDF2-SHA256, 150 000 voltas)

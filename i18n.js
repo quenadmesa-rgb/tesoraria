@@ -175,6 +175,11 @@
     "Ainda não há actividades registadas neste ano.": "No activities recorded this year yet.", "Ainda não há actividades registadas neste mês.": "No activities recorded this month yet.", "Ainda não há eventos registados.": "No events recorded yet.",
     "Nenhuma actividade ou evento registado neste mês. Será usado o texto abaixo.": "No activity or event recorded this month. The text below will be used.", "Membro adicionado": "Member added", "Nome de quem": "Name of",
     "A última cópia de segurança foi há {n} dias.": "The last backup was {n} days ago.",
+    "Saltar para o conteúdo": "Skip to content", "Total ({n} registos)": "Total ({n} records)", "Total ({n} registo)": "Total ({n} record)", "Acções": "Actions", "Origem": "Source", "Valor (MZN)": "Amount (MZN)",
+    "Recebido (MZN)": "Received (MZN)", "Saída (MZN)": "Expense (MZN)", "Gastos (MZN)": "Spending (MZN)", "Saldo (MZN)": "Balance (MZN)", "Meta (MZN)": "Target (MZN)", "Em falta (MZN)": "Remaining (MZN)", "Cumprimento": "Progress",
+    "Origem do valor": "Source of funds", "Data / período": "Date / period", "Actividade": "Activity", "Observação": "Remarks", "% da região": "% of region", "Posição": "Position", "Conferências - saldo": "Conferences - balance",
+    "Região de Pemba {n}": "Pemba Region {n}", "Liderança": "Leadership", "Pastor da autonomia": "Autonomy pastor", "Não encontrei nenhuma tabela com cabeçalhos conhecidos no ficheiro.": "No table with known headers was found in the file.",
+    "As tabelas não têm linhas com dados.": "The tables have no data rows.", "Nada de novo: {n} linhas já existiam.": "Nothing new: {n} rows already existed.",
     "Sem ligação à base de dados. Registe ou altere utilizadores quando ela estiver ligada.": "No connection to the database. Register or edit users when it is on.",
     "{n} membro sem cota neste período.": "{n} member without dues in this period.", "{n} membros sem cota neste período.": "{n} members without dues in this period.",
     "{n} jovem ainda não tem o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.": "{n} youth member has no sex set yet. Choose Boy or Girl in the list so the counts are right.",
@@ -210,7 +215,8 @@
   ];
   const SENHA = { "pelo menos 8 caracteres": "at least 8 characters", "uma letra minúscula": "a lowercase letter", "uma letra maiúscula": "an uppercase letter", "um número": "a number", "um símbolo (ex.: ! @ # ?)": "a symbol (e.g. ! @ # ?)",
     "não conter o nome de utilizador": "not contain the username", "não ser uma senha conhecida": "not be a common password", "no máximo 128 caracteres": "at most 128 characters" };
-  const PARTES = { "membros novos": "new members", "membros actualizados": "members updated", "valores de cota": "dues amounts", "movimentos": "transactions", "actividades": "activities", "eventos novos": "new events" };
+  const PARTES = { "membros novos": "new members", "membros actualizados": "members updated", "valores de cota": "dues amounts", "movimentos": "transactions", "actividades": "activities", "eventos novos": "new events",
+    "ofertas": "offerings", "saídas": "expenses", "contribuições": "contributions", "entradas de contribuições": "contribution entries", "conferências": "conferences", "quotas da região": "region dues", "cargos da liderança": "leadership roles" };
   function trLista(s) { return s.split(", ").map(p => { const m = p.match(/^(\d+) (.+)$/); return m && PARTES[m[2]] ? m[1] + " " + PARTES[m[2]] : p; }).join(", "); }
 
   let lang = "pt"; try { lang = localStorage.getItem("tes-lang") === "en" ? "en" : "pt"; } catch (e) {}

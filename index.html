@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Tesouraria Águias de Pemba</title><meta name="theme-color" content="#123d33"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png" type="image/png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"></head><body>
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Tesouraria Águias de Pemba</title><meta name="theme-color" content="#123d33"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png" type="image/png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"></head><body><a class="saltar" href="#main">Saltar para o conteúdo</a>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -692,6 +692,95 @@ textarea,textarea.inp{font-family:var(--body);font-size:13.5px;line-height:1.5}
   .head-acts .xbar .btn{width:100%;justify-content:center}
   .head-acts .xbar .btn.ghost{border-color:var(--line);background:var(--surface)}
 }
+/* =====================================================================
+   SISTEMA DE DESIGN — tabelas, formulários, botões, cartões, acessibilidade
+   ===================================================================== */
+:root{--row:42px;--radius:12px;--focus:0 0 0 3px color-mix(in srgb,var(--gold) 45%,transparent)}
+/* --- Tabelas: até ~15 linhas visíveis, deslizar só dentro da tabela, cabeçalho e numeração fixos --- */
+.scroll{max-height:calc(var(--row) * 15 + 44px);overflow:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:none;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--muted) 45%,transparent) transparent}
+.scroll::-webkit-scrollbar{width:10px;height:10px}.scroll::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--muted) 40%,transparent);border-radius:10px;border:2px solid var(--surface)}
+.scroll table{border-collapse:separate;border-spacing:0;width:100%}
+.scroll thead th{position:sticky;top:0;z-index:3;background:var(--sunk);color:var(--fg2);font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;height:44px;border-bottom:1px solid var(--line);white-space:nowrap}
+.scroll tbody td{height:var(--row);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent);background:var(--surface)}
+.scroll tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+.scroll tbody tr:hover td{background:color-mix(in srgb,var(--gold-soft) 55%,var(--surface))}
+.scroll tbody tr:last-child td{border-bottom:0}
+.scroll tfoot td{background:var(--sunk);font-weight:700;border-top:1px solid var(--line)}
+/* numeração fixa à esquerda */
+.c-n{position:sticky;left:0;z-index:2;width:48px;min-width:48px;max-width:48px;text-align:center!important;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600;font-size:12px;box-shadow:inset -1px 0 0 var(--line)}
+.scroll thead .c-n{z-index:4}
+.scroll tbody td.c-n{background:var(--surface)}
+.scroll tbody tr:nth-child(even) td.c-n{background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+/* cotas e região: o nome também fica fixo (a seguir ao Nº) */
+.cota th:first-child,.cota td:first-child{min-width:48px;width:48px;border-right:0}
+.cota th:nth-child(2),.cota td:nth-child(2){position:sticky;left:48px;z-index:2;text-align:left;min-width:170px;background:var(--surface);box-shadow:inset -1px 0 0 var(--line)}
+.cota thead th:nth-child(2){z-index:4;background:var(--sunk)}
+.cota tbody tr:nth-child(even) td:nth-child(2){background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+.cota tfoot td:nth-child(2),.cota tfoot td.c-n{background:var(--sunk);position:sticky}
+.cota tfoot td.c-n{left:0}.cota tfoot td:nth-child(2){left:48px}
+.cota input{border-radius:7px;height:30px}
+/* tabela de movimentos */
+.mov th,.mov td{text-align:left;padding:8px 12px}
+.mov .r,.mov td.money{text-align:right}
+.mov td.money{font-weight:700;white-space:nowrap}
+.mov .c-desc{font-weight:600;min-width:180px}
+.mov .c-nota{color:var(--muted);font-size:12.5px;max-width:260px}
+.mov .nw{white-space:nowrap}
+.mov .c-acc{width:1%;text-align:right;white-space:nowrap}
+.mov tfoot td{text-align:left}.mov tfoot td.money{text-align:right}
+tr.clicavel{cursor:pointer}
+tr.clicavel:focus-visible td{outline:none;background:color-mix(in srgb,var(--gold-soft) 70%,var(--surface))}
+.tbl-panel{padding:0;overflow:hidden;border:0;background:transparent;box-shadow:none}
+.tbl-panel .scroll{box-shadow:var(--shadow)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){
+  :root{--row:40px}
+  .scroll{max-height:calc(var(--row) * 12 + 44px)}
+  .mtab th.c-n,.mtab td.c-n{display:table-cell!important}
+  .mov .c-nota,.mov th:nth-child(3),.mov td:nth-child(3){display:none}
+  .mov th,.mov td{padding:8px 8px}
+  .cota th:nth-child(2),.cota td:nth-child(2){min-width:120px}
+}
+/* --- Cabeçalho e logótipo sempre fixos --- */
+header.top{position:sticky;top:0;z-index:12}
+@media (max-width:1023px){header.top{box-shadow:0 2px 12px rgba(0,0,0,.18)}}
+/* --- Cartões fixos (não se mexem) --- */
+.kpi,.kpi:hover,.card,.card:hover,.panel,.pod{transform:none!important}
+.kpi:hover{box-shadow:var(--shadow)}
+.card:hover{box-shadow:var(--shadow);border-color:var(--gold)}
+/* --- Formulários modernos --- */
+select.inp,input.inp,textarea.inp{border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);padding:9px 12px;transition:border-color .15s,box-shadow .15s,background .15s}
+select.inp:hover,input.inp:hover,textarea.inp:hover{border-color:color-mix(in srgb,var(--muted) 55%,var(--line))}
+select.inp:focus,input.inp:focus,textarea.inp:focus{outline:none;border-color:var(--gold);box-shadow:var(--focus);background:var(--surface)}
+input.inp:invalid:not(:placeholder-shown){border-color:var(--bad)}
+.inp[readonly]{background:var(--sunk)}
+input[type=date].inp{min-width:0}
+input[type=checkbox],input[type=radio]{accent-color:var(--brand)}
+.panel.quick{background:linear-gradient(180deg,color-mix(in srgb,var(--gold-soft) 35%,var(--surface)),var(--surface) 60px)}
+.qgrid label,.fgrid label,.sheet label{color:var(--fg2)}
+.sheet{border:1px solid var(--line)}
+.sheet-bg{background:rgba(8,20,16,.55)}
+/* --- Botões --- */
+.btn{min-height:38px;border-radius:10px;font-weight:600;letter-spacing:.01em;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);box-shadow:0 1px 1px rgba(16,32,26,.04);transition:background .15s,border-color .15s,box-shadow .15s,color .15s}
+.btn:hover{border-color:var(--muted);background:color-mix(in srgb,var(--sunk) 50%,var(--surface))}
+.btn:active{background:var(--sunk)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-fg);box-shadow:0 2px 6px color-mix(in srgb,var(--brand) 30%,transparent)}
+.btn.primary:hover{filter:none;background:color-mix(in srgb,var(--brand) 85%,#fff)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent);background:var(--surface)}
+.btn.danger:hover{background:var(--bad-soft)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn:focus-visible,.tab:focus-visible,.bn:focus-visible,.del:focus-visible,.linkbtn:focus-visible,a:focus-visible,summary:focus-visible{outline:none;box-shadow:var(--focus)}
+/* --- Página e fundo --- */
+body{background:radial-gradient(1200px 600px at 100% -10%,color-mix(in srgb,var(--gold-soft) 55%,transparent),transparent 60%),var(--bg);background-attachment:fixed}
+.panel{border-radius:14px;border-color:color-mix(in srgb,var(--line) 85%,transparent)}
+.head h2{letter-spacing:-.01em}
+.empty{border-style:dashed;color:var(--muted);background:color-mix(in srgb,var(--surface) 70%,transparent)}
+/* --- Acessibilidade --- */
+.saltar{position:fixed;left:12px;top:-60px;z-index:50;background:var(--gold);color:#1b1404;padding:10px 14px;border-radius:10px;font-weight:700;text-decoration:none}
+.saltar:focus{top:12px}
+@media (pointer:coarse){.btn,.bn,.tab,select.inp,input.inp{min-height:44px}.del{min-height:36px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media (forced-colors:active){.kpi::before,.kpi::after{forced-color-adjust:none}.btn{border:1px solid ButtonText}}
 /* ===== Botão de idioma PT | EN ===== */
 .lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
 .lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
@@ -729,7 +818,7 @@ textarea,textarea.inp{font-family:var(--body);font-size:13.5px;line-height:1.5}
   <div class="wrap" id="tabs"></div>
   <div class="side-foot">Direcção da Juventude<br>Águias de Pemba</div>
 </nav>
-<main class="wrap" id="main">
+<main class="wrap" id="main" tabindex="-1">
   <div class="empty">A carregar os dados da tesouraria…</div>
 </main>
 <footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Direcção da Juventude da Autonomia da Cidade das Águias de Pemba</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
@@ -1163,13 +1252,13 @@ function rankLi(r,max){return `<li><span class="n">${r.pos}</span><span class="t
 
 function vCotas(){
   const ms=S.membros;
-  const head=`<tr><th>Membro</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th>Total</th></tr>`;
-  const body=ms.map(m=>{
+  const head=`<tr><th class="c-n">Nº</th><th>Membro</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th>Total</th></tr>`;
+  const body=ms.map((m,idx)=>{
     const cells=M3.map((_,i)=>{const v=m.cotas?.[S.ano]?.[i+1];const val=(v===undefined||v===null||v==="")?"":num(v);
       return S.edit?`<td><input inputmode="decimal" aria-label="${esc(m.nome)} ${MESES[i]}" data-cota="${m.id}" data-mes="${i+1}" value="${val}" placeholder="–"></td>`
         :`<td class="${val?"":"zero"}">${val===""?"–":val}</td>`}).join("");
     const oculto=S.cotaBusca&&!semAcento(m.nome).includes(semAcento(S.cotaBusca));
-    return `<tr data-nome="${esc(semAcento(m.nome))}" ${oculto?"hidden":""}><td class="name">${S.edit?`<button data-act="editMembro" data-id="${m.id}">${esc(m.nome)}</button>`:esc(m.nome)}</td>${cells}<td class="tot" data-rowtot="${m.id}">${fmt(cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12]))}</td></tr>`}).join("");
+    return `<tr data-nome="${esc(semAcento(m.nome))}" ${oculto?"hidden":""}><td class="c-n">${idx+1}</td><td class="name">${S.edit?`<button data-act="editMembro" data-id="${m.id}">${esc(m.nome)}</button>`:esc(m.nome)}</td>${cells}<td class="tot" data-rowtot="${m.id}">${fmt(cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12]))}</td></tr>`}).join("");
   const colt=M3.map((_,i)=>`<td data-coltot="${i+1}">${fmt(sum(ms.map(m=>cotaM(m,S.ano,i+1))))}</td>`).join("");
   const all=sum(ms.map(m=>cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12])));
   const live=`<p class="muted" id="liveRank" style="margin:0;font-size:13px">${liveRank()}</p>`;
@@ -1187,7 +1276,7 @@ function footRows(tot){
   const sai=saidasCotaMes(),disp=tot.map((t,i)=>t-sai[i]);
   let a=0,ad=0;const acc=tot.map(t=>a+=t),accd=disp.map(d=>ad+=d);
   const T=sum(tot),SA=sum(sai);
-  const row=(lbl,arr,last,cls="")=>`<tr class="${cls}"><td>${lbl}</td>${arr.map(v=>`<td>${fmt(v)}</td>`).join("")}<td>${last}</td></tr>`;
+  const row=(lbl,arr,last,cls="")=>`<tr class="${cls}"><td class="c-n"></td><td>${lbl}</td>${arr.map(v=>`<td>${fmt(v)}</td>`).join("")}<td>${last}</td></tr>`;
   return row("Total do mês",tot,fmt(T),"f-total")+row("Acumulado",acc,fmt(T),"f-acc")+row("Saídas (cota)",sai,fmt(SA),"f-sai")+row("Disponível",disp,fmt(T-SA),"f-disp")+row("Disponível acumulado",accd,fmt(T-SA),"f-acc");
 }
 function liveRank(){const t=ranking([1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,3);
@@ -1217,7 +1306,7 @@ function vEventos(grupo){
     .sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
   const titulo=grupo==="contribuicao"?"Contribuições":"Conferências e eventos";
   const desc=grupo==="contribuicao"?"Campanhas de contribuição, como envelopes e contribuição dos líderes.":"Conferências, retiros, cultos especiais e outros eventos, com entradas e saídas de cada um.";
-  return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div><div class="head-acts">${xlsBar("contribuicoes")}${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div></div>
+  return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div><div class="head-acts">${xlsBar(grupo==="contribuicao"?"contribuicoes":"conferencias")}${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div></div>
   ${quickEvento(grupo)}
   ${evs.length?`<div class="cards">${evs.map(cardEvento).join("")}</div>`:`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
 }
@@ -1361,11 +1450,22 @@ function porMes(arr,out){
   const g={};arr.forEach(v=>{const k=mesMov(v)||0;(g[k]=g[k]||[]).push(v)});
   return Object.keys(g).map(Number).sort((a,b)=>b-a).map(k=>`<div class="month-h"><span>${k?MESES[k-1]:"Sem data"}</span><span class="money">${fmt(sum(g[k].map(v=>num(v.valor))))}</span></div><ul class="list">${g[k].sort((a,b)=>(b.data||"").localeCompare(a.data||"")).map(v=>movLi(v,out)).join("")}</ul>`).join("");
 }
+// Teclado: Enter ou Espaço numa linha da tabela abre a edição
+document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-editmov],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
+// Tabela de movimentos (ofertas / saídas): numeração fixa, cabeçalho fixo e total
+function tabMovs(arr,sai){
+  if(!arr.length)return "";
+  const l=[...arr].sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
+  const rows=l.map((v,i)=>{const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null,orig=sai?(ev?ev.nome:ORIGENS[v.origem]||"Cota"):"";
+    return `<tr ${S.edit?`data-editmov="${v.id}" tabindex="0" class="clicavel" title="Editar"`:""}><td class="c-n">${i+1}</td><td class="nw">${v.data?dataPt(v.data):"—"}</td><td>${v.data?MESES[+v.data.slice(5,7)-1]:"—"}</td><td class="c-desc">${esc(v.nome||"(sem descrição)")}</td>${sai?`<td>${esc(orig)}</td>`:""}<td class="c-nota">${esc(v.nota||"")}</td><td class="money ${sai?"out":""}">${fmt(num(v.valor))}</td>${S.edit?`<td class="c-acc"><button class="del" data-del="${v.id}" aria-label="Apagar ${esc(v.nome||"registo")}">Apagar</button></td>`:""}</tr>`}).join("");
+  return `<div class="scroll"><table class="mov"><thead><tr><th class="c-n">Nº</th><th>Data</th><th>Mês</th><th>Descrição</th>${sai?"<th>Origem</th>":""}<th>Nota</th><th class="r">Valor (MZN)</th>${S.edit?'<th><span class="sr">Acções</span></th>':""}</tr></thead><tbody>${rows}</tbody>
+    <tfoot><tr><td class="c-n"></td><td colspan="${sai?5:4}">Total (${l.length} ${l.length===1?"registo":"registos"})</td><td class="money">${fmt(sum(l.map(v=>num(v.valor))))}</td>${S.edit?"<td></td>":""}</tr></tfoot></table></div>`;
+}
 function vOfertas(){
   const arr=movsAno("oferta");
   return `<div class="head"><div><h2>Ofertas de ${S.ano}</h2><p>Total ${fmt(sum(arr.map(v=>num(v.valor))))} em ${arr.length} ${arr.length===1?"registo":"registos"}.</p></div><div class="head-acts">${xlsBar("ofertas")}${addBtn("novoMov","Oferta",'data-tipo="oferta"')}</div></div>
   ${quick("oferta")}
-  ${arr.length?`<section class="panel">${porMes(arr,false)}</section>`:`<div class="empty">Nenhuma oferta registada em ${S.ano}.</div>`}`;
+  ${arr.length?`<section class="panel tbl-panel">${tabMovs(arr,false)}</section>`:`<div class="empty">Nenhuma oferta registada em ${S.ano}.</div>`}`;
 }
 function vSaidas(){
   const arr=movsAno("saida");
@@ -1377,7 +1477,7 @@ function vSaidas(){
     <div class="kpi"><span class="l">De eventos</span><span class="v">${fmt(por("evento"))}</span></div>
   </div>
   ${quick("saida")}
-  ${arr.length?`<section class="panel">${porMes(arr,true)}</section>`:`<div class="empty">Nenhuma saída registada em ${S.ano}.</div>`}`;
+  ${arr.length?`<section class="panel tbl-panel">${tabMovs(arr,true)}</section>`:`<div class="empty">Nenhuma saída registada em ${S.ano}.</div>`}`;
 }
 
 function quick(tipo,evId){
@@ -1664,13 +1764,13 @@ function vJovens(){
   const L=S.lider||{},c=contagem(),ed=S.edit;
   const inp=(k,l)=>`<label>${l}<input class="inp" data-lider="${k}" id="lid-${k}" value="${esc(L[k]||"")}" ${ed?"":"disabled"} autocomplete="off"></label>`;
   const LC=listaCompleta();
-  const rows=LC.map((m,i)=>`<tr><td>${i+1}</td><td class="name" style="text-align:left">${ed?`<input class="inp nm" data-nome="${m.id}" value="${esc(m.nome)}" aria-label="Nome" autocomplete="off">`:esc(m.nome)}</td>
+  const rows=LC.map((m,i)=>`<tr><td class="c-n">${i+1}</td><td class="name" style="text-align:left">${ed?`<input class="inp nm" data-nome="${m.id}" value="${esc(m.nome)}" aria-label="Nome" autocomplete="off">`:esc(m.nome)}</td>
     <td>${ed?`<select class="inp sm" data-cargo="${m.id}" aria-label="Cargo de ${esc(m.nome)}"><option value="">—</option>${CARGOJ.map(([k,l])=>`<option value="${k}" ${m.cargo===k?"selected":""}>${l}</option>`).join("")}</select>`:(cargoLbl(m.cargo)||"—")}</td>
     <td>${ed?`<select class="inp sm" data-sexo="${m.id}" aria-label="Sexo de ${esc(m.nome)}"><option value="" ${!m.sexo?"selected":""}>—</option><option value="M" ${m.sexo==="M"?"selected":""}>Rapaz</option><option value="F" ${m.sexo==="F"?"selected":""}>Rapariga</option><option value="PAI" ${m.sexo==="PAI"?"selected":""}>Pai</option><option value="MAE" ${m.sexo==="MAE"?"selected":""}>Mãe</option></select>`:(sexoLbl(m.sexo)||"—")}</td>
     <td>${ed?`<select class="inp sm" data-local="${m.id}" aria-label="Local de ${esc(m.nome)}"><option value="Sede" ${!m.bindura?"selected":""}>Sede</option><option value="Bindura" ${m.bindura?"selected":""}>Bindura</option></select>`:(m.bindura?"Bindura":"Sede")}</td>
     <td><input type="checkbox" data-activo="${m.id}" ${m.activo?"checked":""} ${ed&&m.bindura?"":"disabled"} aria-label="Participa activamente"></td></tr>`).join("");
   return `<div class="head"><div><h2>Jovens e liderança</h2><p>Estes dados entram no relatório mensal.</p></div></div>
-  <section class="panel"><h3>Constituição da liderança</h3><p class="muted" style="margin:4px 0 12px;font-size:13px">${ed?"Escreva os nomes completos. Guarda sozinho ao sair do campo.":""}</p>
+  <section class="panel"><div class="head"><h3>Constituição da liderança</h3>${xlsBar("lideranca")}</div><p class="muted" style="margin:4px 0 12px;font-size:13px">${ed?"Escreva os nomes completos. Guarda sozinho ao sair do campo.":""}</p>
     <div class="lgrid">${CARGOS.map(([k,l])=>inp(k,l)).join("")}</div>
     <div class="lgrid" style="margin-top:14px">${inp("pastor","Pastor da autonomia (assina o relatório)")}</div></section>
   <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
@@ -1683,7 +1783,7 @@ function vJovens(){
   </div>
   ${c.semSexo?`<div class="banner">${c.semSexo} ${c.semSexo===1?"jovem ainda não tem":"jovens ainda não têm"} o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.</div>`:""}
   <section class="panel"><div class="head"><h3>Lista completa (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button><button class="btn" data-pdf="jovens" data-k="jovens">PDF só jovens (${c.total})</button>${xlsBar("membros")}${addBtn("novoMembro","Pessoa")}</div></div>
-    <div class="scroll" style="margin-top:10px"><table class="jov"><thead><tr><th>Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="scroll" style="margin-top:10px"><table class="jov"><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted" style="font-size:12px;margin:8px 0 0">Ordem: líderes da Sede, líderes do Bloco, conselheiros, coordenador, pastores e diáconos, e depois os restantes. Toque no nome para o corrigir. A lista "só jovens" e as contagens não incluem conselheiros, coordenador, pastores nem diáconos. Os jovens desta lista também aparecem na tabela de cotas.</p></section>
   ${(()=>{const nj=S.membros.filter(m=>m.naoJovem);return nj.length?`<section class="panel"><h3>Só na tabela de cotas (não contam como jovens)</h3><ul class="list">${nj.map(m=>`<li><div class="grow"><div class="t">${esc(m.nome)}</div></div>${ed?`<button class="btn small" data-jovem="${m.id}" data-v="1">Contar como jovem</button>`:""}</li>`).join("")}</ul></section>`:""})()}`;
 }
@@ -2037,13 +2137,13 @@ function vRegiao(){
   const {rows,tot}=regRanking(regMeses(S.regPer));
   const perNome=(REG_PERIODOS().find(p=>p[0]===S.regPer)||[,""])[1];
   // tabela editável de quotas
-  const head=`<tr><th style="text-align:left">Direcção</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th>Total</th><th>%</th></tr>`;
+  const head=`<tr><th class="c-n">Nº</th><th style="text-align:left">Direcção</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th>Total</th><th>%</th></tr>`;
   const anoTot=sum(dirs.map(d=>sum(M3.map((_,i)=>regQ(d.id,i+1)||0))));
-  const body=dirs.map(d=>{const t=sum(M3.map((_,i)=>regQ(d.id,i+1)||0));
-    return `<tr><td class="name">${ed?`<input class="inp nm" data-regdir="${d.id}" value="${esc(d.nome)}" aria-label="Nome da direcção">`:esc(d.nome)}</td>${M3.map((_,i)=>{const v=regQ(d.id,i+1);
+  const body=dirs.map((d,di)=>{const t=sum(M3.map((_,i)=>regQ(d.id,i+1)||0));
+    return `<tr><td class="c-n">${di+1}</td><td class="name">${ed?`<input class="inp nm" data-regdir="${d.id}" value="${esc(d.nome)}" aria-label="Nome da direcção">`:esc(d.nome)}</td>${M3.map((_,i)=>{const v=regQ(d.id,i+1);
       return ed?`<td><input inputmode="decimal" data-regq="${d.id}" data-mes="${i+1}" value="${v==null?"":v}" placeholder="–" aria-label="${esc(d.nome)} ${MESES[i]}"></td>`:`<td class="${v?"":"zero"}">${v==null?"–":v}</td>`}).join("")}
       <td class="tot" data-regrow="${d.id}">${fmt(t)}</td><td data-regpct="${d.id}">${anoTot?pct(t/anoTot*100):"–"}</td></tr>`}).join("");
-  const colt=`<tr><td>Total da região</td>${M3.map((_,i)=>`<td data-regcol="${i+1}">${fmt(sum(dirs.map(d=>regQ(d.id,i+1)||0)))}</td>`).join("")}<td data-regall>${fmt(anoTot)}</td><td>100%</td></tr>`;
+  const colt=`<tr><td class="c-n"></td><td>Total da região</td>${M3.map((_,i)=>`<td data-regcol="${i+1}">${fmt(sum(dirs.map(d=>regQ(d.id,i+1)||0)))}</td>`).join("")}<td data-regall>${fmt(anoTot)}</td><td>100%</td></tr>`;
   // conferências
   const confs=Object.entries(R.conferencias||{}).filter(([,c])=>c&&!c.removida).sort((a,b)=>num(b[1].criado)-num(a[1].criado));
   if(!S.regConf||!confs.some(([id])=>id===S.regConf))S.regConf=confs.length?confs[0][0]:null;
@@ -2067,7 +2167,7 @@ function vRegiao(){
       ${vbars(ord.filter(r=>r.p!=null).map(r=>({label:r.pos+".º "+r.d.nome,value:r.p,top:pct(r.p),sub:"meta "+fmt(r.meta)})),{aria:"Cumprimento da meta por direcção"})||`<p class="muted">Escreva as metas para ver o gráfico.</p>`}`;
   }
   return `<div class="head"><div><h2>Região de Pemba</h2><p>Quotas enviadas por cada direcção e cumprimento das metas das conferências. Tudo editável.</p></div>
-    <button class="btn" data-pdf="regiao">Baixar PDF da região</button></div>
+    <div class="head-acts">${xlsBar("regiao")}<button class="btn" data-pdf="regiao">Baixar PDF da região</button></div></div>
   <section class="panel" style="display:flex;flex-direction:column;gap:12px">
     <div class="head"><h3>Classificação anual regional de quotas ${S.ano}</h3></div>
     <p class="muted" style="margin:0;font-size:13px">${perNome} · total da região ${fmt(tot)}</p>
@@ -2363,7 +2463,7 @@ async function baixarPdf(tipo,btn){
 let _xls=null;
 function xlsLib(){if(window.XLSX)return Promise.resolve(window.XLSX);if(_xls)return _xls;
   _xls=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>ok(window.XLSX);s.onerror=()=>{_xls=null;ko(Object.assign(new Error("nolib"),{code:"nolib"}))};document.head.appendChild(s)});return _xls}
-const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1};
+const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1,contribuicoes:1,conferencias:1,regiao:1,lideranca:1};
 function xlsBar(kind,big){
   const imp=S.edit&&XLS_IMP[kind]&&!(kind==="tudo"&&S.sessao?.papel==="leitor");
   return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button><button class="btn" data-pdf-tab="${kind}"><span aria-hidden="true">⬇</span> PDF</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
@@ -2375,134 +2475,255 @@ function resumoMensal(ano=S.ano){
     const c=sum(S.membros.map(x=>cotaM(x,ano,m))),mv=t=>sum(S.movs.filter(v=>v.tipo===t&&anoMov(v)===ano&&mesMov(v)===m).map(v=>num(v.valor)));
     const co=mv("contribuicao"),of=mv("oferta"),sa=mv("saida");return {m,c,co,of,ent:c+co+of,sa,saldo:c+co+of-sa}});
 }
+// ---------- Exportar: as mesmas colunas que a importação reconhece (exportar e voltar a importar sem perder nada)
+const MZN=" (MZN)";
 function xlsSheets(kind){
   const A=S.ano,sh=[];
-  const membros=()=>[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem)).map((m,i)=>({"Nº":i+1,"Nome":m.nome,"Sexo":sexoLbl(m.sexo),"Cargo":cargoLbl(m.cargo),"Local":m.bindura?"Bindura":"Sede","Activo (Bindura)":simNao(m.activo),"Conta como jovem":simNao(!m.naoJovem),"Telefone":m.telefone||"","Data de nascimento":m.nascimento||"","Data de entrada":m.entrada||"","Morada":m.morada||"","Notas":m.notas||""}));
-  const cotas=()=>{const rows=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem)).map(m=>{const r={"Nome":m.nome};M3.forEach((k,i)=>r[k]=cotaM(m,A,i+1)||"");r["Total"]=cotaPeriodo(m,A,[1,2,3,4,5,6,7,8,9,10,11,12]);return r});
-    const t={"Nome":"TOTAL"};M3.forEach((k,i)=>t[k]=sum(S.membros.map(m=>cotaM(m,A,i+1))));t["Total"]=sum(M3.map(k=>t[k]));return [...rows,t]};
-  const movs=tipo=>S.movs.filter(v=>(!tipo||v.tipo===tipo)&&anoMov(v)===A).sort((a,b)=>(a.data||"").localeCompare(b.data||"")).map(v=>{const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null;
-    return {"Data":v.data||"","Tipo":{contribuicao:"Contribuição",oferta:"Oferta",saida:"Saída"}[v.tipo]||v.tipo,"Descrição":v.nome||"","Valor (MT)":num(v.valor),"Sai de":v.tipo==="saida"?(ev?"Evento: "+ev.nome:ORIGENS[v.origem]||""):"","Evento":ev?ev.nome:"","Nota":v.nota||""}});
-  const eventos=()=>S.eventos.map(e=>{const t=eventoTotais(e.id);return {"Nome":e.nome,"Tipo":TIPOS[e.tipo]||e.tipo,"Data":e.data||"","Meta (MT)":e.meta??"","Entradas (MT)":t.te,"Saídas (MT)":t.ts,"Saldo (MT)":t.te-t.ts,"Nota":e.nota||""}});
-  const acts=()=>S.acts.filter(a=>a.data&&+a.data.slice(0,4)===A).sort((a,b)=>a.data.localeCompare(b.data)).map(a=>({"Data":a.data,"Nome":a.nome,"Tipo":TACT[a.tipo]||a.tipo||"","Local":a.local||"","Participantes":num(a.participantes)||"","Descrição":a.nota||""}));
+  const ord=()=>[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem));
+  const jovensT=()=>ord().map((m,i)=>({"Nº":i+1,"Nome":m.nome,"Cargo":cargoLbl(m.cargo),"Sexo":sexoLbl(m.sexo),"Local":m.bindura?"Bindura":"Sede","Activo (Bindura)":simNao(m.activo),"Conta como jovem":simNao(!m.naoJovem),"Telefone":m.telefone||"","Data de nascimento":m.nascimento||"","Membro desde":m.entrada||"","Morada":m.morada||"","Notas":m.notas||"",...(m.extra||{})}));
+  const cotas=()=>{const rows=ord().map((m,i)=>{const r={"Nº":i+1,"Nome":m.nome};M3.forEach((k,j)=>r[k]=cotaM(m,A,j+1)||"");r["Total"]=cotaPeriodo(m,A,[1,2,3,4,5,6,7,8,9,10,11,12]);return r});
+    const t={"Nº":"","Nome":"TOTAL"};M3.forEach((k,j)=>t[k]=sum(S.membros.map(m=>cotaM(m,A,j+1))));t["Total"]=sum(M3.map(k=>t[k]));return [...rows,t]};
+  const evNome=id=>(S.eventos.find(e=>e.id===id)||{}).nome||"";
+  const ofertas=()=>{const l=S.movs.filter(v=>anoMov(v)===A&&(v.tipo==="oferta"||(v.tipo==="saida"&&v.origem==="oferta"))).sort((a,b)=>(a.data||"").localeCompare(b.data||""));let s=0;
+    return l.map(v=>{const r=v.tipo==="oferta"?num(v.valor):0,sa=v.tipo==="saida"?num(v.valor):0;s+=r-sa;return {"Data":v.data||"","Mês":v.data?MESES[+v.data.slice(5,7)-1]:"","Descrição":v.nome||"","Nota":v.nota||"",["Recebido"+MZN]:r||"",["Saída"+MZN]:sa||"",["Gastos"+MZN]:"",["Saldo"+MZN]:s}})};
+  const saidas=()=>S.movs.filter(v=>v.tipo==="saida"&&anoMov(v)===A).sort((a,b)=>(a.data||"").localeCompare(b.data||"")).map((v,i)=>({"Nº":i+1,"Data":v.data||"","Descrição":v.nome||"","Origem":v.eventoId?evNome(v.eventoId):ORIGENS[v.origem]||"Cota",["Valor"+MZN]:num(v.valor)}));
+  const resumoEv=e=>{const t=eventoTotais(e.id),meta=num(e.meta);return {t,meta,cump:meta?Math.round(t.te/meta*1000)/10+"%":""}};
+  const contribs=()=>S.eventos.filter(e=>e.tipo==="contribuicao").map(e=>{const {t,meta,cump}=resumoEv(e);return {"Contribuição":e.nome,"Data":e.data||"",["Recebido"+MZN]:t.te,["Saída"+MZN]:t.ts,["Gastos"+MZN]:"",["Saldo"+MZN]:t.te-t.ts,["Meta"+MZN]:meta||"","Cumprimento":cump}});
+  const contribNomes=()=>S.eventos.filter(e=>e.tipo==="contribuicao").map(e=>[e.nome,S.movs.filter(v=>v.eventoId===e.id&&v.tipo==="contribuicao").map(v=>({"Nome":v.nome||"",["Valor"+MZN]:num(v.valor)}))]).filter(x=>x[1].length);
+  const confs=()=>S.eventos.filter(e=>e.tipo!=="contribuicao").map(e=>{const {t,meta,cump}=resumoEv(e);return {"Conferência":e.nome,"Data":e.data||"",["Meta"+MZN]:meta||"",["Recebido"+MZN]:t.te,["Em falta"+MZN]:meta?Math.max(0,meta-t.te):"","Cumprimento":cump,"Origem do valor":e.nota||""}});
+  const confSaldo=()=>S.eventos.filter(e=>e.tipo!=="contribuicao").map(e=>{const t=eventoTotais(e.id);return {"Conferência":e.nome,["Recebido"+MZN]:t.te,["Saída"+MZN]:t.ts,["Gastos"+MZN]:"",["Saldo"+MZN]:t.te-t.ts}});
+  const acts=()=>S.acts.filter(a=>a.data&&+a.data.slice(0,4)===A).sort((a,b)=>a.data.localeCompare(b.data)).map((a,i)=>({"Nº":i+1,"Data / período":a.periodo||a.data,"Actividade":a.nome,"Observação":a.nota||"","Tipo":TACT[a.tipo]||"","Local":a.local||"","Participantes":num(a.participantes)||""}));
+  const lider=()=>{const L=S.lider||{};return [...CARGOS,["pastor","Pastor da autonomia"]].map(([k,l])=>({"Cargo":l,"Nome":L[k]||""}))};
+  const regiao=()=>{const {rows,tot}=regRanking([1,2,3,4,5,6,7,8,9,10,11,12]);const pos=Object.fromEntries(rows.map(r=>[r.d.id,r]));
+    return regDirs().map(d=>{const r={"Direcção":d.nome};M3.forEach((k,j)=>{const v=regQ(d.id,j+1);r[k]=v==null?"":v});const p=pos[d.id];r["Total"]=p?p.v:0;r["% da região"]=tot&&p?Math.round(p.v/tot*1000)/10+"%":"";r["Posição"]=p&&p.pos?p.pos+".º":"";return r})};
   const resumo=()=>{let ac=0;return resumoMensal().map(r=>{ac+=r.saldo;return {"Mês":MESES[r.m-1],"Cotas":r.c,"Contribuições":r.co,"Ofertas":r.of,"Total de entradas":r.ent,"Saídas":r.sa,"Saldo do mês":r.saldo,"Saldo acumulado":ac}})};
   const users=()=>S.users.map(u=>({"Nome":u.nome||u.id,"Papel":(PAPEIS[u.papel]||"").split(" (")[0],"Último acesso":u.ultimoLogin||"","Nº de entradas":u.totalLogins||0}));
   const acessos=()=>(window.TES_REMOTO?TES_REMOTO.acessos():[]).filter(a=>a.sucesso).map(a=>({"Data":a.data,"Nome":a.nome||"","Papel":(PAPEIS[a.papel]||"").split(" (")[0]}));
-  if(kind==="tudo"){sh.push(["Painel "+A,resumo()],["Membros",membros()],["Cotas "+A,cotas()],["Movimentos "+A,movs()],["Eventos",eventos()],["Actividades "+A,acts()]);if(S.sessao?.papel==="admin"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}}
-  else if(kind==="cotas")sh.push(["Cotas "+A,cotas()]);
-  else if(kind==="membros")sh.push(["Membros",membros()]);
-  else if(kind==="ofertas")sh.push(["Ofertas "+A,movs("oferta")]);
-  else if(kind==="saidas")sh.push(["Saídas "+A,movs("saida")]);
-  else if(kind==="contribuicoes")sh.push(["Contribuições "+A,movs("contribuicao")],["Eventos",eventos()]);
-  else if(kind==="actividades")sh.push(["Actividades "+A,acts()]);
-  else if(kind==="utilizadores"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}
-  else if(kind==="resumo")sh.push(["Painel "+A,resumo()]);
-  return sh;
+  const K={cotas:()=>[["Cotas "+A,cotas()]],membros:()=>[["Jovens",jovensT()]],ofertas:()=>[["Ofertas "+A,ofertas()]],saidas:()=>[["Saídas "+A,saidas()]],
+    contribuicoes:()=>[["Contribuições "+A,contribs()],...contribNomes()],conferencias:()=>[["Conferências",confs()],["Conferências - saldo",confSaldo()]],
+    actividades:()=>[["Actividades "+A,acts()]],lideranca:()=>[["Liderança",lider()]],regiao:()=>[["Região de Pemba "+A,regiao()]],resumo:()=>[["Painel "+A,resumo()]],
+    utilizadores:()=>[["Utilizadores",users()],...(window.TES_REMOTO?[["Acessos",acessos()]]:[])]};
+  if(kind==="tudo"){sh.push(...K.resumo(),...K.membros(),...K.lideranca(),...K.cotas(),...K.ofertas(),...K.saidas(),...K.contribuicoes(),...K.conferencias(),...K.actividades(),...K.regiao());if(S.sessao?.papel==="admin")sh.push(...K.utilizadores())}
+  else if(K[kind])sh.push(...K[kind]());
+  return sh.map(([n,r])=>[String(n).slice(0,31),r]);
 }
 const XLS_MODELO={
-  membros:[["Membros",[{"Nome":"Ex.: Maria Joaquim","Sexo":"Rapariga","Cargo":"","Local":"Sede","Activo (Bindura)":"Não","Conta como jovem":"Sim","Telefone":"84 000 0000","Data de nascimento":"2004-05-21","Data de entrada":"2022-01-10","Morada":"","Notas":""}]]],
-  cotas:[["Cotas "+new Date().getFullYear(),[Object.assign({"Nome":"Ex.: Maria Joaquim"},Object.fromEntries(M3.map((k,i)=>[k,i<2?100:""])))]]],
-  ofertas:[["Ofertas",[{"Data":"2026-01-15","Descrição":"Ex.: Oferta do culto","Valor (MT)":500,"Nota":""}]]],
-  saidas:[["Saídas",[{"Data":"2026-01-20","Descrição":"Ex.: Compra de material","Valor (MT)":300,"Sai de":"Cota","Nota":""}]]],
-  actividades:[["Actividades",[{"Data":"2026-01-18","Nome":"Ex.: Culto da juventude","Tipo":"","Local":"Sede","Participantes":40,"Descrição":""}]]],
+  membros:[["Jovens",[{"Nº":1,"Nome":"Ex.: Maria Joaquim","Cargo":"","Sexo":"Rapariga","Local":"Sede","Activo (Bindura)":"Não","Conta como jovem":"Sim"}]]],
+  cotas:[["Cotas "+new Date().getFullYear(),[Object.assign({"Nº":1,"Nome":"Ex.: Maria Joaquim"},Object.fromEntries(M3.map((k,i)=>[k,i<2?100:""])))]]],
+  ofertas:[["Ofertas",[{"Data":"2026-01-15","Mês":"Janeiro","Descrição":"Ex.: Oferta do culto","Nota":"","Recebido (MZN)":500,"Saída (MZN)":"","Gastos (MZN)":"","Saldo (MZN)":500}]]],
+  saidas:[["Saídas",[{"Nº":1,"Data":"2026-01-20","Descrição":"Ex.: Compra de material","Origem":"Cota","Valor (MZN)":300}]]],
+  contribuicoes:[["Contribuições",[{"Contribuição":"Ex.: Envelope de Dezembro","Data":"2026-12-01","Recebido (MZN)":2500,"Saída (MZN)":"","Gastos (MZN)":"","Saldo (MZN)":2500,"Meta (MZN)":5000,"Cumprimento":"50%"}]],["Ex.: Envelope de Dezembro",[{"Nome":"Ex.: Maria Joaquim","Valor (MZN)":200}]]],
+  conferencias:[["Conferências",[{"Conferência":"Ex.: Conferência da Juventude","Data":"2026-08-10","Meta (MZN)":6000,"Recebido (MZN)":4000,"Em falta (MZN)":2000,"Cumprimento":"67%","Origem do valor":"Cotas e ofertas"}]],["Conferências - saldo",[{"Conferência":"Ex.: Conferência da Juventude","Recebido (MZN)":4000,"Saída (MZN)":1500,"Gastos (MZN)":"","Saldo (MZN)":2500}]]],
+  actividades:[["Actividades",[{"Nº":1,"Data / período":"2026-01-18","Actividade":"Ex.: Culto da juventude","Observação":""}]]],
+  lideranca:[["Liderança",[{"Cargo":"Responsável","Nome":"Ex.: Maria Joaquim"},{"Cargo":"Secretário(a)","Nome":""}]]],
+  regiao:[["Região de Pemba",[Object.assign({"Direcção":"Ex.: Chiure"},Object.fromEntries(M3.map((k,i)=>[k,i<2?500:""])),{"Total":1000,"% da região":"","Posição":""})]]],
 };
-XLS_MODELO.tudo=[...XLS_MODELO.membros,...XLS_MODELO.cotas,["Movimentos",[{"Data":"2026-01-15","Tipo":"Oferta","Descrição":"Ex.: Oferta do culto","Valor (MT)":500,"Sai de":"","Nota":""}]],...XLS_MODELO.actividades];
+XLS_MODELO.tudo=[...XLS_MODELO.membros,...XLS_MODELO.lideranca,...XLS_MODELO.cotas,...XLS_MODELO.ofertas,...XLS_MODELO.saidas,...XLS_MODELO.contribuicoes,...XLS_MODELO.conferencias,...XLS_MODELO.actividades,...XLS_MODELO.regiao];
 async function xlsBaixar(sheets,nome){
   const X=await xlsLib(),wb=X.utils.book_new();
   const T=s=>window.TES_TR?TES_TR(String(s)):String(s);
   sheets=sheets.map(([n,rows])=>[T(n),rows.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[T(k),typeof v==="string"?T(v):v])))]);
+  const usados=new Set();
   sheets.forEach(([n,rows])=>{const ws=rows.length?X.utils.json_to_sheet(rows):X.utils.aoa_to_sheet([[T("Sem dados")]]);
     const keys=rows.length?Object.keys(rows[0]):[];ws["!cols"]=keys.map(k=>({wch:Math.min(48,Math.max(k.length+2,...rows.map(r=>String(r[k]??"").length+2)))}));
-    X.utils.book_append_sheet(wb,ws,n.replace(/[\\/?*[\]:]/g,"").slice(0,31))});
+    let nm=n.replace(/[\\/?*[\]:]/g,"").slice(0,31)||"Folha",i=2;while(usados.has(nm.toLowerCase()))nm=nm.slice(0,28)+" "+(i++);usados.add(nm.toLowerCase());
+    X.utils.book_append_sheet(wb,ws,nm)});
   const blob=new Blob([X.write(wb,{type:"array",bookType:"xlsx"})],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
   const dl=await window.claude.use("downloads");await dl.save({filename:nome,data:blob});
 }
-// leitura
+// ---------- Importar: encontra os cabeçalhos onde estiverem, separa as tabelas de cada folha e manda cada uma para o seu lugar
 function isoData(v){
   if(v instanceof Date&&!isNaN(v))return new Date(v.getTime()-v.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  if(typeof v==="number"&&v>20000&&v<80000){const d=new Date(Math.round((v-25569)*864e5));return d.toISOString().slice(0,10)} // data do Excel em número
   const s=String(v??"").trim();if(!s)return "";
   let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,"0")}-${m[3].padStart(2,"0")}`;
   m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const y=m[3].length===2?"20"+m[3]:m[3];return `${y}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`}
   return "";
 }
+// número em qualquer formato: 1200 · 1 200 · 1.200,50 · 1,200.50 · "1 200 MZN"
+function numX(v){if(typeof v==="number")return isFinite(v)?v:0;let s=String(v??"").replace(/[^\d,.\-]/g,"");if(!s)return 0;
+  const lc=s.lastIndexOf(","),lp=s.lastIndexOf(".");
+  if(lc>=0&&lp>=0){if(lc>lp)s=s.replace(/\./g,"").replace(",",".");else s=s.replace(/,/g,"")}
+  else if(lc>=0)s=/,\d{3}$/.test(s)&&!/,\d{1,2}$/.test(s)?s.replace(/,/g,""):s.replace(",",".");
+  else if(lp>=0&&/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,"");
+  const n=parseFloat(s);return isFinite(n)?n:0}
 const pega=(r,...al)=>{for(const k of Object.keys(r)){const n=nrm(k);if(al.some(a=>n===a||n.startsWith(a)))return r[k]}return ""};
-const sexoDe=v=>{const n=nrm(v);return !n?"":/^(m|rapaz|masc|homem)/.test(n)?"M":/^(f|rapariga|fem|mulher)/.test(n)?"F":n==="pai"?"PAI":/^mae/.test(n)?"MAE":""};
-const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n);return c?c[0]:""};
-const tactDe=v=>{const n=nrm(v);if(!n)return "outro";const e=Object.entries(TACT).find(([k,l])=>nrm(k)===n||nrm(l)===n);return e?e[0]:"outro"};
+const sexoDe=v=>{const n=nrm(v);return !n?"":/^(m|rapaz|masc|homem|boy)/.test(n)?"M":/^(f|rapariga|fem|mulher|girl)/.test(n)?"F":/^(pai|father)/.test(n)?"PAI":/^(mae|mother)/.test(n)?"MAE":""};
+const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n)||CARGOJ.find(([k,l])=>nrm(l).replace(/\(.*\)/,"").trim()===n.replace(/\(.*\)/,"").trim());return c?c[0]:""};
+const tactDe=v=>{const n=nrm(v);if(!n)return "outro";const e=Object.entries(TACT).find(([k,l])=>nrm(k)===n||nrm(l)===n);if(e)return e[0];
+  return /culto|vigil/.test(n)?"culto":/estudo|biblic/.test(n)?"estudo":/ensaio|louvor|coro/.test(n)?"louvor":/evangel/.test(n)?"evangelizacao":/visita/.test(n)?"visita":/reuni|comit|assembleia/.test(n)?"reuniao":/confratern|conviv|festa/.test(n)?"confraternizacao":/desport|futebol|jogo/.test(n)?"desporto":/social|doac|ajuda/.test(n)?"social":"outro"};
 const ridX=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
-// Cabeçalhos reconhecidos (português ou inglês, em qualquer ordem). Colunas desconhecidas não se perdem: ficam em "extra".
-const CAMPOS=[["num",["nº","no","n.º","numero","#","n"]],["nome",["nome completo","nome","name","full name","membro","member","jovem nome","pessoa"]],["desc",["descricao","description","designacao","motivo","item"]],
-  ["sexo",["sexo","genero","sex","gender"]],["cargo",["cargo","funcao","role","position"]],["local",["local","location","lugar","sede/bloco","bloco"]],["activo",["activo","ativo","active"]],["jovem",["conta como jovem","jovem?","counts as youth","youth"]],
-  ["telefone",["telefone","telemovel","celular","contacto","contato","phone","mobile","tel"]],["nascimento",["data de nascimento","nascimento","date of birth","birth","aniversario","birthday"]],["entrada",["data de entrada","membro desde","entrada","member since","joined"]],
-  ["morada",["morada","endereco","bairro","residencia","address"]],["notas",["notas","observacoes","observacao","obs","notes"]],["nota",["nota","note","comentario","comment"]],["participantes",["participantes","participants","presencas","presentes"]],
-  ["data",["data","date","dia"]],["valor",["valor","montante","quantia","amount","value","mt"]],["tipo",["tipo","type","categoria","category"]],["saide",["sai de","origem","paid from","source"]],["evento",["evento","event","campanha","conferencia"]],["total",["total"]]];
+// Cabeçalhos reconhecidos (português ou inglês). Colunas desconhecidas não se perdem: ficam em "extra".
+const CAMPOS=[["num",["nº","no","n.º","numero","#","n","ordem"]],["nome",["nome completo","nome","name","full name","membro","member","pessoa"]],["desc",["descricao","description","designacao","motivo","item"]],
+  ["sexo",["sexo","genero","sex","gender"]],["cargo",["cargo","funcao","role","position"]],["local",["local","location","lugar","bloco"]],["activo",["activo","ativo","active","activo bindura"]],["jovem",["conta como jovem","jovem?","counts as youth"]],
+  ["telefone",["telefone","telemovel","celular","contacto","contato","phone","mobile","tel"]],["nascimento",["data de nascimento","nascimento","date of birth","aniversario"]],["entrada",["data de entrada","membro desde","member since","joined"]],
+  ["morada",["morada","endereco","bairro","residencia","address"]],["notas",["notas","observacoes","obs","notes"]],["nota",["nota","note","comentario"]],["observacao",["observacao"]],["participantes",["participantes","participants","presencas"]],
+  ["periodo",["data / periodo","data/periodo","periodo","data ou periodo"]],["data",["data","date","dia"]],["mes",["mes","month"]],
+  ["recebido",["recebido","recebidos","received","entrada (mzn)","entradas","contribuido"]],["saida",["saida","saidas","expense"]],["gastos",["gastos","gasto","despesas","despesa"]],["saldo",["saldo","balance"]],
+  ["meta",["meta","target","objectivo","objetivo"]],["cumprimento",["cumprimento","percentagem","progress"]],["emfalta",["em falta","falta","por cumprir"]],["origemvalor",["origem do valor"]],
+  ["valor",["valor","montante","quantia","amount","value"]],["tipo",["tipo","type","categoria"]],["saide",["origem","sai de","paid from","source"]],["evento",["evento","event"]],
+  ["contribuicao",["contribuicao","contribuicoes","campanha","contribution"]],["conferencia",["conferencia","conferencias","conference"]],["direcao",["direccao","direcao","direccoes","direcoes","board"]],
+  ["actividade",["actividade","atividade","actividades","activity"]],["pctregiao",["% da regiao","%","% regiao"]],["posicao",["posicao","pos","pos.","lugar na regiao","rank"]],["total",["total","totais"]]];
 const MESES_EN=["january","february","march","april","may","june","july","august","september","october","november","december"];
-function mesDe(h){const n=nrm(h).replace(/\.$/,"");let i=M3.findIndex(x=>nrm(x)===n);if(i<0)i=MESES.findIndex(x=>nrm(x)===n);if(i<0)i=MESES_EN.findIndex(x=>x===n||x.slice(0,3)===n);if(i<0&&/^\d{1,2}$/.test(n)&&+n>=1&&+n<=12)i=+n-1;return i>=0?i+1:0}
-function campoDe(h){const n=nrm(h).replace(/\s*\(.*\)\s*$/,"").trim();if(!n)return null;for(const [c,al] of CAMPOS)if(al.some(a=>n===a))return c;for(const [c,al] of CAMPOS)if(al.some(a=>a.length>3&&n.startsWith(a)))return c;return null}
-function normLinha(r){const o={c:{},extra:{},meses:{}};for(const [k,v] of Object.entries(r)){if(String(v).trim()===""||/^__EMPTY/.test(k))continue;const m=mesDe(k);if(m){o.meses[m]=v;continue}
-  const c=campoDe(k);if(c&&o.c[c]==null)o.c[c]=v;else if(!c)o.extra[String(k).trim()]=v}return o}
+function mesNome(h){const n=nrm(h).replace(/\.$/,"");if(!n||/\d/.test(n))return 0;let i=M3.findIndex(x=>nrm(x)===n);if(i<0)i=MESES.findIndex(x=>nrm(x)===n);if(i<0)i=MESES_EN.findIndex(x=>x===n||x.slice(0,3)===n);return i>=0?i+1:0}
+function campoDe(h){const n=nrm(h).replace(/\s*\((mzn|mt|meticais|%)\)\s*$/,"").replace(/\s*\(.*\)\s*$/,"").replace(/\s+/g," ").trim();if(!n)return null;
+  for(const [c,al] of CAMPOS)if(al.includes(n))return c;for(const [c,al] of CAMPOS)if(al.some(a=>a.length>3&&n.startsWith(a+" ")))return c;return null}
+// Lê uma folha como grelha e separa as tabelas: uma tabela começa numa linha de cabeçalhos e acaba numa linha vazia ou num novo cabeçalho.
+function tabelasDaFolha(X,ws,nomeFolha){
+  const g=X.utils.sheet_to_json(ws,{header:1,defval:"",raw:true,blankrows:true});
+  const txt=v=>String(v instanceof Date?"":v??"").trim();
+  const mapa=r=>r.map(v=>{const h=txt(v);if(!h||typeof v==="number")return null;const m=mesNome(h);return m?{mes:m}:(campoDe(h)?{c:campoDe(h)}:null)});
+  const ehCab=r=>{const cheios=r.filter(v=>txt(v)!=="").length,mp=mapa(r).filter(Boolean),cs=new Set(mp.map(x=>x.c||("m"+x.mes)));return cs.size>=2&&mp.length>=cheios*.5};
+  const tabs=[];let titulo="",i=0;
+  while(i<g.length){const r=g[i]||[];
+    if(ehCab(r)){const cols=mapa(r),heads=r.map(txt),linhas=[];let j=i+1;
+      for(;j<g.length;j++){const rr=g[j]||[];if(!rr.some(v=>txt(v)!==""))break;if(ehCab(rr))break;linhas.push(rr)}
+      tabs.push({folha:nomeFolha,titulo:titulo||nomeFolha,cols,heads,linhas});titulo="";i=j;continue}
+    const cheios=r.map(txt).filter(Boolean);if(cheios.length===1&&cheios[0].length<120)titulo=cheios[0];else if(cheios.length>1)titulo="";
+    i++}
+  return tabs;
+}
+function linhaObj(t,r){const o={c:{},meses:{},extra:{}};t.heads.forEach((h,k)=>{const v=r[k];if(v==null||String(v).trim()==="")return;const col=t.cols[k];
+  if(col&&col.mes)o.meses[col.mes]=v;else if(col&&col.c){if(o.c[col.c]==null)o.c[col.c]=v}else if(h)o.extra[h]=v instanceof Date?isoData(v):v});return o}
+function tipoTabela(t,kind){
+  const tem=c=>t.cols.some(x=>x&&x.c===c),meses=t.cols.filter(x=>x&&x.mes).length,ncol=t.cols.filter(Boolean).length;
+  if(tem("direcao"))return "regiao";
+  if(tem("contribuicao"))return "contribuicoes";
+  if(tem("conferencia"))return tem("meta")||tem("emfalta")||tem("cumprimento")||tem("origemvalor")||tem("data")?"conferencias":"confsaldo";
+  if(meses>=2&&(tem("nome")||kind==="cotas"))return kind==="regiao"?"regiao":"cotas";
+  if(tem("actividade")||tem("periodo"))return "actividades";
+  if(tem("recebido")&&!tem("nome"))return "ofertas";
+  if(tem("cargo")&&tem("nome")&&!tem("sexo")&&!tem("local")&&!tem("jovem")&&!tem("activo")&&!tem("telefone")&&ncol<=3)return kind==="membros"?"membros":"lideranca";
+  if(tem("nome")&&(tem("sexo")||tem("local")||tem("jovem")||tem("activo")||tem("telefone")||tem("cargo")||tem("nascimento")||tem("morada")))return "membros";
+  if(tem("saide")&&tem("valor"))return "saidas";
+  if(tem("nome")&&tem("valor")&&ncol<=3)return "contribnomes";
+  if(tem("valor")&&(tem("desc")||tem("data")))return kind==="saidas"?"saidas":kind==="ofertas"?"ofertas":tem("tipo")?"movs":kind==="contribuicoes"?"contribnomes":"ofertas";
+  if(tem("nome"))return {cotas:"cotas",lideranca:"lideranca",contribuicoes:"contribnomes"}[kind]||"membros";
+  return null;
+}
+const ehTotal=s=>/^(total|totais|subtotal|saldo final|soma)\b/.test(nrm(s));
+const exemplo=s=>/^ex\.?:/i.test(String(s||"").trim());
 function xlsInterpretar(wb,kind,X){
-  const ops=[],res={membrosNovos:0,membrosAct:0,cotas:0,movs:0,acts:0,ignorados:0,eventos:0};
+  const ops=[],R={membrosNovos:0,membrosAct:0,cotas:0,ofertas:0,saidas:0,contribs:0,contribEntradas:0,confs:0,quotas:0,lider:0,acts:0,ignorados:0,tabelas:0,naoReconhecidas:[]};
   const porNome=new Map(S.membros.map(m=>[nrm(m.nome),{...m}]));let ordem=Math.max(0,...S.membros.map(x=>num(x.ordem)));
-  const novoMembro=nome=>{const id=ridX(),m={id,nome,ordem:++ordem,sexo:"",naoJovem:false,bindura:false,activo:false,cotas:{}};porNome.set(nrm(nome),m);ops.push({op:"set",col:"membros",id,data:{...m,id:undefined}});res.membrosNovos++;return m};
-  const evPorNome=new Map(S.eventos.map(e=>[nrm(e.nome),e]));
-  const eventoDe=(nome,tipo)=>{nome=String(nome||"").replace(/^(evento|event):\s*/i,"").trim()||"Contribuições importadas";let e=evPorNome.get(nrm(nome));
-    if(!e){e={id:ridX(),nome,tipo,data:"",meta:null,nota:"Criado ao importar Excel",criado:Date.now()};evPorNome.set(nrm(nome),e);ops.push({op:"set",col:"eventos",id:e.id,data:{...e,id:undefined}});res.eventos++}return e};
-  const linhas=ws=>X.utils.sheet_to_json(ws,{defval:"",raw:true}).map(normLinha).filter(l=>Object.keys(l.c).length||Object.keys(l.meses).length||Object.keys(l.extra).length);
-  const exemplo=s=>/^ex\.?:/i.test(String(s||"").trim());
-  // Tipo de cada folha: pelo nome da folha e, se não der, pelas colunas que tem
-  const tipoNome=n=>{n=nrm(n);return /^(membro|jove|member|youth)/.test(n)?"membros":/^(cota|dues)/.test(n)?"cotas":/^(movimento|movement|transac)/.test(n)?"movs":/^(oferta|offering)/.test(n)?"ofertas":/^(saida|expense|despesa)/.test(n)?"saidas":/^(contribui|contribution)/.test(n)?"contribs":/^(actividade|atividade|activit)/.test(n)?"actividades":""};
-  const tipoColunas=ls=>{const t=ls.slice(0,20),tem=c=>t.some(l=>l.c[c]!=null);return t.some(l=>Object.keys(l.meses).length)?"cotas":tem("valor")?"movs":tem("participantes")?"actividades":"membros"};
-  const folhas=[];
-  for(const n of (kind==="tudo"?wb.SheetNames:[wb.SheetNames[0]])){const ls=linhas(wb.Sheets[n]);if(!ls.length)continue;
-    let tp=kind==="tudo"?(tipoNome(n)||tipoColunas(ls)):kind;if(/^(painel|resumo|utilizadores|acessos|eventos|users|summary|dashboard|access|events)/.test(nrm(n))&&kind==="tudo")continue;folhas.push([n,tp,ls])}
-  const movKey=v=>[v.tipo,v.data,nrm(v.nome),num(v.valor)].join("|"),movSet=new Set(S.movs.map(movKey));
+  const novoMembro=nome=>{const id=ridX(),m={id,nome,ordem:++ordem,sexo:"",naoJovem:false,bindura:false,activo:false,cotas:{}};porNome.set(nrm(nome),m);ops.push({op:"set",col:"membros",id,data:{...m,id:undefined}});R.membrosNovos++;return m};
+  const membroOp=id=>ops.find(o=>o.col==="membros"&&o.id===id&&o.op==="set");
+  const evPorNome=new Map(S.eventos.map(e=>[nrm(e.nome),{...e}]));
+  const evento=(nome,tipo,d={})=>{nome=String(nome||"").replace(/^(evento|event):\s*/i,"").trim()||"Contribuições importadas";let e=evPorNome.get(nrm(nome));
+    if(!e){e={id:ridX(),nome,tipo,data:"",meta:null,nota:"",criado:Date.now(),entradasManual:null,saidasManual:null,...d};evPorNome.set(nrm(nome),e);ops.push({op:"set",col:"eventos",id:e.id,data:{...e,id:undefined}});return e}
+    if(Object.keys(d).length){Object.assign(e,d);const o=ops.find(o=>o.col==="eventos"&&o.id===e.id);if(o)Object.assign(o.data,d);else ops.push({op:"update",col:"eventos",id:e.id,data:d})}return e};
+  const movKey=v=>[v.tipo,v.data,nrm(v.nome),num(v.valor),v.eventoId||""].join("|"),movSet=new Set(S.movs.map(movKey));
+  const addMov=d=>{if(movSet.has(movKey(d))){R.ignorados++;return false}movSet.add(movKey(d));ops.push({op:"set",col:"movimentos",id:ridX(),data:d});return true};
   const actSet=new Set(S.acts.map(a=>a.data+"|"+nrm(a.nome)));
-  const cotasDe=(m,ano,meses)=>{const c={};for(const [k,v] of Object.entries(meses))c[k]=num(v);if(!Object.keys(c).length)return;
-    const isNew=!S.membros.some(x=>x.id===m.id);
-    if(isNew){const o=ops.find(o=>o.id===m.id);o.data.cotas={...(o.data.cotas||{}),[ano]:{...((o.data.cotas||{})[ano]||{}),...c}}}
-    else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:c}}});res.cotas+=Object.keys(c).length};
-  for(const [nomeF,tp,rows] of folhas){const ano=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||S.ano;
-    if(tp==="membros"||tp==="cotas")rows.forEach(l=>{const c=l.c;
-      // Sem coluna de nome: entra como "(sem nome)" com todos os dados, para completar depois (nunca usa outra coluna como nome)
-      let nome=String(c.nome??c.desc??"").trim();const semNome=!nome;if(semNome)nome="(sem nome)";
-      if(exemplo(nome)||nrm(nome)==="total")return;
-      const d={};
-      if(tp==="membros"){const sx=sexoDe(c.sexo);if(sx)d.sexo=sx;const cg=cargoDe(c.cargo);if(cg)d.cargo=cg;
-        const lc=nrm(c.local);if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
-        const at=nrm(c.activo);if(at&&d.bindura!==false)d.activo=/^(s|y|1|true)/.test(at);
-        const jv=nrm(c.jovem);if(jv)d.naoJovem=/^(n|0|false)/.test(jv);
-        if(c.telefone!=null)d.telefone=String(c.telefone).trim();
-        const nas=isoData(c.nascimento);if(nas)d.nascimento=nas;const ent=isoData(c.entrada);if(ent)d.entrada=ent;
-        if(c.morada!=null)d.morada=String(c.morada).trim();const no=[c.notas,c.nota].filter(x=>x!=null).join(" ").trim();if(no)d.notas=no;
-        if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,v instanceof Date?isoData(v):String(v)]))}
-      let m=semNome?null:porNome.get(nrm(nome));
-      if(semNome){m=novoMembro(nome);porNome.delete(nrm(nome));Object.assign(ops[ops.length-1].data,d)}
-      else if(m){if(Object.keys(d).length){if(S.membros.some(x=>x.id===m.id))ops.push({op:"update",col:"membros",id:m.id,data:d});else{const o=ops.find(o=>o.id===m.id);o&&Object.assign(o.data,d)}Object.assign(m,d);res.membrosAct++}}
-      else{m=novoMembro(nome);Object.assign(ops[ops.length-1].data,d)}
-      if(Object.keys(l.meses).length)cotasDe(m,ano,l.meses)});
-    if(["movs","ofertas","saidas","contribs"].includes(tp))rows.forEach(l=>{const c=l.c;
-      const tn=nrm(c.tipo);const tipo=tp==="ofertas"?"oferta":tp==="saidas"?"saida":tp==="contribs"?"contribuicao":/^(sa|exp|desp)/.test(tn)?"saida":/^contr/.test(tn)?"contribuicao":"oferta";
-      const nome=String(c.desc??c.nome??"").trim(),valor=num(c.valor),data=isoData(c.data);
-      if(exemplo(nome)||(!nome&&!valor))return;
-      const d={tipo,nome,valor,data,ano:data?+data.slice(0,4):ano,nota:String(c.nota??c.notas??"").trim(),eventoId:"",origem:""};
-      if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,String(v)]));
-      const sai=nrm(c.saide),evNome=c.evento||(/^(evento|event):/.test(sai)?String(c.saide):"");
-      if(tipo==="saida"){if(evNome){d.eventoId=eventoDe(evNome,"outro").id;d.origem="evento"}else d.origem=/^(of|off)/.test(sai)?"oferta":"cota"}
-      else if(tipo==="contribuicao")d.eventoId=eventoDe(evNome,"contribuicao").id;
-      if(movSet.has(movKey(d))){res.ignorados++;return}movSet.add(movKey(d));
-      ops.push({op:"set",col:"movimentos",id:ridX(),data:d});res.movs++});
-    if(tp==="actividades")rows.forEach(l=>{const c=l.c;const nome=String(c.nome??c.desc??"").trim(),data=isoData(c.data)||today();
-      if(!nome||exemplo(nome))return;
-      if(actSet.has(data+"|"+nrm(nome))){res.ignorados++;return}actSet.add(data+"|"+nrm(nome));
-      const d={nome,tipo:tactDe(c.tipo),data,local:String(c.local??"").trim(),participantes:num(c.participantes),nota:String(c.desc&&c.nome?c.desc:(c.nota??c.notas??"")).trim(),criado:Date.now()};
-      if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,String(v)]));
-      ops.push({op:"set",col:"actividades",id:ridX(),data:d});res.acts++});
+  const extraTxt=e=>Object.keys(e).length?Object.fromEntries(Object.entries(e).map(([k,v])=>[k,String(v)])):undefined;
+  const dataDe=(c,ano)=>{let d=isoData(c.data)||isoData(c.periodo);if(!d&&c.mes){const m=mesNome(c.mes)||(+c.mes>=1&&+c.mes<=12?+c.mes:0);if(m)d=`${ano}-${String(m).padStart(2,"0")}-01`}return d};
+  // Região: quotas por direcção
+  const reg=JSON.parse(JSON.stringify(S.regiao||{}));reg.direcoes=reg.direcoes||[];reg.quotas=reg.quotas||{};let regMudou=false;
+  const dirDe=nome=>{let d=reg.direcoes.find(x=>!x.removida&&nrm(x.nome)===nrm(nome));if(!d){d={id:"d"+ridX(),nome:String(nome).trim(),ordem:Math.max(0,...reg.direcoes.map(x=>num(x.ordem)))+1};reg.direcoes.push(d)}return d};
+  // Liderança
+  const lid={...(S.lider||{})};delete lid.id;let lidMudou=false;
+  const cargoLid=(txt,usados)=>{const n=nrm(txt).replace(/\(.*?\)/g,"").trim();if(!n)return null;if(/^pastor/.test(n))return "pastor";
+    if(/^membro coordenador|^coordenador/.test(n)){for(const k of ["coord1","coord2","coord3"])if(!usados.has(k))return k;return null}
+    if(/conselheir/.test(n))return "cons1";
+    const c=CARGOS.find(([k,l])=>nrm(l).replace(/\(.*?\)/g,"").trim()===n||nrm(k)===n);return c?c[0]:null};
+  for(const nomeF of wb.SheetNames){
+    const anoF=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||0;
+    for(const t of tabelasDaFolha(X,wb.Sheets[nomeF],nomeF)){
+      const tp=tipoTabela(t,kind);if(!tp){R.naoReconhecidas.push(t.folha);continue}R.tabelas++;
+      const ano=+(String(t.titulo).match(/(19|20)\d{2}/)||[])[0]||anoF||S.ano;
+      const linhas=t.linhas.map(r=>linhaObj(t,r)).filter(l=>Object.keys(l.c).length||Object.keys(l.meses).length||Object.keys(l.extra).length);
+      const primeiro=l=>String(l.c.nome??l.c.desc??l.c.contribuicao??l.c.conferencia??l.c.direcao??l.c.actividade??l.c.cargo??"");
+      for(const l of linhas){const c=l.c;if(ehTotal(primeiro(l))||exemplo(primeiro(l)))continue;
+        if(tp==="membros"||tp==="cotas"){
+          let nome=String(c.nome??c.desc??"").trim();const semNome=!nome;if(semNome)nome="(sem nome)";
+          const d={};
+          // dados do membro lidos em qualquer tabela que os tenha (também nas de cotas)
+          {const sx=sexoDe(c.sexo);if(sx)d.sexo=sx;const cg=cargoDe(c.cargo);if(cg)d.cargo=cg;
+            const lc=nrm(c.local);if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
+            const at=nrm(c.activo);if(at&&d.bindura!==false)d.activo=/^(s|y|1|true|x|✓)/.test(at);
+            const jv=nrm(c.jovem);if(jv)d.naoJovem=/^(n|0|false)/.test(jv);
+            if(c.telefone!=null)d.telefone=String(c.telefone).trim();
+            const nas=isoData(c.nascimento);if(nas)d.nascimento=nas;const ent=isoData(c.entrada);if(ent)d.entrada=ent;
+            if(c.morada!=null)d.morada=String(c.morada).trim();const no=[c.notas,c.nota,c.observacao].filter(x=>x!=null).join(" ").trim();if(no)d.notas=no;
+            const ex=extraTxt(l.extra);if(ex)d.extra=ex}
+          let m=semNome?null:porNome.get(nrm(nome));
+          if(!m){m=novoMembro(nome);if(semNome)porNome.delete(nrm(nome));Object.assign(membroOp(m.id).data,d)}
+          else if(Object.keys(d).length){if(S.membros.some(x=>x.id===m.id))ops.push({op:"update",col:"membros",id:m.id,data:d});else Object.assign(membroOp(m.id).data,d);Object.assign(m,d);R.membrosAct++}
+          const cq={};for(const [k,v] of Object.entries(l.meses)){if(String(v).trim()!=="")cq[k]=numX(v)}
+          if(Object.keys(cq).length){const o=membroOp(m.id);if(o){o.data.cotas={...(o.data.cotas||{}),[ano]:{...((o.data.cotas||{})[ano]||{}),...cq}}}else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:cq}}});R.cotas+=Object.keys(cq).length}
+        }
+        else if(tp==="ofertas"||tp==="movs"){
+          const data=dataDe(c,ano),nome=String(c.desc??c.nome??"").trim(),nota=String(c.nota??c.notas??c.observacao??"").trim(),aa=data?+data.slice(0,4):ano;
+          const rec=numX(c.recebido??(tp==="ofertas"?c.valor:0)),sai=numX(c.saida),gas=numX(c.gastos);
+          if(tp==="movs"){const tn=nrm(c.tipo),tipo=/^(sa|exp|desp)/.test(tn)?"saida":/^contr/.test(tn)?"contribuicao":"oferta",v=numX(c.valor);
+            if(!nome&&!v)continue;const d={tipo,nome,valor:v,data,ano:aa,nota,eventoId:"",origem:tipo==="saida"?"cota":""};if(tipo==="contribuicao")d.eventoId=evento(c.evento,"contribuicao").id;if(addMov(d))tipo==="saida"?R.saidas++:R.ofertas++;continue}
+          if(!nome&&!rec&&!sai&&!gas)continue;
+          const ex=extraTxt(l.extra);
+          if(rec||(!sai&&!gas)){if(addMov({tipo:"oferta",nome:nome||"Oferta",valor:rec,data,ano:aa,nota,eventoId:"",origem:"",...(ex?{extra:ex}:{})}))R.ofertas++}
+          if(sai&&addMov({tipo:"saida",nome:nome||"Saída das ofertas",valor:sai,data,ano:aa,nota,eventoId:"",origem:"oferta"}))R.saidas++;
+          if(gas&&addMov({tipo:"saida",nome:(nome||"Gastos das ofertas")+(sai?" (gastos)":""),valor:gas,data,ano:aa,nota,eventoId:"",origem:"oferta"}))R.saidas++;
+        }
+        else if(tp==="saidas"){
+          const data=dataDe(c,ano),nome=String(c.desc??c.nome??"").trim(),v=numX(c.valor??c.saida??c.gastos);if(!nome&&!v)continue;
+          const o=String(c.saide??"").trim(),on=nrm(o),d={tipo:"saida",nome,valor:v,data,ano:data?+data.slice(0,4):ano,nota:String(c.nota??c.observacao??"").trim(),eventoId:"",origem:"cota"};
+          const ev=evPorNome.get(nrm(o.replace(/^(evento|event):\s*/i,"")));
+          if(ev){d.eventoId=ev.id;d.origem="evento"}else if(/^of/.test(on))d.origem="oferta";else if(on&&!/^cota/.test(on))d.nota=(d.nota?d.nota+" · ":"")+"Origem: "+o;
+          if(addMov(d))R.saidas++;
+        }
+        else if(tp==="contribuicoes"){
+          const nome=String(c.contribuicao).trim();if(!nome)continue;const rec=c.recebido!=null?numX(c.recebido):null,sg=(c.saida!=null||c.gastos!=null)?numX(c.saida)+numX(c.gastos):null;
+          const d={};const dt=dataDe(c,ano);if(dt)d.data=dt;if(c.meta!=null&&String(c.meta).trim()!=="")d.meta=numX(c.meta);if(rec)d.entradasManual=rec;if(sg)d.saidasManual=sg;
+          evento(nome,"contribuicao",d);R.contribs++;t._ultimo=nome;
+        }
+        else if(tp==="contribnomes"){
+          const nome=String(c.nome??c.desc??"").trim(),v=numX(c.valor??c.recebido);if(!nome&&!v)continue;
+          const tit=String(t.titulo||"").trim(),evNome=tit&&!/^(folha|sheet)\d*$/i.test(tit)&&!/^contribui/i.test(nrm(tit))?tit:(R._ultContrib||"Contribuições importadas");
+          const e=evento(evNome,"contribuicao");const data=e.data||"";
+          if(addMov({tipo:"contribuicao",nome,valor:v,data,ano:data?+data.slice(0,4):ano,nota:"",eventoId:e.id,origem:""}))R.contribEntradas++;
+        }
+        else if(tp==="conferencias"||tp==="confsaldo"){
+          const nome=String(c.conferencia).trim();if(!nome)continue;const d={};
+          const dt=dataDe(c,ano);if(dt)d.data=dt;if(c.meta!=null&&String(c.meta).trim()!=="")d.meta=numX(c.meta);
+          if(c.recebido!=null&&numX(c.recebido))d.entradasManual=numX(c.recebido);
+          const sg=numX(c.saida)+numX(c.gastos);if(sg)d.saidasManual=sg;if(c.origemvalor)d.nota=String(c.origemvalor).trim();
+          evento(nome,"conferencia",d);if(tp==="conferencias")R.confs++;
+        }
+        else if(tp==="regiao"){
+          const nome=String(c.direcao??c.nome??"").trim();if(!nome)continue;const d=dirDe(nome);
+          for(const [m,v] of Object.entries(l.meses)){if(String(v).trim()==="")continue;reg.quotas[ano]=reg.quotas[ano]||{};reg.quotas[ano][d.id]=reg.quotas[ano][d.id]||{};reg.quotas[ano][d.id][m]=numX(v);R.quotas++}
+          regMudou=true;
+        }
+        else if(tp==="lideranca"){
+          const usados=new Set(Object.keys(lid).filter(k=>/^coord/.test(k)&&lid[k]&&t._coordOk));t._coordOk=true;
+          const k=cargoLid(c.cargo,new Set([...(t._usados||[])]));const nome=String(c.nome??"").trim();
+          if(k){lid[k]=nome;lidMudou=true;R.lider++;t._usados=[...(t._usados||[]),k]}else R.ignorados++;void usados;
+        }
+        else if(tp==="actividades"){
+          const nome=String(c.actividade??c.nome??c.desc??"").trim();if(!nome)continue;
+          const per=String(c.periodo instanceof Date?isoData(c.periodo):c.periodo??"").trim();
+          let data=isoData(c.periodo)||isoData(c.data);
+          if(!data&&per){const mm=MESES.findIndex(x=>nrm(per).includes(nrm(x)))+1||M3.findIndex(x=>new RegExp("\\b"+nrm(x)+"\\b").test(nrm(per)))+1;const dd=(per.match(/\b(\d{1,2})\b/)||[])[1];if(mm)data=`${ano}-${String(mm).padStart(2,"0")}-${String(dd&&+dd<=31?dd:1).padStart(2,"0")}`}
+          if(!data)data=today();
+          if(actSet.has(data+"|"+nrm(nome))){R.ignorados++;continue}actSet.add(data+"|"+nrm(nome));
+          const obs=String(c.observacao??c.notas??c.nota??"").trim();
+          const d={nome,tipo:tactDe(c.tipo||nome),data,local:String(c.local??"").trim(),participantes:numX(c.participantes),nota:obs,criado:Date.now()};
+          if(per&&!isoData(c.periodo))d.periodo=per;const ex=extraTxt(l.extra);if(ex)d.extra=ex;
+          ops.push({op:"set",col:"actividades",id:ridX(),data:d});R.acts++;
+        }
+      }
+      if(tp==="contribuicoes"&&t._ultimo)R._ultContrib=t._ultimo;
+    }
   }
+  if(regMudou)ops.push({op:S.regiao&&Object.keys(S.regiao).length?"update":"set",col:"regiao",id:"pemba",data:{direcoes:reg.direcoes,quotas:reg.quotas}});
+  if(lidMudou)ops.push({op:"set",col:"config",id:"lideranca",data:lid});
   ops.forEach(o=>{if(o.data)delete o.data.id});
+  const res={...R,resumo:[R.membrosNovos&&R.membrosNovos+" membros novos",R.membrosAct&&R.membrosAct+" membros actualizados",R.cotas&&R.cotas+" valores de cota",R.ofertas&&R.ofertas+" ofertas",R.saidas&&R.saidas+" saídas",
+    R.contribs&&R.contribs+" contribuições",R.contribEntradas&&R.contribEntradas+" entradas de contribuições",R.confs&&R.confs+" conferências",R.quotas&&R.quotas+" quotas da região",R.lider&&R.lider+" cargos da liderança",R.acts&&R.acts+" actividades"].filter(Boolean)};
   return {ops,res};
 }
+
 // PDF de qualquer tabela: usa as mesmas folhas do Excel
-const TITULOS_TAB={tudo:"Todos os dados",cotas:"Cotas",membros:"Registo de membros",ofertas:"Ofertas",saidas:"Saídas",contribuicoes:"Contribuições",actividades:"Actividades",utilizadores:"Utilizadores",resumo:"Painel"};
+const TITULOS_TAB={tudo:"Todos os dados",cotas:"Cotas",membros:"Jovens",ofertas:"Ofertas",saidas:"Saídas",contribuicoes:"Contribuições",conferencias:"Conferências",actividades:"Actividades",utilizadores:"Utilizadores",resumo:"Painel",regiao:"Região de Pemba",lideranca:"Liderança"};
 async function pdfTabelas(kind){
   const J=await pdfLib(),T=s=>window.TES_TR?TES_TR(s):s;
   const sheets=xlsSheets(kind).filter(s=>s[1].length);
@@ -2530,8 +2751,8 @@ document.addEventListener("change",async ev=>{
   const inp=ev.target.closest("[data-xls-imp]");if(!inp)return;const f=inp.files[0],kind=inp.dataset.xlsImp;inp.value="";if(!f)return;
   try{const X=await xlsLib();const wb=X.read(await f.arrayBuffer(),{type:"array",cellDates:true});
     const {ops,res}=xlsInterpretar(wb,kind,X);
-    if(!ops.length){toast(res.ignorados?"Nada de novo: "+res.ignorados+" linhas já existiam ou estavam incompletas.":"Não encontrei dados nas colunas esperadas. Use o modelo.");return}
-    const partes=[res.membrosNovos&&res.membrosNovos+" membros novos",res.membrosAct&&res.membrosAct+" membros actualizados",res.cotas&&res.cotas+" valores de cota",res.movs&&res.movs+" movimentos",res.acts&&res.acts+" actividades",res.eventos&&res.eventos+" eventos novos"].filter(Boolean);
+    if(!ops.length){toast(res.ignorados?"Nada de novo: "+res.ignorados+" linhas já existiam.":res.tabelas?"As tabelas não têm linhas com dados.":"Não encontrei nenhuma tabela com cabeçalhos conhecidos no ficheiro.");return}
+    const partes=res.resumo;
     if(!confirm("Importar de "+f.name+":\n\n• "+partes.join("\n• ")+(res.ignorados?"\n\n"+res.ignorados+" linhas ignoradas (repetidas ou incompletas).":"")+"\n\nContinuar?"))return;
     await S.db.batch(ops);toast("Importado: "+partes.join(", "));render();
   }catch(er){console.error(er);toast(er.code==="nolib"?"Não foi possível carregar o Excel. Verifique a ligação.":er.code==="invalid_argument"?"Sem permissão para gravar.":"Não foi possível ler o ficheiro: "+(er.message||""))}
@@ -2682,16 +2903,16 @@ function vUsers(){
     <p class="err" hidden></p><div class="acts-inline"><button type="submit" class="btn primary">Registar utilizador</button></div>
     <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li></ul></form>
   <section class="panel"><h3>Contas (${S.users.length})</h3>
-    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-nome">Nome</th><th>Papel</th><th>Último acesso</th><th>Entradas</th><th></th></tr></thead><tbody>
-    ${S.users.map(u=>`<tr><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>
+    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Último acesso</th><th>Entradas</th><th></th></tr></thead><tbody>
+    ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>
       <td><span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span></td>
       <td>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</td><td>${window.TES_REMOTO?(u.totalLogins||0):"—"}</td>
       <td><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button></td></tr>`).join("")}
     </tbody></table></div></section>
   </div>
   ${window.TES_REMOTO?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
-    ${entradas.length?`<div class="scroll flat" style="max-height:420px"><table class="utab"><thead><tr><th>Data e hora</th><th class="c-nome">Quem entrou</th><th>Papel</th></tr></thead><tbody>
-    ${entradas.slice(0,150).map(a=>`<tr><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc((PAPEIS[a.papel]||"").split(" (")[0])}</td></tr>`).join("")}
+    ${entradas.length?`<div class="scroll flat" style="max-height:420px"><table class="utab"><thead><tr><th class="c-n">Nº</th><th>Data e hora</th><th class="c-nome">Quem entrou</th><th>Papel</th></tr></thead><tbody>
+    ${entradas.slice(0,150).map((a,ai)=>`<tr><td class="c-n">${ai+1}</td><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc((PAPEIS[a.papel]||"").split(" (")[0])}</td></tr>`).join("")}
     </tbody></table></div>`:`<div class="empty">Ainda não há entradas registadas.</div>`}</section>`:""}`;
 }
 document.addEventListener("submit",async ev=>{
