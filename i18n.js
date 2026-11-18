@@ -174,7 +174,10 @@
     "Ainda não há conferências ou eventos. Preencha o formulário acima para criar o primeiro.": "No conferences or events yet. Fill in the form above to create the first one.", "Ainda não há conferências ou eventos.": "No conferences or events yet.",
     "Ainda não há actividades registadas neste ano.": "No activities recorded this year yet.", "Ainda não há actividades registadas neste mês.": "No activities recorded this month yet.", "Ainda não há eventos registados.": "No events recorded yet.",
     "Nenhuma actividade ou evento registado neste mês. Será usado o texto abaixo.": "No activity or event recorded this month. The text below will be used.", "Membro adicionado": "Member added", "Nome de quem": "Name of",
-    "A última cópia de segurança foi há {n} dias.": "The last backup was {n} days ago.", "Saldo final": "Final balance", "Valores": "Amounts", "Mapa de cota": "Dues map",
+    "A última cópia de segurança foi há {n} dias.": "The last backup was {n} days ago.",
+    "{n} membro sem cota neste período.": "{n} member without dues in this period.", "{n} membros sem cota neste período.": "{n} members without dues in this period.",
+    "{n} jovem ainda não tem o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.": "{n} youth member has no sex set yet. Choose Boy or Girl in the list so the counts are right.",
+    "{n} jovens ainda não têm o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.": "{n} youth members have no sex set yet. Choose Boy or Girl in the list so the counts are right.", "Saldo final": "Final balance", "Valores": "Amounts", "Mapa de cota": "Dues map",
   };
   ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"].forEach(m => { EN["{n}. Actividades e eventos registados em " + m] = "{n}. Activities and events recorded in " + EN[m]; });
   EN["{n}. Actividades e eventos registados em {n}"] = "{n}. Activities and events recorded in {n}";
