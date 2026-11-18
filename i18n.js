@@ -175,6 +175,7 @@
     "Ainda não há actividades registadas neste ano.": "No activities recorded this year yet.", "Ainda não há actividades registadas neste mês.": "No activities recorded this month yet.", "Ainda não há eventos registados.": "No events recorded yet.",
     "Nenhuma actividade ou evento registado neste mês. Será usado o texto abaixo.": "No activity or event recorded this month. The text below will be used.", "Membro adicionado": "Member added", "Nome de quem": "Name of",
     "A última cópia de segurança foi há {n} dias.": "The last backup was {n} days ago.",
+    "Deslize dentro da tabela para ver todos os meses e membros": "Scroll inside the table to see all months and members", "Arraste com o rato ou use a roda": "Drag with the mouse or use the wheel",
     "Logótipo": "Logo", "Logótipo actual": "Current logo", "Escolher imagem": "Choose image", "Repor original": "Restore original", "Logótipo actualizado": "Logo updated", "Logótipo original reposto": "Original logo restored",
     "Aparece no cabeçalho, na barra lateral, no ecrã de entrada e no ícone do separador, em todos os aparelhos.": "Shown in the header, sidebar, sign-in screen and tab icon, on every device.",
     "Cor do sistema": "System colour", "Azul institucional": "Institutional blue", "Verde claro": "Light green", "Azul": "Blue", "Vinho": "Wine", "Verde escuro (antigo)": "Dark green (old)",

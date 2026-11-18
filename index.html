@@ -792,7 +792,7 @@ body{background:radial-gradient(1200px 600px at 100% -10%,color-mix(in srgb,var(
 .rk tbody tr:nth-child(-n+3) td.c-n{color:var(--gold);font-weight:800}
 @media (max-width:640px){.evs th:nth-child(3),.evs td:nth-child(3),.evs th:nth-child(4),.evs td:nth-child(4),.evs th:nth-child(6),.evs td:nth-child(6){display:none}.acts th:nth-child(4),.acts td:nth-child(4),.acts th:nth-child(5),.acts td:nth-child(5),.acts th:nth-child(7),.acts td:nth-child(7){display:none}.rk th:nth-child(5),.rk td:nth-child(5){display:none}}
 /* --- Paginação (barra fixa no fundo) --- */
-:root{--rows:10}
+:root{--rows:15}
 .scroll{max-height:calc(var(--row) * var(--rows) + 44px + 46px)}
 tr.pg-off{display:none}
 .pager{position:sticky;bottom:0;z-index:7;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;box-shadow:0 -4px 14px rgba(16,32,26,.06)}
@@ -970,6 +970,8 @@ details.criar>summary{padding:11px 14px;font-size:13px}
 .sc-dica{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);margin:0 2px 6px}
 .sc-dica b{color:var(--fg2)}
 @media (max-width:640px){.tbl-wrap .scroll.sc-cota,.scroll.sc-cota{max-height:62vh!important}.sc-cota table.cota{min-width:980px}}
+@media (pointer:fine){.scroll{cursor:grab}.scroll input,.scroll select,.scroll button,.scroll a,.scroll thead th{cursor:auto}.scroll thead th:not(.c-n){cursor:pointer}.scroll tr.clicavel td{cursor:pointer}}
+.scroll.a-arrastar,.scroll.a-arrastar *{cursor:grabbing!important;user-select:none}
 /* formulários e confirmações sempre por cima do painel de detalhes */
 .sheet-bg{z-index:32!important}.toast{z-index:40!important}.ctip{z-index:45!important}
 /* ===== Painel de detalhes à direita ===== */
@@ -1562,7 +1564,7 @@ function vCotas(){
     return `<tr data-drawer-m="${m.id}" data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}<button data-act="verMembro" data-id="${m.id}">${esc(m.nome)}</button></td>${cells}
       <td class="c-tot"><div class="tot-cel"><b data-rowtot="${m.id}">${fmt(t)}</b><span class="cbar"><i style="width:${(t/maxT*100).toFixed(1)}%"></i></span></div></td></tr>`}).join("");
   const nota=f==="com"&&semCota?`<p class="muted small tbl-nota">${semCota} ${semCota===1?"membro sem cota está oculto":"membros sem cota estão ocultos"} em ${A}. <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></p>`:"";
-  const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><p class="sc-dica"><span>Deslize dentro da tabela para ver todos os meses e membros</span><span><b>⇆</b> Shift + roda do rato</span></p><div class="scroll sc-cota"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
+  const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><p class="sc-dica"><span>Deslize dentro da tabela para ver todos os meses e membros</span><span><b>⇆</b> Arraste com o rato ou use a roda</span></p><div class="scroll sc-cota"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
     :`<div class="empty">${f==="com"?"Ainda não há cotas registadas em "+A+".":"Todos os membros têm cota em "+A+"."} <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></div>`;
   return hdr+kpis+graf+barra+tabela;
 }
@@ -1866,7 +1868,21 @@ document.addEventListener("click",ev=>{const th=ev.target.closest(".scroll thead
   rows.forEach(r=>body.appendChild(r));let n=0;rows.forEach(r=>{const c=r.querySelector("td.c-n");if(c&&c.textContent.trim()!==""&&!/º/.test(c.textContent))c.textContent=++n});
   paginar(true)});
 
-document.addEventListener("wheel",ev=>{const sc=ev.target.closest&&ev.target.closest(".scroll");if(!sc||!ev.shiftKey||sc.scrollWidth<=sc.clientWidth)return;sc.scrollLeft+=ev.deltaY||ev.deltaX;ev.preventDefault()},{passive:false});
+// Rato nas tabelas: roda desliza para os lados (quando a tabela é larga) e arrastar com o rato desliza em qualquer direcção
+document.addEventListener("wheel",ev=>{const sc=ev.target.closest&&ev.target.closest(".scroll");if(!sc||ev.ctrlKey)return;
+  const larga=sc.scrollWidth>sc.clientWidth+1,alta=sc.scrollHeight>sc.clientHeight+1;if(!larga)return;
+  const d=Math.abs(ev.deltaX)>Math.abs(ev.deltaY)?ev.deltaX:ev.deltaY;if(!d)return;
+  if(alta&&!ev.shiftKey){const fimV=d>0?sc.scrollTop+sc.clientHeight>=sc.scrollHeight-1:sc.scrollTop<=0;if(!fimV)return} // primeiro desliza na vertical dentro da tabela
+  const fimH=d>0?sc.scrollLeft+sc.clientWidth>=sc.scrollWidth-1:sc.scrollLeft<=0;if(fimH)return; // no fim, a página continua a deslizar
+  sc.scrollLeft+=d;ev.preventDefault()},{passive:false});
+(()=>{let arr=null;
+  document.addEventListener("mousedown",ev=>{if(ev.button!==0)return;const sc=ev.target.closest&&ev.target.closest(".scroll");if(!sc||ev.target.closest("select,textarea,button,a,label,thead,input[type=checkbox]"))return;
+    if(sc.scrollWidth<=sc.clientWidth+1&&sc.scrollHeight<=sc.clientHeight+1)return;arr={sc,x:ev.clientX,y:ev.clientY,l:sc.scrollLeft,t:sc.scrollTop,mov:false}});
+  document.addEventListener("mousemove",ev=>{if(!arr)return;const dx=ev.clientX-arr.x,dy=ev.clientY-arr.y;if(!arr.mov&&Math.abs(dx)+Math.abs(dy)<6)return;
+    arr.mov=true;arr.sc.classList.add("a-arrastar");arr.sc.scrollLeft=arr.l-dx;arr.sc.scrollTop=arr.t-dy;ev.preventDefault()});
+  document.addEventListener("mouseup",()=>{if(!arr)return;const m=arr.mov,sc=arr.sc;arr=null;sc.classList.remove("a-arrastar");
+    if(m){const parar=e=>{e.stopPropagation();e.preventDefault()};window.addEventListener("click",parar,{capture:true,once:true});setTimeout(()=>window.removeEventListener("click",parar,{capture:true}),50)}});
+})();
 // ---------- Pesquisa e filtros automáticos em todas as tabelas
 function textoCel(td){if(!td)return "";const s=td.querySelector("select");if(s)return (s.selectedOptions[0]||{}).textContent||"";const i=td.querySelector("input:not([type=checkbox])");if(i)return i.value;const c=td.querySelector("input[type=checkbox]");if(c)return c.checked?"Sim":"Não";return td.textContent.replace(/\s+/g," ").trim()}
 function ferramentasTabela(){
@@ -1899,7 +1915,7 @@ document.addEventListener("change",ev=>{const s=ev.target.closest&&ev.target.clo
 document.addEventListener("click",ev=>{const b=ev.target.closest(".tbl-limpar");if(!b)return;const t=b.closest(".tbl-tools");t.querySelectorAll("[data-colf]").forEach(s=>s.value="");const i=t.querySelector("[data-tblsearch]");if(i)i.value="";filtrarTabela(t)});
 // ---------- Paginação das tabelas: N linhas por página (Definições), "Anterior · 1 2 3 · Próximo", barra fixa
 const PG={};
-function linhasPorPag(){try{const v=+localStorage.getItem("tes-linhas");return v>=5&&v<=100?v:10}catch(e){return 10}}
+function linhasPorPag(){try{const v=+localStorage.getItem("tes-linhas");return v>=5&&v<=100?v:15}catch(e){return 15}}
 function aplicarLinhas(){document.documentElement.style.setProperty("--rows",String(linhasPorPag()))}
 aplicarLinhas();
 function paginasVisiveis(p,t){if(t<=7)return [...Array(t)].map((_,i)=>i+1);const s=new Set([1,t,p,p-1,p+1]);if(p<=3)[2,3,4].forEach(x=>s.add(x));if(p>=t-2)[t-1,t-2,t-3].forEach(x=>s.add(x));
@@ -1938,7 +1954,7 @@ function formDefinicoes(){
     <fieldset class="fs"><legend>Cor do sistema</legend><div class="temas" role="radiogroup" aria-label="Cor do sistema">${Object.entries(TEMAS).map(([k,[l,c]])=>`<label class="tema-op"><input type="radio" name="tema" value="${k}" ${temaActual()===k?"checked":""}><span class="tema-cor" style="background:${c}"></span><span>${l}</span></label>`).join("")}</div></fieldset>
     <fieldset class="fs"><legend>Idioma</legend><div class="lang def-lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt">Português</button><button type="button" data-lang="en">English</button></div></fieldset>
     <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
-  async fd=>{try{localStorage.setItem("tes-linhas",String(+fd.get("linhas")||10));if(fd.get("tema"))localStorage.setItem("tes-tema",String(fd.get("tema")))}catch(e){}aplicarTema();aplicarLinhas();Object.keys(PG).forEach(k=>delete PG[k]);render();return "Definições guardadas"});
+  async fd=>{try{localStorage.setItem("tes-linhas",String(+fd.get("linhas")||15));if(fd.get("tema"))localStorage.setItem("tes-tema",String(fd.get("tema")))}catch(e){}aplicarTema();aplicarLinhas();Object.keys(PG).forEach(k=>delete PG[k]);render();return "Definições guardadas"});
   setTimeout(()=>document.querySelectorAll(".def-lang [data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===(window.TES_LANG?TES_LANG():"pt")))),0);
 }
 document.addEventListener("click",ev=>{if(ev.target.closest('[data-act="definicoes"]'))formDefinicoes()});
