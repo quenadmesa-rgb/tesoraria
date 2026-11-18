@@ -822,8 +822,8 @@ function render(){
   if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
   const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
-  const bSemDb=window.TES_API_SEM_DB?`<div class="banner">O servidor não tem a base de dados MySQL ligada (${esc(window.TES_API_SEM_DB)}). Por agora, os dados ficam só neste navegador.</div>`:"";
-  main.innerHTML=bSemDb+bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
+  // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
+  main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
 }
 const addBtn=(act,txt,extra="")=>S.edit?`<button class="btn primary" data-act="${act}" ${extra}>+ ${txt}</button>`:"";
 
@@ -1949,7 +1949,7 @@ function vPdf(){
       <p class="muted" style="margin:0">Um ficheiro Excel com resumo mensal, membros, cotas de ${S.ano}, movimentos, eventos e actividades. A importação aceita o mesmo ficheiro (ou o modelo) e actualiza membros, cotas, movimentos e actividades.</p>
       ${xlsBar("tudo",true)}</section>
     <section class="panel pdfcard"><h3>Cópia de segurança dos dados</h3>
-      <p class="muted" style="margin:0">${window.TES_REMOTO?"Os dados ficam guardados na base de dados MySQL e também neste navegador. Sem ligação, as alterações ficam no aparelho e seguem para o MySQL quando a ligação voltar. Pode ainda baixar uma cópia (.json) para guardar à parte.":"Os dados ficam guardados só neste navegador. Baixe uma cópia com frequência e importe-a noutro telemóvel ou computador para ter os mesmos dados."}</p>
+      <p class="muted" style="margin:0">${window.TES_REMOTO?"Os dados ficam guardados na base de dados MySQL e também neste navegador. Sem ligação, as alterações ficam no aparelho e seguem para o MySQL quando a ligação voltar. Pode ainda baixar uma cópia (.json) para guardar à parte.":"Baixe uma cópia (.json) para guardar à parte, ou para a importar noutro telemóvel ou computador."}</p>
       <p class="muted" style="margin:0;font-size:13px">${window.TES_LOCAL?textoUltimaCopia():""}</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="bkExport">Baixar cópia (.json)</button>${!window.TES_REMOTO||S.sessao?.papel==="admin"?`<label class="btn" style="cursor:pointer">${window.TES_REMOTO?"Importar cópia para o MySQL":"Importar cópia"}<input type="file" accept=".json,application/json" id="bkImport" hidden></label>`:""}${window.TES_REMOTO&&S.sessao?.papel==="admin"&&dadosDoNavegador()?`<button class="btn" data-act="bkNavegador">Enviar dados deste navegador para o MySQL</button>`:""}</div></section>
     <section class="panel pdfcard"><h3>Enviar por email</h3>
@@ -2351,7 +2351,8 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   const lista=window.TES_REMOTO?(lig.length?lig:[{id:S.sessao.user,nome:S.sessao.nome,papel:S.sessao.papel}]):[];
   const st=window.TES_REMOTO?TES_REMOTO.estado():null;
   const estado=!st?"":!st.online?`<span class="syncst off" title="A base de dados não está acessível. A app continua a funcionar: as alterações ficam guardadas neste aparelho e são gravadas no MySQL quando a base de dados voltar."><i></i><span>Base de dados desligada${st.pendentes?` · <b>${st.pendentes}</b> por enviar`:""}</span></span>`:st.pendentes?`<span class="syncst wait" title="A enviar para o MySQL as alterações guardadas neste aparelho."><i></i><span><b>${st.pendentes}</b> a enviar</span></span>`:"";
-  el.innerHTML=`<div class="contabox">${estado}${window.TES_REMOTO&&st.online?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
+  void estado; // indicador de ligação desactivado: a sincronização é silenciosa
+  el.innerHTML=`<div class="contabox">${window.TES_REMOTO&&st.online?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
   <button class="avbtn" data-act="menuConta" aria-haspopup="menu" aria-expanded="${aberto}" aria-label="Conta de ${esc(S.sessao.nome)}" title="Sessão iniciada: ${esc(S.sessao.nome)}">${esc((S.sessao.nome||"?").trim().charAt(0).toUpperCase())}<i class="dot" aria-hidden="true"></i></button></div>
   <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
   ${window.TES_REMOTO?`<div class="cm-lig"><span class="cm-t">Ligados agora (${lista.length})</span><ul>${lista.map(u=>`<li><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===S.sessao.user?" (você)":""}</b><small>${esc((PAPEIS[u.papel]||"").split(" (")[0])}</small></span></li>`).join("")}</ul></div>`:""}
@@ -2499,7 +2500,7 @@ function bannerCopia(){
   if(!window.TES_LOCAL||!S.sessao||!S.edit||!temDados())return "";
   const t=ultimaCopia(),dias=t?Math.floor((Date.now()-t)/864e5):null;
   if(dias!==null&&dias<BK_DIAS)return "";
-  return `<div class="banner">${dias===null?"Ainda não baixou nenhuma cópia de segurança neste aparelho.":"A última cópia de segurança foi há "+dias+" dias."} Os dados ficam só neste navegador. <button class="linkbtn" data-act="bkExport">Baixar cópia agora</button></div>`;
+  return `<div class="banner">${dias===null?"Ainda não baixou nenhuma cópia de segurança neste aparelho.":"A última cópia de segurança foi há "+dias+" dias."} <button class="linkbtn" data-act="bkExport">Baixar cópia agora</button></div>`;
 }
 function textoUltimaCopia(){const t=ultimaCopia();if(!t)return "Ainda não foi baixada nenhuma cópia neste aparelho.";const d=new Date(t);return "Última cópia baixada: "+d.getDate()+" de "+MESES[d.getMonth()]+" de "+d.getFullYear()+"."}
 document.addEventListener("click",ev=>{const a=ev.target.closest('[data-act="bkExport"]');if(!a||!(window.TES_LOCAL||window.TES_REMOTO))return;
