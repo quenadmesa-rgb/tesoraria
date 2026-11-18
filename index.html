@@ -1541,7 +1541,6 @@ function vLogin(){
     <label>Senha<input class="inp" type="password" name="senha" id="lg-pass" autocomplete="current-password"></label>
     <p class="err" hidden></p>
     <button type="submit" class="btn primary">Entrar</button>
-    ${S.users.length?"":`<p class="muted" style="margin:0;font-size:12px">Primeira entrada: utilizador <b>admin</b> e senha <b>admin123</b>. Depois mude a senha.</p>`}
   </form></div>`;
 }
 document.addEventListener("submit",async ev=>{
