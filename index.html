@@ -1327,7 +1327,7 @@ function prepararLogo(file){return new Promise((ok,ko)=>{if(!file||!/^image\//.t
     const k=Math.min(N/im.width,N/im.height),w=im.width*k,h=im.height*k;x.drawImage(im,(N-w)/2,(N-h)/2,w,h);ok(c.toDataURL("image/png"))};im.onerror=()=>ko(new Error("Imagem inválida."));im.src=fr.result};fr.readAsDataURL(file)})}
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const M3=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-const TABS=[["resumo","Painel"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
+const TABS=[["resumo","Painel"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
 const TIPOS={contribuicao:"Contribuição",conferencia:"Conferência",retiro:"Retiro",culto:"Culto especial",outro:"Outro evento"};
 const ORIGENS={cota:"Cota",oferta:"Ofertas",evento:"Evento"};
 const S={membros:[],eventos:[],movs:[],acts:[],actMes:"todos",ano:new Date().getFullYear(),tab:"resumo",evento:null,
@@ -1435,7 +1435,7 @@ function render(){
   if(S.sessao.padrao){$("#tabs").innerHTML="";main.innerHTML=vMudarSenha();return}
   if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
-  const bMig="";if(window.TES_REMOTO&&S.edit&&S.sessao.papel!=="leitor"&&!S.migTentado&&S.loaded.m&&S.loaded.e&&S.loaded.v&&dadosDoNavegador())migrarSilencioso();
+  const bMig="";if(window.TES_REMOTO&&S.edit&&PODE_GRAVAR.includes(S.sessao.papel)&&!S.migTentado&&S.loaded.m&&S.loaded.e&&S.loaded.v&&dadosDoNavegador())migrarSilencioso();
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
   setTimeout(()=>{ferramentasTabela();paginar(false);cabecalhosFlutuantes();if(S.drawer)renderDrawer(false)},0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
@@ -2133,6 +2133,7 @@ function formMembro(m){
      <label>Local<select class="inp" name="local" id="f-local">${sel(m?.bindura?"Bindura":"Sede",[["Sede","Sede"],["Bindura","Bloco de Bindura"]])}</select></label>
      <label>Membro desde<input class="inp" type="date" name="entrada" id="f-entrada" value="${esc(m?.entrada||"")}"></label>
      <div class="checks span2">
+       <label class="check"><input type="checkbox" name="lideranca" id="f-lider" ${m?.lideranca?"checked":""}><span>Faz parte da liderança<small>Aparece na página Liderança</small></span></label>
        <label class="check"><input type="checkbox" name="jovem" id="f-jovem" ${m?.naoJovem?"":"checked"}><span>Conta como jovem<small>Entra na lista dos jovens e nas contagens</small></span></label>
        <label class="check"><input type="checkbox" name="activo" id="f-activo" ${m?.activo?"checked":""}><span>Activo no Bloco de Bindura<small>Só conta se o local for Bindura</small></span></label>
      </div>
@@ -2143,7 +2144,7 @@ function formMembro(m){
   async(fd,f)=>{const nome=String(fd.get("nome")).trim();if(!nome)return fail(f,"Escreva o nome do membro.");
     if(!m&&S.membros.some(x=>nrm(x.nome)===nrm(nome))&&!confirm("Já existe um membro chamado "+nome+". Registar outro com o mesmo nome?"))return false;
     const bindura=fd.get("local")==="Bindura";
-    const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),cargo:cargoKey(fd.get("cargo")),bindura,activo:bindura&&!!fd.get("activo"),
+    const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),lideranca:!!fd.get("lideranca"),cargo:cargoKey(fd.get("cargo")),bindura,activo:bindura&&!!fd.get("activo"),
       telefone:String(fd.get("telefone")||"").trim(),nascimento:String(fd.get("nascimento")||""),entrada:String(fd.get("entrada")||""),morada:String(fd.get("morada")||"").trim(),notas:String(fd.get("notas")||"").trim()};
     const ex={};for(const [k,v] of fd.entries())if(k.startsWith("x:"))ex[k.slice(2)]=String(v).trim();if(Object.keys(ex).length)d.extra=ex;
     if(m){await S.db.doc("membros/"+m.id).update(d);return "Membro actualizado"}
@@ -2158,6 +2159,7 @@ function vMembros(){
   const ms=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem));
   const c=contagem(),comTel=ms.filter(m=>m.telefone).length,pagaram=ms.filter(m=>cotaPeriodo(m,S.ano,A)>0).length;
   const lista=ms.filter(m=>membroPassa(m,f));
+  if(S.mEdit===undefined)S.mEdit=true;
   const ed=S.edit&&S.mEdit,selS=(id,v)=>`<select class="inp tin" data-sexo="${id}" aria-label="Sexo">${[["","—"],["M","Rapaz"],["F","Rapariga"],["PAI","Pai"],["MAE","Mãe"]].map(([k,l])=>`<option value="${k}" ${(v||"")===k?"selected":""}>${l}</option>`).join("")}</select>`;
   const rows=lista.map((m,i)=>{const id=idade(m.nascimento),ct=cotaPeriodo(m,S.ano,A);
     if(ed)return `<tr data-drawer-m="${m.id}" class="em-edicao" data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
@@ -2362,32 +2364,27 @@ function contagem(){
   return {sede:ms.filter(m=>!m.bindura).length,total:ms.length,rapazes:ms.filter(m=>m.sexo==="M").length,raparigas:ms.filter(m=>m.sexo==="F").length,
     semSexo:ms.filter(m=>!m.sexo).length,bindura:ms.filter(m=>m.bindura).length,binduraActivos:ms.filter(m=>m.bindura&&m.activo).length};
 }
+document.addEventListener("change",async ev=>{if(ev.target.id!=="lidAdd"||!ev.target.value)return;try{await S.db.doc("membros/"+ev.target.value).update({lideranca:true});toast("Acrescentado à liderança")}catch(e){toast("Não foi possível guardar.")}});
+document.addEventListener("click",async ev=>{const b=ev.target.closest("[data-lidsai]");if(!b)return;try{await S.db.doc("membros/"+b.dataset.lidsai).update({lideranca:false});toast("Retirado da liderança (continua em Membros)")}catch(e){toast("Não foi possível guardar.")}});
 function vJovens(){
   const L=S.lider||{},c=contagem(),ed=S.edit;
   const inp=(k,l)=>`<label>${l}<input class="inp" data-lider="${k}" id="lid-${k}" value="${esc(L[k]||"")}" ${ed?"":"disabled"} autocomplete="off"></label>`;
-  const LC=listaCompleta();
+  const ixC=m=>{const i=CARGOJ.findIndex(x=>x[0]===m.cargo);return i<0?99:i};
+  const LC=S.membros.filter(m=>m.lideranca).sort((a,b)=>ixC(a)-ixC(b)||num(a.ordem)-num(b.ordem));
+  const fora=S.membros.filter(m=>!m.lideranca).sort((a,b)=>a.nome.localeCompare(b.nome));
   const rows=LC.map((m,i)=>`<tr><td class="c-n">${i+1}</td><td class="name" style="text-align:left">${ed?`<input class="inp nm" data-nome="${m.id}" value="${esc(m.nome)}" aria-label="Nome" autocomplete="off">`:esc(m.nome)}</td>
     <td>${ed?`<input class="inp sm cargo-in" data-cargo="${m.id}" list="dl-cargos" value="${esc(cargoLbl(m.cargo)||"")}" placeholder="—" aria-label="Cargo de ${esc(m.nome)}" autocomplete="off">`:(esc(cargoLbl(m.cargo))||"—")}</td>
     <td>${ed?`<select class="inp sm" data-sexo="${m.id}" aria-label="Sexo de ${esc(m.nome)}"><option value="" ${!m.sexo?"selected":""}>—</option><option value="M" ${m.sexo==="M"?"selected":""}>Rapaz</option><option value="F" ${m.sexo==="F"?"selected":""}>Rapariga</option><option value="PAI" ${m.sexo==="PAI"?"selected":""}>Pai</option><option value="MAE" ${m.sexo==="MAE"?"selected":""}>Mãe</option></select>`:(sexoLbl(m.sexo)||"—")}</td>
     <td>${ed?`<select class="inp sm" data-local="${m.id}" aria-label="Local de ${esc(m.nome)}"><option value="Sede" ${!m.bindura?"selected":""}>Sede</option><option value="Bindura" ${m.bindura?"selected":""}>Bindura</option></select>`:(m.bindura?"Bindura":"Sede")}</td>
-    <td><input type="checkbox" data-activo="${m.id}" ${m.activo?"checked":""} ${ed&&m.bindura?"":"disabled"} aria-label="Participa activamente"></td></tr>`).join("");
-  return `<div class="head"><div><h2>Jovens e liderança</h2><p>Estes dados entram no relatório mensal.</p></div></div>
+    <td><input type="checkbox" data-activo="${m.id}" ${m.activo?"checked":""} ${ed&&m.bindura?"":"disabled"} aria-label="Participa activamente"></td>${ed?`<td><button class="btn small ghost" data-lidsai="${m.id}" title="Retirar da liderança (continua em Membros)">Retirar</button></td>`:""}</tr>`).join("");
+  return `<div class="head"><div><h2>Liderança</h2><p>Quem faz parte da liderança da juventude. Os restantes estão em Membros. Estes dados entram no relatório mensal.</p></div></div>
   <section class="panel"><div class="head"><h3>Constituição da liderança</h3>${xlsBar("lideranca")}</div><p class="muted" style="margin:4px 0 12px;font-size:13px">${ed?"Escreva os nomes completos. Guarda sozinho ao sair do campo.":""}</p>
     <div class="lgrid">${CARGOS.map(([k,l])=>inp(k,l)).join("")}</div>
     <div class="lgrid" style="margin-top:14px">${inp("pastor","Pastor da autonomia (assina o relatório)")}</div></section>
-  <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
-    <div class="kpi"><span class="l">Total de jovens</span><span class="v">${c.total}</span></div>
-    <div class="kpi"><span class="l">Rapazes</span><span class="v">${c.rapazes}</span></div>
-    <div class="kpi"><span class="l">Raparigas</span><span class="v">${c.raparigas}</span></div>
-    <div class="kpi"><span class="l">Sede</span><span class="v">${c.sede}</span></div>
-    <div class="kpi"><span class="l">Bloco de Bindura</span><span class="v">${c.bindura}</span></div>
-    <div class="kpi"><span class="l">Activos de Bindura</span><span class="v">${c.binduraActivos}</span></div>
-  </div>
-  ${c.semSexo?`<div class="banner">${c.semSexo} ${c.semSexo===1?"jovem ainda não tem":"jovens ainda não têm"} o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.</div>`:""}
-  <section class="panel"><div class="head"><h3>Lista completa (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button><button class="btn" data-pdf="jovens" data-k="jovens">PDF só jovens (${c.total})</button>${xlsBar("membros")}${addBtn("novoMembro","Pessoa")}</div></div>
-    <div class="scroll" style="margin-top:10px">${ed?dlCargos():""}<table class="jov"><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="muted" style="font-size:12px;margin:8px 0 0">Ordem: líderes da Sede, líderes do Bloco, conselheiros, coordenador, pastores e diáconos, e depois os restantes. Toque no nome para o corrigir. A lista "só jovens" e as contagens não incluem conselheiros, coordenador, pastores nem diáconos. Os jovens desta lista também aparecem na tabela de cotas.</p></section>
-  ${(()=>{const nj=S.membros.filter(m=>m.naoJovem);return nj.length?`<section class="panel"><h3>Só na tabela de cotas (não contam como jovens)</h3><ul class="list">${nj.map(m=>`<li><div class="grow"><div class="t">${esc(m.nome)}</div></div>${ed?`<button class="btn small" data-jovem="${m.id}" data-v="1">Contar como jovem</button>`:""}</li>`).join("")}</ul></section>`:""})()}`;
+  <section class="panel"><div class="head"><h3>Membros da liderança (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button>${ed&&fora.length?`<select class="inp" id="lidAdd" aria-label="Acrescentar à liderança" style="width:auto"><option value="">+ Acrescentar à liderança…</option>${fora.map(m=>`<option value="${m.id}">${esc(m.nome)}</option>`).join("")}</select>`:""}</div></div>
+    <div class="scroll" style="margin-top:10px">${ed?dlCargos():""}<table class="jov"><thead><tr><th class="c-n">Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th>${ed?"<th></th>":""}</tr></thead><tbody>${rows||`<tr><td colspan="7" class="muted" style="text-align:center;padding:18px">Ainda ninguém na liderança. Use “+ Acrescentar à liderança”.</td></tr>`}</tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">Escreva o cargo de cada pessoa (há sugestões). Quem for retirado continua em Membros e nas Cotas.</p></section>
+`;
 }
 // relatório
 const DEF={
@@ -3094,7 +3091,7 @@ function xlsLib(){if(window.XLSX)return Promise.resolve(window.XLSX);if(_xls)ret
   _xls=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>ok(window.XLSX);s.onerror=()=>{_xls=null;ko(Object.assign(new Error("nolib"),{code:"nolib"}))};document.head.appendChild(s)});return _xls}
 const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1,contribuicoes:1,conferencias:1,regiao:1,regmetas:1,lideranca:1};
 function xlsBar(kind,big){
-  const imp=S.edit&&XLS_IMP[kind]&&!(kind==="tudo"&&S.sessao?.papel==="leitor");
+  const imp=S.edit&&XLS_IMP[kind]&&PODE_GRAVAR.includes(S.sessao?.papel);
   return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button><button class="btn" data-pdf-tab="${kind}"><span aria-hidden="true">⬇</span> PDF</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
 }
 const simNao=b=>b?"Sim":"Não";
@@ -3404,7 +3401,8 @@ document.addEventListener("change",async ev=>{
 });
 
 // ---------- entrada no sistema (login) e utilizadores
-const PAPEIS={admin:"Administrador",tesoureiro:"Tesoureiro (pode registar)",leitor:"Só leitura"};
+const PAPEIS={admin:"Administrador",tesoureiro:"Tesoureiro (pode registar)",leitor:"Só leitura",responsavel:"Responsável (só visualização)",viceResponsavel:"Vice-Responsável (só visualização)",secretario:"Secretário(a) (só visualização)",viceSecretario:"Vice-Secretário(a) (só visualização)",conselheiro:"Conselheiro(a) (só visualização)",pastor:"Pastor(a) (só visualização)"};
+const PODE_GRAVAR=["admin","tesoureiro"];
 // Senhas: PBKDF2 (150 000 voltas). Contas antigas (SHA-256 simples) passam a PBKDF2 no próximo login.
 const ALG="pbkdf2";
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
@@ -3416,7 +3414,7 @@ const confereSenha=async(senha,u)=>!!(u&&u.salt&&u.hash)&&(await hashSenha(senha
 async function novaSenha(senha){const salt=novoSalt();return {salt,hash:await hashSenha(senha,salt),alg:ALG}}
 const novoSalt=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toString(16).padStart(2,"0")).join("");
 const normUser=u=>String(u||"").trim().toLowerCase().replace(/[^a-z0-9._-]/g,"");
-function aplicarSessao(u,padrao){S.sessao={user:u.id,nome:u.nome||u.id,papel:u.papel||"leitor",padrao:!!padrao};S.edit=S.editBase&&S.sessao.papel!=="leitor"}
+function aplicarSessao(u,padrao){S.sessao={user:u.id,nome:u.nome||u.id,papel:u.papel||"leitor",padrao:!!padrao};S.edit=S.editBase&&PODE_GRAVAR.includes(S.sessao.papel)}
 function restaurarSessao(){
   if(window.TES_REMOTO){
     const r=TES_REMOTO.sessao();if(!r){S.sessao=null;S.edit=S.editBase;return}
@@ -3546,7 +3544,7 @@ function vUsers(){
     <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label>
     <div class="span2">${pwField("senha","nu-pass","Senha inicial (a pessoa muda-a na primeira entrada)")}</div></div>
     <p class="err" hidden></p><div class="acts-inline"><button type="submit" class="btn primary">Registar utilizador</button></div>
-    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li></ul></form>
+    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li><li><span class="role">Responsável · Vice-Responsável · Secretário(a) · Vice-Secretário(a) · Conselheiro(a) · Pastor(a)</span> só visualização</li></ul></form>
   <section class="panel"><h3>Contas (${S.users.length})</h3>
     <div class="scroll flat"><table class="utab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Papel</th><th>Último acesso</th><th>Entradas</th><th></th></tr></thead><tbody>
     ${S.users.map((u,ui)=>`<tr><td class="c-n">${ui+1}</td><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>

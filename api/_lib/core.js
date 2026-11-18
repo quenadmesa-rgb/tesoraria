@@ -7,7 +7,8 @@ import mysql from "mysql2/promise";
 import crypto from "node:crypto";
 
 export const COLECOES = ["membros", "eventos", "movimentos", "actividades", "regiao", "config", "relatorios"];
-export const PAPEIS = ["admin", "tesoureiro", "leitor"];
+export const PAPEIS = ["admin", "tesoureiro", "leitor", "responsavel", "viceResponsavel", "secretario", "viceSecretario", "conselheiro", "pastor"];
+export const PODE_GRAVAR = ["admin", "tesoureiro"];
 const ITER = 150000;
 
 let pool = null, schemaPronto = null;

@@ -2,7 +2,7 @@
 //   op: "set" (substitui), "update" (junta campos), "delete", "senha" (a própria senha: {atual,nova}),
 //       "importar" (só administrador: copia uma cópia de segurança completa para o MySQL).
 // Permissões: "leitor" só lê; "tesoureiro" grava tudo menos utilizadores; "admin" grava tudo.
-import { COLECOES, PAPEIS, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada, espelhar } from "./_lib/core.js";
+import { COLECOES, PAPEIS, PODE_GRAVAR, getPool, ensureSchema, sessao, novaSenha, confereSenha, exigeSenhaForte, criarToken, merge, enviar, lerCorpo, erroInterno, dbConfigurada, espelhar } from "./_lib/core.js";
 
 const idOk = id => typeof id === "string" && /^[A-Za-z0-9._-]{1,64}$/.test(id);
 const proibido = m => Object.assign(new Error(m), { status: 403 });
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     if (ops.length === 1 && ops[0].op === "ausente") { await getPool().query("UPDATE utilizadores SET visto_em=NULL WHERE id=?", [eu.id]); return enviar(res, 200, { ok: true }); }
     const soSenha = ops.every(o => o.op === "senha");
     if (!eu.senha_alterada && !soSenha) return enviar(res, 403, { erro: "Defina uma senha nova antes de continuar.", codigo: "mudar_senha" });
-    if (eu.papel === "leitor" && !soSenha) return enviar(res, 403, { erro: "Utilizador só de leitura." });
+    if (!PODE_GRAVAR.includes(eu.papel) && !soSenha) return enviar(res, 403, { erro: "Utilizador só de visualização." });
     cx = await getPool().getConnection();
     await cx.beginTransaction();
     let token = null;
