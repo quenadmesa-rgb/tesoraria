@@ -4,3 +4,5 @@ tesouraria-antes-de-importar-*.json
 *.backup.json
 .DS_Store
 Thumbs.db
+
+.vercel
