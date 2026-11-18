@@ -958,6 +958,18 @@ details.criar>summary{padding:11px 14px;font-size:13px}
 .logo-def{display:flex;gap:14px;align-items:center}
 .logo-def img{width:72px;height:72px;border-radius:50%;object-fit:contain;background:var(--sunk);box-shadow:0 0 0 3px var(--gold);flex:0 0 auto}
 .logo,.side-brand img{object-fit:contain!important;background:#fff!important}
+/* ===== Tabela das cotas: deslizar dentro da tabela (vertical e horizontal) ===== */
+.tbl-wrap .scroll.sc-cota,.scroll.sc-cota{max-height:min(calc(46px * var(--rows) + 50px),68vh)!important;overflow:auto!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:color-mix(in srgb,var(--brand) 55%,transparent) var(--sunk)}
+.scroll.sc-cota::-webkit-scrollbar{width:12px;height:12px}
+.scroll.sc-cota::-webkit-scrollbar-track{background:var(--sunk);border-radius:12px}
+.scroll.sc-cota::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--brand) 55%,transparent);border-radius:12px;border:3px solid var(--sunk)}
+.scroll.sc-cota::-webkit-scrollbar-thumb:hover{background:var(--brand)}
+.scroll.sc-cota::-webkit-scrollbar-corner{background:var(--sunk)}
+.sc-cota table.cota{min-width:1180px}
+.sc-cota .cota td,.sc-cota .cota th{white-space:nowrap}
+.sc-dica{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);margin:0 2px 6px}
+.sc-dica b{color:var(--fg2)}
+@media (max-width:640px){.tbl-wrap .scroll.sc-cota,.scroll.sc-cota{max-height:62vh!important}.sc-cota table.cota{min-width:980px}}
 /* formulários e confirmações sempre por cima do painel de detalhes */
 .sheet-bg{z-index:32!important}.toast{z-index:40!important}.ctip{z-index:45!important}
 /* ===== Painel de detalhes à direita ===== */
@@ -1550,7 +1562,7 @@ function vCotas(){
     return `<tr data-drawer-m="${m.id}" data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}<button data-act="verMembro" data-id="${m.id}">${esc(m.nome)}</button></td>${cells}
       <td class="c-tot"><div class="tot-cel"><b data-rowtot="${m.id}">${fmt(t)}</b><span class="cbar"><i style="width:${(t/maxT*100).toFixed(1)}%"></i></span></div></td></tr>`}).join("");
   const nota=f==="com"&&semCota?`<p class="muted small tbl-nota">${semCota} ${semCota===1?"membro sem cota está oculto":"membros sem cota estão ocultos"} em ${A}. <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></p>`:"";
-  const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><div class="scroll"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
+  const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><p class="sc-dica"><span>Deslize dentro da tabela para ver todos os meses e membros</span><span><b>⇆</b> Shift + roda do rato</span></p><div class="scroll sc-cota"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
     :`<div class="empty">${f==="com"?"Ainda não há cotas registadas em "+A+".":"Todos os membros têm cota em "+A+"."} <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></div>`;
   return hdr+kpis+graf+barra+tabela;
 }
@@ -1854,6 +1866,7 @@ document.addEventListener("click",ev=>{const th=ev.target.closest(".scroll thead
   rows.forEach(r=>body.appendChild(r));let n=0;rows.forEach(r=>{const c=r.querySelector("td.c-n");if(c&&c.textContent.trim()!==""&&!/º/.test(c.textContent))c.textContent=++n});
   paginar(true)});
 
+document.addEventListener("wheel",ev=>{const sc=ev.target.closest&&ev.target.closest(".scroll");if(!sc||!ev.shiftKey||sc.scrollWidth<=sc.clientWidth)return;sc.scrollLeft+=ev.deltaY||ev.deltaX;ev.preventDefault()},{passive:false});
 // ---------- Pesquisa e filtros automáticos em todas as tabelas
 function textoCel(td){if(!td)return "";const s=td.querySelector("select");if(s)return (s.selectedOptions[0]||{}).textContent||"";const i=td.querySelector("input:not([type=checkbox])");if(i)return i.value;const c=td.querySelector("input[type=checkbox]");if(c)return c.checked?"Sim":"Não";return td.textContent.replace(/\s+/g," ").trim()}
 function ferramentasTabela(){
