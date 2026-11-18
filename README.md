@@ -1,33 +1,43 @@
 # Tesouraria — Juventude da Autonomia da Cidade das Águias de Pemba
 
-Sistema de tesouraria da Direcção da Juventude (Assembleia de Deus Africana — Avante na Fé): cotas, classificação, contribuições, conferências, actividades, ofertas, saídas, jovens e liderança, Região de Pemba, e relatórios mensais e anuais em Word e PDF.
+Sistema de tesouraria da Direcção da Juventude (Assembleia de Deus Africana — Avante na Fé): membros, cotas, classificação, contribuições, conferências, actividades, ofertas, saídas, jovens e liderança, Região de Pemba, gráficos, Excel e relatórios mensais e anuais em Word e PDF.
 
-## Como abrir
+## Como funciona
 
-Depois de activar o GitHub Pages, o sistema fica em:
+- **Com MySQL (recomendado):** um pequeno servidor Node.js guarda tudo numa base de dados MySQL. Todos os aparelhos vêem os mesmos dados e cada alteração fica gravada na base de dados.
+- **Sem servidor:** se o site for aberto sem a API (por exemplo, só como página estática), os dados ficam guardados só no navegador de cada aparelho.
 
-https://quenadmesa-rgb.github.io/tesoraria/
+## Arrancar com MySQL no computador
 
-## Instalar no telemóvel e usar sem internet
+1. Instale o [Node.js](https://nodejs.org) (versão 20 ou mais recente) e tenha o MySQL a correr.
+2. Copie `.env.example` para `.env` e preencha `DATABASE_URL` (utilizador, senha, porta e nome da base de dados) e `AUTH_SECRET`.
+3. Faça duplo clique em **`iniciar.bat`** (ou corra `npm install` e depois `npm start`).
+4. Abra `http://localhost:3000`. Noutros aparelhos da mesma rede Wi-Fi, use o endereço que aparece na janela do servidor.
 
-Abra o endereço acima no Chrome (Android) ou Safari (iPhone) e escolha **Adicionar ao ecrã principal**. Fica com o ícone da igreja, como uma aplicação. Depois da primeira visita, o sistema abre mesmo sem internet.
+A base de dados e as tabelas são criadas sozinhas no primeiro arranque (ver `sql/schema.sql`).
 
-## Entrar
+## Tabelas
 
-Na primeira vez: utilizador **admin**, senha **admin123**. Mude a senha logo a seguir (botão **Senha** no topo). O administrador cria os outros utilizadores na aba **Utilizadores**.
+| Tabela | Conteúdo |
+|---|---|
+| `membros` | registo dos membros e as suas cotas |
+| `movimentos` | ofertas, saídas e contribuições |
+| `eventos` | conferências, retiros e campanhas |
+| `actividades` | actividades realizadas |
+| `regiao`, `config`, `relatorios` | Região de Pemba, liderança e textos dos relatórios |
+| `utilizadores` | contas de acesso |
+| `acessos` | registo de cada entrada no sistema |
 
-## Onde ficam os dados
+## Excel
 
-Os dados ficam guardados **só no navegador** de cada telemóvel ou computador. Não ficam no GitHub nem são partilhados entre aparelhos.
+Em cada secção há **Exportar Excel** e, para quem pode editar, **Importar Excel** e **Modelo** (um ficheiro com as colunas certas). Em **Relatórios e dados** há um Excel com todos os dados.
 
-- Para ter os mesmos dados noutro aparelho: aba **Relatórios PDF → Cópia de segurança → Baixar cópia**, e no outro aparelho **Importar cópia**.
-- Se limpar os dados do navegador, perde os dados. Baixe uma cópia com frequência.
-- Se passar mais de 7 dias sem baixar uma cópia, o sistema mostra um aviso no topo com o botão **Baixar cópia agora**.
-- Ao importar uma cópia, o sistema baixa primeiro uma cópia dos dados actuais, para não perder nada por engano.
-- Não ponha os ficheiros de cópia (.json) neste repositório: ele é público e as cópias têm os nomes e os valores dos jovens.
+## Instalar no telemóvel
+
+Abra o endereço no Chrome (Android) ou Safari (iPhone) e escolha **Adicionar ao ecrã principal**.
 
 ## Segurança
 
-O login protege a entrada na página, mas tudo funciona dentro do navegador. Não use senhas que usa noutros serviços.
-
-As senhas são guardadas cifradas com PBKDF2. Contas criadas antes desta versão passam ao novo formato sozinhas no próximo login.
+- Senhas fortes obrigatórias e guardadas cifradas (PBKDF2). Na primeira entrada, cada pessoa tem de definir a sua própria senha.
+- Permissões por papel: administrador, tesoureiro e só leitura, verificadas no servidor.
+- Nunca envie o ficheiro `.env` nem cópias de dados (`.json`, `.xlsx`) para este repositório.

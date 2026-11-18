@@ -197,18 +197,349 @@ select.inp,input.inp{border:1px solid var(--line);background:var(--surface);colo
 .role.admin{background:var(--gold-soft);color:var(--gold)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:30}
 @media (prefers-reduced-motion:no-preference){.tab,.btn,.card{transition:background .15s,border-color .15s}}
+
+/* ===== Aspecto profissional: barra compacta, abas sublinhadas, cartões com sombra suave ===== */
+:root{--r:12px;--shadow:0 1px 2px rgba(16,32,26,.06),0 1px 3px rgba(16,32,26,.05);--shadow-lg:0 12px 32px rgba(16,32,26,.12);--line:#e1e7e2;--bg:#f5f7f5}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--shadow:0 1px 2px rgba(0,0,0,.4);--shadow-lg:0 12px 32px rgba(0,0,0,.5);--line:#2b3a35;--bg:#0e1513}}
+:root[data-theme="dark"]{--shadow:0 1px 2px rgba(0,0,0,.4);--shadow-lg:0 12px 32px rgba(0,0,0,.5);--line:#2b3a35;--bg:#0e1513}
+body{font-size:14.5px;-webkit-font-smoothing:antialiased}
+
+/* Cabeçalho */
+header.top{background:linear-gradient(180deg,#154539,var(--brand))}
+header.top .wrap.bar{padding-block:12px;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:12px 20px;text-align:left}
+.brandtxt{align-items:flex-start;text-align:left}
+.church{text-wrap:nowrap;text-transform:uppercase}
+.brandbox{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:42px;height:42px;border-radius:10px;flex:0 0 auto;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
+.brandtxt{display:flex;flex-direction:column;min-width:0}
+.church{font-size:clamp(17px,4.2vw,22px);font-stretch:85%;font-weight:800;letter-spacing:.01em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.youth{font-family:var(--body);font-weight:500;font-size:13px;letter-spacing:0;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto}
+.yearsel{margin:0;font-size:12px;gap:6px;opacity:1}
+.yearsel span{opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.yearsel select{border-radius:8px;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.08);padding:6px 10px;cursor:pointer}
+.sessbox{align-items:center;gap:8px;font-size:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:4px 4px 4px 4px}
+.sessbox .avatar{width:28px;height:28px;border-radius:8px;background:var(--gold);color:#1b1404;display:grid;place-items:center;font:800 14px var(--display)}
+.sessbox .who{display:flex;flex-direction:column;line-height:1.15;margin-right:4px}
+.sessbox .who b{font-size:13px;font-weight:600}
+.sessbox .who small{font-size:11px;opacity:.7}
+.sess-out{background:rgba(255,255,255,.1);border-radius:7px;padding:5px 9px;font-weight:600;font-size:12px}
+.sess-out:hover{background:rgba(255,255,255,.2)}
+.accessbox{font-size:12px;opacity:.85;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:5px 10px}
+.accessbox:empty{display:none}
+.hdr-r{flex-wrap:nowrap;flex:0 0 auto;position:relative}
+/* Conta: só a inicial; o menu (alterar senha, sair) abre ao tocar */
+.avbtn{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.25);background:var(--gold);color:#1b1404;font:800 15px var(--display);cursor:pointer;display:grid;place-items:center;padding:0}
+.avbtn:hover,.avbtn[aria-expanded="true"]{border-color:#fff}
+.avbtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.contamenu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:230px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:flex;flex-direction:column}
+.contamenu .cm-h{padding:10px 12px 10px;border-bottom:1px solid var(--line);margin-bottom:4px;display:flex;flex-direction:column;line-height:1.3}
+.contamenu .cm-h b{font-size:14px}
+.contamenu .cm-h small{color:var(--muted);font-size:12px}
+.contamenu button{all:unset;cursor:pointer;padding:10px 12px;border-radius:8px;font-size:14px;font-weight:500;display:flex;gap:10px;align-items:center}
+.contamenu button:hover,.contamenu button:focus-visible{background:var(--sunk)}
+.contamenu button.sair{color:var(--bad)}
+.contabox{display:flex;align-items:center;gap:8px}
+.avbtn{position:relative}
+.avbtn .dot{position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#3ddc84;border:2px solid var(--brand)}
+.online{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--brand-fg);font-size:12.5px;white-space:nowrap}
+.online:hover{background:rgba(255,255,255,.18)}
+.online:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.online i,.cm-on i{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25);flex:0 0 auto}
+.online em{font-style:normal;opacity:.85}
+.cm-on{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--good);margin-bottom:4px}
+.cm-lig{padding:8px 12px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.cm-lig .cm-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.cm-lig ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:220px;overflow:auto}
+.cm-lig li{display:flex;align-items:center;gap:9px}
+.cm-lig .av{width:28px;height:28px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;font:700 12px var(--body);position:relative}
+.cm-lig .av::after{content:"";position:absolute;right:-1px;bottom:-1px;width:8px;height:8px;border-radius:50%;background:#3ddc84;border:2px solid var(--surface)}
+.cm-lig li>span:last-child{display:flex;flex-direction:column;line-height:1.25;font-size:13px}
+.cm-lig small{color:var(--muted);font-size:11.5px}
+@media (max-width:640px){.online em{display:none}.contamenu{position:fixed;left:16px;right:16px;top:auto;min-width:0}}
+@media (max-width:640px){header.top .wrap.bar{flex-wrap:wrap}.brandbox{flex:1 1 auto;min-width:0}}
+
+/* Abas */
+nav.tabs{background:var(--surface);border-top:0;border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+nav.tabs:has(#tabs:empty){display:none}
+nav.tabs .wrap{gap:2px;padding-block:0}
+.tab{color:var(--muted);opacity:1;border-radius:0;padding:14px 12px 12px;font-weight:600;font-size:13.5px;border-bottom:2px solid transparent}
+.tab:hover{color:var(--fg)}
+.tab[aria-current="true"]{background:transparent;color:var(--brand);border-bottom-color:var(--gold)}
+:root[data-theme="dark"] .tab[aria-current="true"]{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tab[aria-current="true"]{color:var(--gold)}}
+
+/* Conteúdo */
+main{padding-block:26px 64px;gap:20px}
+h2{font-size:24px;font-stretch:90%;letter-spacing:-.005em}
+.head{padding-bottom:4px}
+.head p{font-size:13.5px}
+.panel,.kpi,.pod,.card,.scroll{border-color:var(--line);box-shadow:var(--shadow)}
+.panel{padding:18px 20px}
+.panel h3{margin-bottom:2px}
+
+/* Indicadores */
+.kpis{gap:12px}
+.kpi{padding:14px 16px;gap:6px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--line)}
+.kpi .l{font-size:11px;letter-spacing:.08em}
+.kpi .v{font-size:23px}
+.kpi.saldo{background:linear-gradient(135deg,#1a5244,var(--brand))}
+.kpi.saldo::before{background:var(--gold)}
+
+/* Botões e campos */
+.btn{border-radius:9px;padding:9px 15px;font-size:13.5px;box-shadow:var(--shadow)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary:hover{filter:brightness(1.12)}
+.btn.small{border-radius:8px;padding:6px 10px;font-size:12.5px}
+.seg{border-radius:10px}
+.seg button{border-radius:8px}
+select.inp,input.inp,textarea.inp{border-radius:9px;font-size:14.5px;transition:border-color .15s,box-shadow .15s}
+select.inp:focus,input.inp:focus,textarea.inp:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+
+/* Tabelas */
+th{font-size:11px;letter-spacing:.07em;padding:10px 10px;border-bottom:1px solid var(--line)}
+td{padding:8px 10px}
+tbody tr:hover td{background:color-mix(in srgb,var(--gold-soft) 45%,var(--surface))}
+.cota tbody tr:hover td:first-child{background:color-mix(in srgb,var(--gold-soft) 45%,var(--surface))}
+
+/* Listas, cartões, avisos */
+.card:hover{border-color:var(--gold);box-shadow:var(--shadow-lg)}
+.chip,.role{border-radius:6px}
+.banner{border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);border-left:4px solid var(--gold);border-radius:10px;padding:11px 14px}
+.empty{border-radius:12px;padding:28px;background:var(--surface)}
+.sheet{border-radius:16px 16px 0 0;box-shadow:var(--shadow-lg)}
+@media (min-width:640px){.sheet{border-radius:16px}}
+.sheet-bg{backdrop-filter:blur(2px)}
+.toast{border-radius:10px;box-shadow:var(--shadow-lg)}
+
+/* Entrada */
+.login-wrap{min-height:72vh}
+.login{border-radius:16px;padding:28px;box-shadow:var(--shadow-lg);gap:16px}
+.login::before{content:"";display:block;width:56px;height:56px;border-radius:14px;background:#fff url(icon-192.png) center/cover;box-shadow:var(--shadow)}
+
+/* Rodapé */
+.foot{background:var(--surface)}
+.foot .wrap{gap:8px;padding-block:22px calc(22px + env(safe-area-inset-bottom,0px))}
+.foot p.org{font-style:normal;font-weight:600;color:var(--fg);font-size:12px;opacity:.8}
+.foot .wrap{align-items:center;gap:10px;padding-block:28px calc(28px + env(safe-area-inset-bottom,0px))}
+.foot p{text-wrap:balance;text-align:center;max-width:60ch;hyphens:none}
+.foot p.org{letter-spacing:.02em;line-height:1.6;padding-bottom:12px;border-bottom:1px solid var(--line);width:min(100%,60ch)}
+.foot p.verso{font-size:13px;line-height:1.7;font-style:italic;color:var(--fg2);quotes:"“" "”"}
+.foot p.verso::before{content:open-quote}.foot p.verso::after{content:close-quote}
+
+/* ===== Cores: paleta validada para gráficos (claro/escuro, segura para daltonismo) ===== */
+:root{--c1:#16876a;--c2:#c4870f;--c3:#3b6fd4;--c4:#c4473a;--good-soft:#e2f3ea;--fg2:#33423c;--ring:color-mix(in srgb,var(--gold) 40%,transparent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c1:#2fa583;--c2:#b98320;--c3:#5b8fe8;--c4:#e06a5c;--good-soft:#173328;--fg2:#c9d6d0}}
+:root[data-theme="dark"]{--c1:#2fa583;--c2:#b98320;--c3:#5b8fe8;--c4:#e06a5c;--good-soft:#173328;--fg2:#c9d6d0}
+.small{font-size:12.5px}
+.chip.good{background:var(--good-soft);color:var(--good)}
+
+/* Cabeçalho das secções e barras de acções */
+.head{align-items:center}
+.head-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.xbar{display:inline-flex;flex-wrap:wrap;gap:6px}
+.xbar .btn{font-size:13px;padding:8px 12px}
+.xbar label.btn{cursor:pointer}
+.btn.ghost{background:transparent;box-shadow:none;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--fg);border-color:var(--line)}
+.xbar.big .btn{font-size:14px;padding:10px 14px}
+
+/* Indicadores */
+.kpi .h{font-size:12px;color:var(--muted)}
+.kpi.saldo .h{color:var(--brand-fg);opacity:.75}
+.kpi.k1::before{background:var(--c1)}.kpi.k2::before{background:var(--c2)}.kpi.k3::before{background:var(--c3)}.kpi.k4::before{background:var(--c4)}
+.kpi .v.out{color:var(--bad)}
+
+/* Gráficos */
+.chart-panel{display:flex;flex-direction:column;gap:10px}
+.ch-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 16px}
+.ch-h p{margin:2px 0 0}
+.ch-h .legend{margin:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .gl{stroke:var(--line);stroke-width:1;stroke-dasharray:2 4}
+.chart .g0{stroke:var(--muted);stroke-width:1;opacity:.5}
+.chart .dl{fill:var(--fg);font:700 12px var(--body)}
+.chart .hit{fill:transparent;cursor:crosshair}
+.chart .hit.on{fill:color-mix(in srgb,var(--fg) 6%,transparent)}
+.donut{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center;padding:4px 0}
+.donut svg{width:180px;height:180px;flex:0 0 auto}
+.donut path,.donut circle{cursor:pointer;stroke:var(--surface);stroke-width:0}
+.donut path:hover{opacity:.85}
+.donut .dc-l{fill:var(--muted);font:600 11px var(--body);text-transform:uppercase;letter-spacing:.08em}
+.donut .dc-v{fill:var(--fg);font:800 22px var(--display)}
+.dlegend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:200px;flex:1}
+.dlegend li{display:grid;grid-template-columns:12px 1fr auto auto;gap:10px;align-items:center;font-size:13.5px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.dlegend li:last-child{border-bottom:0}
+.dlegend i{width:12px;height:12px;border-radius:3px}
+.dlegend b{font-variant-numeric:tabular-nums}
+.dlegend em{font-style:normal;color:var(--muted);font-size:12px;min-width:36px;text-align:right}
+.ctip{position:fixed;z-index:40;pointer-events:none;background:var(--fg);color:var(--bg);padding:8px 11px;border-radius:8px;font-size:12.5px;line-height:1.5;box-shadow:var(--shadow-lg);max-width:240px;font-variant-numeric:tabular-nums}
+.ctip b{display:block;font-size:13px;margin-bottom:2px}
+.tabela-dados summary{cursor:pointer;font-weight:600;color:var(--fg2)}
+.tabela-dados[open] summary{margin-bottom:12px}
+.tabela-dados td,.tabela-dados th{font-size:13px}
+
+/* Formulários (folhas e formulários rápidos) */
+.sheet{max-width:520px;padding:24px 24px calc(20px + env(safe-area-inset-bottom,0px));gap:16px;position:relative}
+.sheet.wide{max-width:680px}
+.sheet h3{font-size:20px;padding-right:36px}
+.sheet-h{display:flex;flex-direction:column;gap:4px}
+.sheet-h p{margin:0;color:var(--muted);font-size:13.5px}
+.sheet-x{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:14px;cursor:pointer;display:grid;place-items:center}
+.sheet-x:hover{color:var(--fg);background:var(--sunk)}
+.sheet label,.qgrid label,.lgrid label,.fgrid label,.login label{font-size:12.5px;font-weight:600;color:var(--fg2);letter-spacing:.01em;gap:6px}
+select.inp,input.inp,textarea.inp{min-height:42px;background:var(--surface)}
+textarea.inp{min-height:0;line-height:1.45}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 17px) 52%,calc(100% - 12px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+input.inp::placeholder,textarea.inp::placeholder{color:color-mix(in srgb,var(--muted) 75%,transparent)}
+.inp:disabled{opacity:.6;background:var(--sunk)}
+.fs{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.fs legend{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:0 0 8px;width:100%;border-bottom:1px solid var(--line);margin-bottom:4px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.fgrid label{display:flex;flex-direction:column;min-width:0}
+.fgrid .span2{grid-column:1/-1}
+.checks{display:flex;flex-direction:column;gap:8px}
+label.check{flex-direction:row!important;align-items:flex-start;gap:10px!important;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-weight:600}
+label.check:hover{background:var(--sunk)}
+label.check input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--brand);flex:0 0 auto}
+label.check span{display:flex;flex-direction:column;gap:1px;color:var(--fg)}
+label.check small{font-weight:400;color:var(--muted);font-size:12px}
+.sheet .acts{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));background:var(--surface);margin:4px -24px calc(-20px - env(safe-area-inset-bottom,0px));padding:14px 24px calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);align-items:center;border-radius:0 0 16px 16px}
+.sheet .acts .sp{flex:1}
+.sheet .acts .btn.danger{margin-right:auto}
+.sheet .err,.quick .err,.login .err{background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:9px 12px;font-weight:600}
+.panel.quick{gap:14px;border-top:3px solid var(--gold)}
+.panel.quick h3{font-size:17px}
+.qgrid{gap:12px 14px}
+.acts-inline{display:flex;gap:8px;flex-wrap:wrap}
+.papeis{list-style:none;margin:2px 0 0;padding:12px 0 0;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted)}
+.papeis .role{margin-right:6px}
+
+/* Barra de pesquisa e filtros */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.search{position:relative;flex:1 1 260px;max-width:420px}
+.search span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:17px;pointer-events:none}
+.search .inp{padding-left:36px}
+
+/* Tabelas de membros e utilizadores */
+.scroll.flat{box-shadow:none;border-radius:10px}
+.mtab td,.mtab th,.utab td,.utab th{text-align:left}
+.mtab td.money{text-align:right}.mtab th:last-child{text-align:right}
+.mtab .c-n{width:44px;color:var(--muted);text-align:center}
+.mname{all:unset;display:flex;align-items:center;gap:10px;cursor:pointer;min-width:180px}
+.mname:disabled{cursor:default}
+.mname:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+.mname .av{width:32px;height:32px;border-radius:50%;background:var(--sunk);color:var(--fg2);display:grid;place-items:center;font:700 13px var(--body);flex:0 0 auto}
+.mname > span:last-child{display:flex;flex-direction:column;line-height:1.25}
+.mname small{color:var(--muted);font-size:12px;font-weight:400}
+.mname:hover b{color:var(--c1)}
+.mtab a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--muted)}
+.users-grid{align-items:start}
+@media (min-width:860px){.users-grid{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)}}
+
+/* ===== Responsividade ===== */
+@media (min-width:1100px){.wrap{max-width:1180px}}
+@media (max-width:860px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi.saldo{grid-column:1/-1}}
+@media (max-width:640px){
+  main{padding-block:16px 48px;gap:14px}
+  h2{font-size:21px}
+  .head{flex-direction:column;align-items:stretch;gap:12px}
+  .head-acts{justify-content:flex-start}
+  .head-acts>.btn.primary{order:-1;width:100%;justify-content:center}
+  .xbar{width:100%}.xbar .btn{flex:1 1 auto;justify-content:center}
+  .panel{padding:14px}
+  .kpis{gap:8px}
+  .kpi{padding:11px 12px}
+  .kpi .v{font-size:19px}
+  .kpi .l{font-size:10.5px}
+  .fgrid{grid-template-columns:1fr}
+  .sheet{padding:20px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:94vh;border-radius:18px 18px 0 0}
+  .sheet .acts{margin:4px -16px calc(-16px - env(safe-area-inset-bottom,0px));padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));border-radius:0}
+  .sheet .acts .btn{flex:1 1 auto;justify-content:center}
+  .sheet .acts .sp{display:none}
+  .sheet .acts .btn.danger{flex-basis:100%;order:3;margin:0}
+  .toolbar{flex-direction:column;align-items:stretch}.search{max-width:none;flex:0 0 auto;width:100%}
+  .seg{overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;max-width:100%}.seg button{white-space:nowrap}
+  .hdr-r{gap:6px}.yearsel span{display:none}
+  .donut svg{width:150px;height:150px}
+  .dlegend{min-width:0;width:100%}
+  .podium{gap:6px}.pod .pos{font-size:26px}
+  .row3{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+  .login{padding:22px}
+  .church{font-size:16px}.youth{font-size:12px}
+  .logo{width:36px;height:36px}
+  .sessbox .who small{display:none}
+  .ctip{max-width:200px}
+}
+@media (max-width:380px){.kpis{grid-template-columns:1fr}.sessbox .who{display:none}}
+nav.tabs .wrap{mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+/* ===== Cartões de indicadores (redesenho) ===== */
+.kpis{gap:14px}
+.kpi{--kc:var(--muted);padding:16px 18px;min-height:112px;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;border-radius:14px;position:relative;overflow:hidden;background:var(--surface);transition:box-shadow .15s,transform .15s}
+.kpi:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.kpi::before{content:"";position:absolute;inset:16px 16px auto auto;width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--kc) 14%,transparent)}
+.kpi::after{content:"";position:absolute;top:28px;right:28px;width:10px;height:10px;border-radius:50%;background:var(--kc)}
+.kpi .l{padding-right:44px;font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:700;line-height:1.3;min-height:2.6em;display:flex;align-items:flex-start}
+.kpi .v{font-size:26px;line-height:1.1;letter-spacing:-.01em;margin-top:auto}
+.kpi .h{font-size:12px;color:var(--muted);line-height:1.35}
+.kpi.k1{--kc:var(--c1)}.kpi.k2{--kc:var(--c2)}.kpi.k3{--kc:var(--c3)}.kpi.k4{--kc:var(--c4)}
+.kpi:not(.k1):not(.k2):not(.k3):not(.k4):not(.saldo){--kc:var(--c1)}
+.kpi.kpi::before{background:color-mix(in srgb,var(--kc) 15%,transparent)}
+.kpi.saldo{--kc:var(--gold);background:linear-gradient(140deg,#1d5a4a 0%,var(--brand) 70%);border-color:transparent;color:var(--brand-fg)}
+.kpi.saldo::before{background:rgba(255,255,255,.12)}
+.kpi.saldo .l{color:rgba(242,247,243,.75)}
+.kpi.saldo .v{color:var(--gold);font-size:28px}
+.kpi.saldo .h{color:rgba(242,247,243,.75)}
+@media (max-width:640px){.kpi{min-height:96px;padding:13px 14px}.kpi::before{inset:12px 12px auto auto;width:28px;height:28px}.kpi::after{top:21px;right:21px;width:9px;height:9px}.kpi .l{padding-right:34px;font-size:10px}.kpi .v{font-size:20px}.kpi.saldo .v{font-size:23px}}
+
+/* ===== Campos de senha ===== */
+.pwf{display:flex;flex-direction:column;gap:6px}
+.pwf>label{font-size:12.5px;font-weight:600;color:var(--fg2)}
+.pwbox{position:relative}
+.pwbox .inp{padding-right:84px}
+input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
+.pwver{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:var(--sunk);color:var(--fg2);font:600 12px var(--body);padding:6px 10px;border-radius:7px;cursor:pointer}
+.pwmeter{height:5px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.pwmeter span{display:block;height:100%;width:0;border-radius:3px;background:var(--c4);transition:width .2s,background .2s}
+.pwmeter span[data-n="3"],.pwmeter span[data-n="4"]{background:var(--c2)}
+.pwmeter span[data-n="5"]{background:var(--c1)}
+.pwreq{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 12px;font-size:12px;color:var(--muted)}
+.pwreq li::before{content:"○";display:inline-block;width:16px;color:var(--muted)}
+.pwreq li.ok{color:var(--good)}
+.pwreq li.ok::before{content:"✓";color:var(--good);font-weight:700}
+.pwreset summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--fg2);padding:4px 0}
+.pwreset[open] summary{margin-bottom:10px}
+.login.wide{max-width:440px}
+@media (max-width:640px){.pwreq{grid-template-columns:1fr}}
+/* Gráficos e tabelas no telemóvel */
+.dlegend b{white-space:nowrap}
+.utab td{white-space:normal}.utab td:last-child{white-space:nowrap;width:1%}
+.utab .btn.small{padding:6px 10px}
+@media (max-width:640px){
+  .chart svg.lc text{font-size:25px}.chart svg.lc .dl{font-size:26px}
+  .chart svg.bc text{font-size:17px}
+  .donut{flex-direction:column;align-items:stretch}.donut svg{align-self:center}
+  .dlegend li{grid-template-columns:12px 1fr auto auto;font-size:13px}
+}
+@media print{header.top,nav.tabs,.foot,.head-acts,.xbar,.quick,.btn{display:none!important}.panel,.kpi{box-shadow:none;break-inside:avoid}body{background:#fff}}
 </style>
 
 <header class="top">
-  <div class="wrap">
-    <h1 class="church"><span class="ad">Assembleia de Deus</span> Africana <span class="avante">Avante na Fé</span></h1>
-    <div class="sub">
-      <span class="youth">Direcção da Juventude da Autonomia da Cidade das Águias de Pemba · Tesouraria</span>
-      <span id="sessBox" style="display:none;font-size:12px;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 4px 3px 10px;align-items:center;gap:6px"></span>
-      <span id="accessBox" style="font-size:12px;opacity:.85;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px"></span>
-      <label class="yearsel">Ano
+  <div class="wrap bar">
+    <div class="brandbox">
+      <img class="logo" src="icon-192.png" alt="" width="42" height="42">
+      <div class="brandtxt">
+        <h1 class="church"><span class="ad">Assembleia de Deus</span> Africana</h1>
+        <span class="youth" title="Direcção da Juventude da Autonomia da Cidade das Águias de Pemba">Tesouraria da Juventude · Águias de Pemba</span>
+      </div>
+    </div>
+    <div class="hdr-r">
+      <label class="yearsel"><span>Ano</span>
         <select id="ano"></select>
       </label>
+      <span id="sessBox" class="sessbox" style="display:none"></span>
+      <span id="accessBox" class="accessbox"></span>
     </div>
   </div>
 </header>
@@ -218,7 +549,7 @@ select.inp,input.inp{border:1px solid var(--line);background:var(--surface);colo
 <main class="wrap" id="main">
   <div class="empty">A carregar os dados da tesouraria…</div>
 </main>
-<footer class="foot"><div class="wrap"><p>Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
+<footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Direcção da Juventude da Autonomia da Cidade das Águias de Pemba</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
 <div id="sheet" hidden></div>
 <div id="toast" class="toast" hidden></div>
 
@@ -243,11 +574,86 @@ select.inp,input.inp{border:1px solid var(--line);background:var(--surface);colo
     doc:docRef,
     exportar:()=>load(),
     importar:d=>{save(d);Object.keys(subs).forEach(emit)}};
+  db.batch=async ops=>{for(const o of ops){const r=docRef(o.col+"/"+o.id);if(o.op==="delete")await r.delete();else if(o.op==="update")await r.update(o.data);else await r.set(o.data)}};
   window.addEventListener("storage",e=>{if(e.key===KEY)Object.keys(subs).forEach(emit)});
   const user={can:async()=>true,isOwner:async()=>true,canEdit:async()=>true,id:async()=>"local"};
   const downloads={save:async({filename,data})=>{const u=URL.createObjectURL(data);const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}};
-  window.claude={use:async k=>({db,user,downloads})[k]||null};
-  window.TES_LOCAL=db;
+
+  // ---- Base de dados MySQL (através da API /api): usada quando o servidor responde e tem a base de dados ligada.
+  const COLS=["membros","eventos","movimentos","actividades","regiao","config","relatorios","utilizadores"];
+  const CK="tesouraria-cache",SK="jc-sessao-r";
+  const R=(()=>{
+    let cache={},sess=null,timer=null,ligados=[];
+    const avisaSaida=()=>{if(!sess||!sess.token)return;try{fetch("api/doc",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json",Authorization:"Bearer "+sess.token},body:JSON.stringify({ops:[{op:"sair"}]})})}catch(e){}};
+    try{sess=JSON.parse(localStorage.getItem(SK)||"null")}catch(e){}
+    const rsubs={},remit=c=>(rsubs[c]||[]).forEach(f=>f());
+    const guardaCache=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
+    const rsnap=c=>({docs:Object.entries(cache[c]||{}).map(([id,v])=>({id,data:()=>JSON.parse(JSON.stringify(v))}))});
+    async function api(path,opt={}){
+      const h={"Content-Type":"application/json"};if(sess&&sess.token)h.Authorization="Bearer "+sess.token;
+      let r;try{r=await fetch("api/"+path,{...opt,headers:h,cache:"no-store"})}catch(e){const er=new Error("sem ligação");er.code="offline";throw er}
+      let j={};try{j=await r.json()}catch(e){}
+      if(r.status===401&&path!=="login"){R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
+      if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429?"rate_limited":"server";er.status=r.status;throw er}
+      return j;
+    }
+    async function sync(){
+      if(!sess)return;
+      try{const d=await api("data");const ch=[];
+        for(const c of [...COLS,"acessos"]){const v=d[c]||(c==="acessos"?[]:{});if(JSON.stringify(v)!==JSON.stringify(cache[c]??(c==="acessos"?[]:{}))){cache[c]=v;ch.push(c)}}
+        if(d.eu){sess.user=d.eu;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}}
+        const on=d.online||[];if(JSON.stringify(on.map(u=>u.id))!==JSON.stringify(ligados.map(u=>u.id))){ligados=on;setTimeout(()=>window.dispatchEvent(new Event("tes-online")),0)}else ligados=on;
+        guardaCache();ch.forEach(remit);R.online=true;
+      }catch(e){if(e.code==="offline")R.online=false}
+    }
+    const iniciarSync=()=>{clearInterval(timer);timer=setInterval(()=>{if(document.visibilityState==="visible")sync()},20000)};
+    async function enviar(ops,local){
+      const antes=JSON.stringify(cache);local&&local();guardaCache();
+      const cols=[...new Set(ops.map(o=>o.col).filter(Boolean))];cols.forEach(c=>setTimeout(()=>remit(c),0));
+      try{await api("doc",{method:"POST",body:JSON.stringify({ops})});setTimeout(sync,300)}
+      catch(e){cache=JSON.parse(antes);guardaCache();cols.forEach(remit);throw e}
+    }
+    const isObj=v=>v&&typeof v==="object"&&!Array.isArray(v);
+    const mg=(a,b)=>{const o={...(isObj(a)?a:{})};for(const k in b){o[k]=isObj(b[k])&&isObj(o[k])?mg(o[k],b[k]):b[k]}return o};
+    const limpo=v=>JSON.parse(JSON.stringify(v));
+    const semSegredo=v=>{const o={...v};delete o.senha;delete o.salt;delete o.hash;delete o.alg;return o};
+    const aplicaLocal=o=>()=>{const c=cache[o.col]=cache[o.col]||{};
+      if(o.op==="delete")delete c[o.id];else if(o.op==="update"){c[o.id]=mg(c[o.id],o.col==="utilizadores"?semSegredo(o.data):o.data)}else c[o.id]=o.col==="utilizadores"?semSegredo(o.data):o.data};
+    const dref=path=>{const [col,id]=path.split("/");return {id,
+      set:async v=>{const o={op:"set",col,id,data:limpo(v)};await enviar([o],aplicaLocal(o))},
+      update:async v=>{if(!(cache[col]||{})[id]){const e=new Error("não existe");e.code="not_found";throw e}const o={op:"update",col,id,data:limpo(v)};await enviar([o],aplicaLocal(o))},
+      delete:async()=>{const o={op:"delete",col,id};await enviar([o],aplicaLocal(o))}}};
+    const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+    return {
+      online:true,
+      collection:col=>({onSnapshot:cb=>{const f=()=>cb(rsnap(col));(rsubs[col]=rsubs[col]||[]).push(f);setTimeout(f,0);return()=>{rsubs[col]=rsubs[col].filter(x=>x!==f)}},
+        add:async v=>{const id=rid();await dref(col+"/"+id).set(v);return {id}}}),
+      doc:dref,
+      batch:async ops=>{ops=ops.map(o=>({...o,data:o.data&&limpo(o.data)}));for(let i=0;i<ops.length;i+=400){const part=ops.slice(i,i+400);await enviar(part,()=>part.forEach(o=>aplicaLocal(o)()))}},
+      acessos:()=>cache.acessos||[],
+      exportar:()=>{const o={};COLS.forEach(c=>o[c]=limpo(cache[c]||{}));return o},
+      sessao:()=>sess,
+      async login(user,senha){const j=await api("login",{method:"POST",body:JSON.stringify({user,senha})});sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}await sync();iniciarSync();return sess},
+      ligados:()=>ligados,
+      logout(){avisaSaida();sess=null;ligados=[];clearInterval(timer);cache={};try{localStorage.removeItem(SK);localStorage.removeItem(CK)}catch(e){}COLS.forEach(remit)},
+      async mudarSenha(atual,nova){const j=await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"senha",data:{atual,nova}}]})});
+        if(sess){sess.padrao=false;if(j.token)sess.token=j.token;if(sess.user)sess.user.senhaAlterada=true;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}}await sync();iniciarSync()},
+      async importar(d){await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"importar",data:d}]})});await sync()},
+      sync,
+      arrancar(){if(sess){try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){cache={}}sync();iniciarSync()}
+        window.addEventListener("focus",()=>sync());window.addEventListener("pagehide",avisaSaida);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()})}
+    };
+  })();
+
+  // Escolhe o modo: MySQL se a API responder com a base de dados ligada; senão, só neste navegador.
+  const pronto=(async()=>{
+    if(location.protocol==="file:")return "local";
+    try{const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),6000);
+      const r=await fetch("api/login",{cache:"no-store",signal:ctl.signal});clearTimeout(t);
+      if(r.ok){const j=await r.json();if(j&&j.db)return "remoto";if(j&&j.ok){window.TES_API_SEM_DB=j.erro||"Base de dados não configurada no servidor."}}}catch(e){}
+    return "local";
+  })().then(m=>{if(m==="remoto"){window.TES_REMOTO=R;R.arrancar()}else window.TES_LOCAL=db;return m});
+  window.claude={use:async k=>{const m=await pronto;return ({db:m==="remoto"?R:db,user,downloads})[k]||null}};
 })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -256,7 +662,7 @@ select.inp,input.inp{border:1px solid var(--line);background:var(--surface);colo
 <script>
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const M3=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-const TABS=[["resumo","Resumo"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios PDF"]];
+const TABS=[["resumo","Resumo"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
 const TIPOS={contribuicao:"Contribuição",conferencia:"Conferência",retiro:"Retiro",culto:"Culto especial",outro:"Outro evento"};
 const ORIGENS={cota:"Cota",oferta:"Ofertas",evento:"Evento"};
 const S={membros:[],eventos:[],movs:[],acts:[],actMes:"todos",ano:new Date().getFullYear(),tab:"resumo",evento:null,
@@ -324,9 +730,12 @@ function render(){
   if(!ready||!S.usersLoaded){main.innerHTML=`<div class="empty">A carregar os dados da tesouraria…</div>`;return}
   renderSess();
   if(!S.sessao){main.innerHTML=vLogin();return}
+  if(S.sessao.padrao){$("#tabs").innerHTML="";main.innerHTML=vMudarSenha();return}
   if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
-  const fn={resumo:vResumo,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
-  main.innerHTML=bannerCopia()+(S.sessao.padrao?`<div class="banner">Está a usar a senha padrão <b>admin123</b>. <button class="linkbtn" data-act="minhaSenha">Mude a senha agora</button> para proteger o sistema.</div>`:"")+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
+  const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
+  const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
+  const bSemDb=window.TES_API_SEM_DB?`<div class="banner">O servidor não tem a base de dados MySQL ligada (${esc(window.TES_API_SEM_DB)}). Por agora, os dados ficam só neste navegador.</div>`:"";
+  main.innerHTML=bSemDb+bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
 }
 const addBtn=(act,txt,extra="")=>S.edit?`<button class="btn primary" data-act="${act}" ${extra}>+ ${txt}</button>`:"";
 
@@ -342,20 +751,103 @@ function vResumo(){
   const cm=[...Array(12)].map((_,i)=>sum(S.membros.map(m=>cotaM(m,S.ano,i+1))));
   const sm=[...Array(12)].map((_,i)=>sum(movsAno("saida").filter(v=>mesMov(v)===i+1).map(v=>num(v.valor))));
   const top=ranking([1,2,3,4,5,6,7,8,9,10,11,12]).slice(0,5);
-  return `<div class="head"><div><h2>Resumo de ${S.ano}</h2><p>Entradas e saídas registadas neste ano.</p></div></div>
-  <div class="kpis kpis4">
-    <div class="kpi"><span class="l">Cotas</span><span class="v">${fmt(tc)}</span></div>
-    <div class="kpi"><span class="l">Contribuições</span><span class="v">${fmt(tco)}</span></div>
-    <div class="kpi"><span class="l">Ofertas</span><span class="v">${fmt(tof)}</span></div>
-    <div class="kpi"><span class="l">Saídas</span><span class="v out">${fmt(ts)}</span></div>
+  const RM=resumoMensal();let ac=0;const acum=RM.map(r=>ac+=r.saldo);
+  const ultimo=S.ano===new Date().getFullYear()?new Date().getMonth()+1:12;
+  const ent=tc+tco+tof;
+  return `<div class="head"><div><h2>Resumo de ${S.ano}</h2><p>Entradas, saídas e evolução do saldo ao longo do ano.</p></div><div class="head-acts"><div class="xbar"><button class="btn" data-xls-exp="tudo"><span aria-hidden="true">⬇</span> Exportar Excel completo</button></div></div></div>
+  <div class="kpis">
+    <div class="kpi saldo"><span class="l">Saldo disponível</span><span class="v">${fmt(saldo)}</span><span class="h">${ent?Math.round(ts/ent*100):0}% das entradas já gasto</span></div>
+    <div class="kpi k1"><span class="l">Cotas</span><span class="v">${fmt(tc)}</span></div>
+    <div class="kpi k2"><span class="l">Contribuições</span><span class="v">${fmt(tco)}</span></div>
+    <div class="kpi k3"><span class="l">Ofertas</span><span class="v">${fmt(tof)}</span></div>
+    <div class="kpi k4"><span class="l">Saídas</span><span class="v out">${fmt(ts)}</span></div>
+  </div>
+  <section class="panel chart-panel"><div class="ch-h"><div><h3>Evolução do saldo</h3><p class="muted small">Saldo acumulado no fim de cada mês (entradas menos saídas)</p></div></div>
+    ${lineChart(acum.slice(0,ultimo),"Saldo acumulado")}</section>
+  <div class="grid2">
+    <section class="panel chart-panel"><div class="ch-h"><div><h3>Entradas e saídas por mês</h3><p class="muted small">Cotas, contribuições e ofertas contra as saídas</p></div>
+      <div class="legend"><span><i style="background:var(--c1)"></i>Entradas</span><span><i style="background:var(--c4)"></i>Saídas</span></div></div>
+      ${barsChart(RM.map(r=>r.ent),RM.map(r=>r.sa))}</section>
+    <section class="panel chart-panel"><div class="ch-h"><div><h3>De onde vem o dinheiro</h3><p class="muted small">Composição das entradas de ${S.ano}</p></div></div>
+      ${donutChart([["Cotas",tc,"var(--c1)"],["Contribuições",tco,"var(--c2)"],["Ofertas",tof,"var(--c3)"]])}</section>
   </div>
   <div class="grid2">
-    <section class="panel"><h3>Cotas e saídas por mês</h3>${chart(cm,sm)}
-      <div class="legend"><span><i style="background:var(--bar-a)"></i>Cotas</span><span><i style="background:var(--bar-b)"></i>Saídas</span></div></section>
+    <section class="panel chart-panel"><div class="ch-h"><div><h3>Entradas por tipo, mês a mês</h3><p class="muted small">Barras empilhadas: cotas, contribuições e ofertas</p></div>
+      <div class="legend"><span><i style="background:var(--c1)"></i>Cotas</span><span><i style="background:var(--c2)"></i>Contrib.</span><span><i style="background:var(--c3)"></i>Ofertas</span></div></div>
+      ${stackChart(RM)}</section>
     <section class="panel"><h3>Melhores cotas do ano</h3>${top.length?`<ol class="rank">${top.map(r=>rankLi(r,top[0].v)).join("")}</ol>`:`<p class="muted">Ainda não há cotas registadas em ${S.ano}.</p>`}
       <p style="margin:10px 0 0"><button class="btn small" data-tab="classificacao">Ver classificação completa</button></p></section>
-  </div>`;
+  </div>
+  <details class="panel tabela-dados"><summary>Ver os valores em tabela</summary>
+    <div class="scroll flat"><table><thead><tr><th style="text-align:left">Mês</th><th>Cotas</th><th>Contrib.</th><th>Ofertas</th><th>Entradas</th><th>Saídas</th><th>Saldo do mês</th><th>Acumulado</th></tr></thead><tbody>
+    ${RM.map((r,i)=>`<tr><td style="text-align:left">${MESES[i]}</td><td>${fmt(r.c)}</td><td>${fmt(r.co)}</td><td>${fmt(r.of)}</td><td><b>${fmt(r.ent)}</b></td><td class="out">${fmt(r.sa)}</td><td>${fmt(r.saldo)}</td><td><b>${fmt(acum[i])}</b></td></tr>`).join("")}
+    </tbody></table></div><p class="muted small">Os gráficos mensais usam os registos com data. Totais de eventos escritos à mão entram nos cartões de cima, mas não num mês concreto.</p></details>`;
 }
+// ---------- gráficos (SVG, com dica ao passar o rato/tocar)
+const fk=v=>{const a=Math.abs(v);return (v<0?"−":"")+(a>=1e6?(a/1e6).toFixed(1).replace(".0","")+"M":a>=1000?(a/1000).toFixed(a>=1e4?0:1).replace(".0","")+"k":Math.round(a))};
+function escala(min,max){min=Math.min(0,min);max=Math.max(1,max);const st=niceStep(max-min);return {lo:Math.floor(min/st)*st,hi:Math.ceil(max/st)*st,st}}
+function eixoY(sc,y,W,pl){let g="";for(let v=sc.lo;v<=sc.hi+1e-9;v+=sc.st)g+=`<line x1="${pl}" x2="${W}" y1="${y(v)}" y2="${y(v)}" class="${v===0?"g0":"gl"}"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${fk(v)}</text>`;return g}
+function lineChart(vals,nome){
+  if(!vals.length)return `<div class="empty">Sem dados.</div>`;
+  const W=760,H=230,pl=48,pr=16,pt=14,pb=26,sc=escala(Math.min(...vals),Math.max(...vals));
+  const x=i=>pl+(W-pl-pr)*(i/11),y=v=>pt+(H-pt-pb)*(1-(v-sc.lo)/(sc.hi-sc.lo));
+  const pts=vals.map((v,i)=>[x(i),y(v)]),d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1)).join("");
+  const area=d+`L${pts[pts.length-1][0].toFixed(1)},${y(Math.max(0,sc.lo))}L${pts[0][0].toFixed(1)},${y(Math.max(0,sc.lo))}Z`;
+  const last=pts[pts.length-1];
+  return `<div class="chart"><svg class="lc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(nome)}: ${vals.map((v,i)=>M3[i]+" "+fmt(v)).join(", ")}">
+    <defs><linearGradient id="gArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--c1)" stop-opacity=".22"/><stop offset="1" stop-color="var(--c1)" stop-opacity="0"/></linearGradient></defs>
+    ${eixoY(sc,y,W-pr,pl)}${M3.map((m,i)=>`<text x="${x(i)}" y="${H-6}" text-anchor="middle">${m}</text>`).join("")}
+    <path d="${area}" fill="url(#gArea)"/><path d="${d}" fill="none" stroke="var(--c1)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?5:3.5}" fill="var(--surface)" stroke="var(--c1)" stroke-width="2"/>`).join("")}
+    <text x="${Math.min(last[0],W-pr-4)}" y="${last[1]-12}" text-anchor="${last[0]>W-120?"end":"middle"}" class="dl">${fmt(vals[vals.length-1])}</text>
+    ${vals.map((v,i)=>`<rect class="hit" x="${x(i)-(W-pl-pr)/22}" y="${pt}" width="${(W-pl-pr)/11}" height="${H-pt-pb}" data-tip="<b>${MESES[i]}</b>${esc(nome)}: ${fmt(v)}${i?"<br>Variação: "+(v-vals[i-1]>=0?"+":"")+fmt(v-vals[i-1]):""}"/>`).join("")}
+  </svg></div>`;
+}
+function barsChart(a,b){
+  const W=560,H=230,pl=44,pr=6,pt=12,pb=26,sc=escala(0,Math.max(...a,...b));
+  const y=v=>pt+(H-pt-pb)*(1-(v-sc.lo)/(sc.hi-sc.lo)),bw=(W-pl-pr)/12,w=Math.min(14,bw*.32);
+  let s=eixoY(sc,y,W-pr,pl);
+  a.forEach((v,i)=>{const cx=pl+i*bw+bw/2,h1=Math.max(0,y(0)-y(v)),h2=Math.max(0,y(0)-y(b[i]));
+    s+=`<path d="${barPath(cx-w-1,y(0),w,h1)}" fill="var(--c1)"/><path d="${barPath(cx+1,y(0),w,h2)}" fill="var(--c4)"/>`;
+    s+=`<text x="${cx}" y="${H-6}" text-anchor="middle">${M3[i]}</text>`;
+    s+=`<rect class="hit" x="${pl+i*bw}" y="${pt}" width="${bw}" height="${H-pt-pb}" data-tip="<b>${MESES[i]}</b>Entradas: ${fmt(v)}<br>Saídas: ${fmt(b[i])}<br>Saldo: ${fmt(v-b[i])}"/>`});
+  return `<div class="chart"><svg class="bc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas e saídas por mês">${s}</svg></div>`;
+}
+function barPath(x,y0,w,h){if(h<=0)return "";const r=Math.min(4,w/2,h);return `M${x},${y0}V${y0-h+r}Q${x},${y0-h} ${x+r},${y0-h}H${x+w-r}Q${x+w},${y0-h} ${x+w},${y0-h+r}V${y0}Z`}
+function stackChart(RM){
+  const W=560,H=230,pl=44,pr=6,pt=12,pb=26,sc=escala(0,Math.max(...RM.map(r=>r.ent)));
+  const y=v=>pt+(H-pt-pb)*(1-(v-sc.lo)/(sc.hi-sc.lo)),bw=(W-pl-pr)/12,w=Math.min(26,bw*.56);
+  let s=eixoY(sc,y,W-pr,pl);
+  RM.forEach((r,i)=>{const x=pl+i*bw+(bw-w)/2;let base=0;const seg=[[r.c,"var(--c1)"],[r.co,"var(--c2)"],[r.of,"var(--c3)"]].filter(z=>z[0]>0);
+    seg.forEach(([v,c],j)=>{const y1=y(base+v),y0=y(base),h=Math.max(0,y0-y1-(j<seg.length-1?2:0));
+      s+=j===seg.length-1?`<path d="${barPath(x,y0,w,Math.max(0,y0-y1))}" fill="${c}"/>`:`<rect x="${x}" y="${y0-h}" width="${w}" height="${h}" fill="${c}"/>`;base+=v});
+    s+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle">${M3[i]}</text>`;
+    s+=`<rect class="hit" x="${pl+i*bw}" y="${pt}" width="${bw}" height="${H-pt-pb}" data-tip="<b>${MESES[i]}</b>Cotas: ${fmt(r.c)}<br>Contribuições: ${fmt(r.co)}<br>Ofertas: ${fmt(r.of)}<br>Total: ${fmt(r.ent)}"/>`});
+  return `<div class="chart"><svg class="bc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Entradas por tipo e por mês">${s}</svg></div>`;
+}
+function donutChart(parts){
+  const tot=sum(parts.map(p=>p[1]));
+  if(!tot)return `<div class="empty">Ainda não há entradas em ${S.ano}.</div>`;
+  const R=74,r=50,cx=90,cy=90;let a0=-Math.PI/2,s="";
+  const vis=parts.filter(p=>p[1]>0),gap=vis.length>1?0.025:0;
+  vis.forEach(([n,v,c])=>{const a1=a0+v/tot*Math.PI*2,A=a0+gap/2,B=a1-gap/2,lg=B-A>Math.PI?1:0;
+    const P=(rad,ang)=>[cx+rad*Math.cos(ang),cy+rad*Math.sin(ang)].map(z=>z.toFixed(2)).join(",");
+    s+=vis.length===1?`<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${c}" stroke-width="${R-r}" data-tip="<b>${n}</b>${fmt(v)} (100%)"/>`
+      :`<path d="M${P(R,A)}A${R},${R} 0 ${lg} 1 ${P(R,B)}L${P(r,B)}A${r},${r} 0 ${lg} 0 ${P(r,A)}Z" fill="${c}" data-tip="<b>${n}</b>${fmt(v)} (${Math.round(v/tot*100)}%)"/>`;a0=a1});
+  return `<div class="donut"><svg viewBox="0 0 180 180" role="img" aria-label="${parts.map(p=>p[0]+" "+fmt(p[1])).join(", ")}">${s}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" class="dc-l">Total</text><text x="${cx}" y="${cy+16}" text-anchor="middle" class="dc-v">${fk(tot)}</text></svg>
+    <ul class="dlegend">${parts.map(([n,v,c])=>`<li><i style="background:${c}"></i><span>${n}</span><b>${fmt(v)}</b><em>${Math.round(v/tot*100)}%</em></li>`).join("")}</ul></div>`;
+}
+(()=>{let tip=null;
+  const show=(el,e)=>{if(!tip){tip=document.createElement("div");tip.className="ctip";document.body.appendChild(tip)}
+    tip.innerHTML=el.dataset.tip;tip.hidden=false;const pt=e.touches?e.touches[0]:e;const w=tip.offsetWidth,h=tip.offsetHeight;
+    let x=pt.clientX+14,y=pt.clientY-h-10;if(x+w>innerWidth-8)x=pt.clientX-w-14;if(y<8)y=pt.clientY+16;tip.style.left=Math.max(8,x)+"px";tip.style.top=y+"px";
+    document.querySelectorAll(".hit.on").forEach(h=>h.classList.remove("on"));el.classList.add("on")};
+  const hide=()=>{if(tip)tip.hidden=true;document.querySelectorAll(".hit.on").forEach(h=>h.classList.remove("on"))};
+  document.addEventListener("pointermove",e=>{const el=e.target.closest&&e.target.closest("[data-tip]");el?show(el,e):hide()},{passive:true});
+  document.addEventListener("pointerdown",e=>{const el=e.target.closest&&e.target.closest("[data-tip]");el?show(el,e):hide()},{passive:true});
+  window.addEventListener("scroll",hide,{passive:true});
+})();
 function chart(a,b){
   const W=560,H=200,pl=44,pb=22,pt=10,mx=Math.max(1,...a,...b);
   const step=niceStep(mx),top=Math.ceil(mx/step)*step;
@@ -382,7 +874,7 @@ function vCotas(){
   const colt=M3.map((_,i)=>`<td data-coltot="${i+1}">${fmt(sum(ms.map(m=>cotaM(m,S.ano,i+1))))}</td>`).join("");
   const all=sum(ms.map(m=>cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12])));
   const live=`<p class="muted" id="liveRank" style="margin:0;font-size:13px">${liveRank()}</p>`;
-  const hdr=`<div class="head"><div><h2>Cotas de ${S.ano}</h2><p>${S.edit?"Toque num valor e escreva. Guarda sozinho, e os totais, a classificação e o resumo actualizam-se.":"Valores de cota por membro e por mês."}</p></div>${addBtn("novoMembro","Membro")}</div>`;
+  const hdr=`<div class="head"><div><h2>Cotas de ${S.ano}</h2><p>${S.edit?"Toque num valor e escreva. Guarda sozinho, e os totais, a classificação e o resumo actualizam-se.":"Valores de cota por membro e por mês."}</p></div><div class="head-acts">${xlsBar("cotas")}${addBtn("novoMembro","Membro")}</div></div>`;
   if(!ms.length)return hdr+`<div class="empty">Ainda não há membros. ${S.edit?"Use “+ Membro” para adicionar o primeiro.":""}</div>`;
   const busca=ms.length>8?`<div class="controls"><input class="inp" type="search" id="cotaBusca" placeholder="Procurar membro…" aria-label="Procurar membro" value="${esc(S.cotaBusca||"")}" autocomplete="off" style="max-width:280px"></div>`:"";
   return hdr+busca+`<div class="scroll"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody><tfoot id="cotaFoot">${footRows(M3.map((_,i)=>sum(ms.map(m=>cotaM(m,S.ano,i+1)))))}</tfoot></table></div>`+live;
@@ -426,7 +918,7 @@ function vEventos(grupo){
     .sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
   const titulo=grupo==="contribuicao"?"Contribuições":"Conferências e eventos";
   const desc=grupo==="contribuicao"?"Campanhas de contribuição, como envelopes e contribuição dos líderes.":"Conferências, retiros, cultos especiais e outros eventos, com entradas e saídas de cada um.";
-  return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div>${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div>
+  return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div><div class="head-acts">${xlsBar("contribuicoes")}${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div></div>
   ${quickEvento(grupo)}
   ${evs.length?`<div class="cards">${evs.map(cardEvento).join("")}</div>`:`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
 }
@@ -493,7 +985,7 @@ function vActividades(){
   const lst=S.actMes==="todos"?all:all.filter(a=>+a.data.slice(5,7)===+S.actMes);
   const part=sum(all.map(a=>num(a.participantes)));
   const meses=[...new Set(all.map(a=>+a.data.slice(5,7)))];
-  let html=`<div class="head"><div><h2>Actividades realizadas</h2><p>Registe cada actividade feita pela juventude. As do mês entram sozinhas no relatório mensal.</p></div>${addBtn("novaAct","Nova actividade")}</div>
+  let html=`<div class="head"><div><h2>Actividades realizadas</h2><p>Registe cada actividade feita pela juventude. As do mês entram sozinhas no relatório mensal.</p></div><div class="head-acts">${xlsBar("actividades")}${addBtn("novaAct","Nova actividade")}</div></div>
   <div class="kpis kpis4">
     <div class="kpi"><span class="l">Actividades em ${S.ano}</span><span class="v">${all.length}</span></div>
     <div class="kpi"><span class="l">Este mês</span><span class="v">${mesAct?actsMes(mesAct).length:"—"}</span></div>
@@ -572,14 +1064,14 @@ function porMes(arr,out){
 }
 function vOfertas(){
   const arr=movsAno("oferta");
-  return `<div class="head"><div><h2>Ofertas de ${S.ano}</h2><p>Total ${fmt(sum(arr.map(v=>num(v.valor))))} em ${arr.length} ${arr.length===1?"registo":"registos"}.</p></div>${addBtn("novoMov","Oferta",'data-tipo="oferta"')}</div>
+  return `<div class="head"><div><h2>Ofertas de ${S.ano}</h2><p>Total ${fmt(sum(arr.map(v=>num(v.valor))))} em ${arr.length} ${arr.length===1?"registo":"registos"}.</p></div><div class="head-acts">${xlsBar("ofertas")}${addBtn("novoMov","Oferta",'data-tipo="oferta"')}</div></div>
   ${quick("oferta")}
   ${arr.length?`<section class="panel">${porMes(arr,false)}</section>`:`<div class="empty">Nenhuma oferta registada em ${S.ano}.</div>`}`;
 }
 function vSaidas(){
   const arr=movsAno("saida");
   const por=k=>sum(arr.filter(v=>k==="evento"?!!v.eventoId:(!v.eventoId&&v.origem===k)).map(v=>num(v.valor)));
-  return `<div class="head"><div><h2>Saídas de ${S.ano}</h2><p>Total ${fmt(sum(arr.map(v=>num(v.valor))))}</p></div>${addBtn("novoMov","Saída",'data-tipo="saida"')}</div>
+  return `<div class="head"><div><h2>Saídas de ${S.ano}</h2><p>Total ${fmt(sum(arr.map(v=>num(v.valor))))}</p></div><div class="head-acts">${xlsBar("saidas")}${addBtn("novoMov","Saída",'data-tipo="saida"')}</div></div>
   <div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
     <div class="kpi"><span class="l">Da cota</span><span class="v">${fmt(por("cota"))}</span></div>
     <div class="kpi"><span class="l">Das ofertas</span><span class="v">${fmt(por("oferta"))}</span></div>
@@ -623,9 +1115,10 @@ document.addEventListener("submit",async ev=>{
 });
 
 // ---------- formulários
-function openSheet(html,onSubmit){
+function openSheet(html,onSubmit,opt={}){
   const el=$("#sheet");
-  el.innerHTML=`<div class="sheet-bg" data-close><form class="sheet" id="sheetForm" novalidate>${html}<p class="err" id="sheetErr" hidden></p></form></div>`;
+  el.innerHTML=`<div class="sheet-bg" data-close><form class="sheet${opt.wide?" wide":""}" id="sheetForm" novalidate role="dialog" aria-modal="true"><button type="button" class="sheet-x" data-close aria-label="Fechar">✕</button>${html}<p class="err" id="sheetErr" hidden></p></form></div>`;
+  const acts=el.querySelector(".sheet > .acts");const er=el.querySelector("#sheetErr");if(acts&&er)acts.before(er);
   el.hidden=false;
   const f=$("#sheetForm");setTimeout(()=>{const i=f.querySelector("input,select");i&&i.focus()},30);
   f.addEventListener("submit",async ev=>{ev.preventDefault();const b=f.querySelector("[type=submit]");b.disabled=true;
@@ -639,18 +1132,68 @@ const today=()=>new Date().toISOString().slice(0,10);
 function fail(f,t){const p=f.querySelector("#sheetErr");p.hidden=false;p.textContent=t;return false}
 
 function formMembro(m){
-  openSheet(`<h3>${m?"Editar membro":"Novo membro"}</h3>
-   <label>Nome<input class="inp" name="nome" id="f-nome" value="${esc(m?.nome||"")}" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
-   <label style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="jovem" id="f-jovem" ${m?.naoJovem?"":"checked"} style="width:18px;height:18px"> Conta como jovem (entra na lista dos jovens)</label>
-   <label>Sexo<select class="inp" name="sexo" id="f-sexo"><option value="">—</option><option value="M" ${m?.sexo==="M"?"selected":""}>Rapaz</option><option value="F" ${m?.sexo==="F"?"selected":""}>Rapariga</option><option value="PAI" ${m?.sexo==="PAI"?"selected":""}>Pai</option><option value="MAE" ${m?.sexo==="MAE"?"selected":""}>Mãe</option></select></label>
-   <div class="acts">${m?`<button type="button" class="btn danger" data-act="apagarMembro" data-id="${m.id}">Remover membro</button>`:""}<button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
+  const sel=(v,o)=>o.map(([k,l])=>`<option value="${k}" ${v===k?"selected":""}>${l}</option>`).join("");
+  openSheet(`<div class="sheet-h"><h3>${m?"Editar membro":"Registar membro"}</h3><p>${m?"Altere os dados e guarde.":"Os campos com * são obrigatórios. O membro aparece logo nas cotas e na lista dos jovens."}</p></div>
+   <fieldset class="fs"><legend>Dados pessoais</legend><div class="fgrid">
+     <label class="span2">Nome completo *<input class="inp" name="nome" id="f-nome" value="${esc(m?.nome||"")}" placeholder="Ex.: Mano Quefasse" autocomplete="off" required></label>
+     <label>Sexo<select class="inp" name="sexo" id="f-sexo">${sel(m?.sexo||"",[["","—"],["M","Rapaz"],["F","Rapariga"],["PAI","Pai"],["MAE","Mãe"]])}</select></label>
+     <label>Data de nascimento<input class="inp" type="date" name="nascimento" id="f-nasc" value="${esc(m?.nascimento||"")}"></label>
+     <label>Telefone<input class="inp" type="tel" name="telefone" id="f-tel" value="${esc(m?.telefone||"")}" placeholder="Ex.: 84 123 4567" autocomplete="off"></label>
+     <label>Morada / bairro<input class="inp" name="morada" id="f-morada" value="${esc(m?.morada||"")}" placeholder="Ex.: Cariacó" autocomplete="off"></label>
+   </div></fieldset>
+   <fieldset class="fs"><legend>Na juventude</legend><div class="fgrid">
+     <label>Cargo<select class="inp" name="cargo" id="f-cargo">${sel(m?.cargo||"",[["","—"],...CARGOJ])}</select></label>
+     <label>Local<select class="inp" name="local" id="f-local">${sel(m?.bindura?"Bindura":"Sede",[["Sede","Sede"],["Bindura","Bloco de Bindura"]])}</select></label>
+     <label>Membro desde<input class="inp" type="date" name="entrada" id="f-entrada" value="${esc(m?.entrada||"")}"></label>
+     <div class="checks span2">
+       <label class="check"><input type="checkbox" name="jovem" id="f-jovem" ${m?.naoJovem?"":"checked"}><span>Conta como jovem<small>Entra na lista dos jovens e nas contagens</small></span></label>
+       <label class="check"><input type="checkbox" name="activo" id="f-activo" ${m?.activo?"checked":""}><span>Activo no Bloco de Bindura<small>Só conta se o local for Bindura</small></span></label>
+     </div>
+     <label class="span2">Notas<textarea class="inp" name="notas" id="f-notas" rows="2" placeholder="Observações (opcional)">${esc(m?.notas||"")}</textarea></label>
+   </div></fieldset>
+   <div class="acts">${m?`<button type="button" class="btn danger" data-act="apagarMembro" data-id="${m.id}">Remover membro</button>`:""}<span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">${m?"Guardar alterações":"Registar membro"}</button></div>`,
   async(fd,f)=>{const nome=String(fd.get("nome")).trim();if(!nome)return fail(f,"Escreva o nome do membro.");
-    const sexo=String(fd.get("sexo")||"");
-    const naoJovem=!fd.get("jovem");
-    if(m){await S.db.doc("membros/"+m.id).update({nome,sexo,naoJovem});return "Actualizado"}
+    if(!m&&S.membros.some(x=>nrm(x.nome)===nrm(nome))&&!confirm("Já existe um membro chamado "+nome+". Registar outro com o mesmo nome?"))return false;
+    const bindura=fd.get("local")==="Bindura";
+    const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),cargo:String(fd.get("cargo")||""),bindura,activo:bindura&&!!fd.get("activo"),
+      telefone:String(fd.get("telefone")||"").trim(),nascimento:String(fd.get("nascimento")||""),entrada:String(fd.get("entrada")||""),morada:String(fd.get("morada")||"").trim(),notas:String(fd.get("notas")||"").trim()};
+    if(m){await S.db.doc("membros/"+m.id).update(d);return "Membro actualizado"}
     const ordem=Math.max(0,...S.membros.map(x=>num(x.ordem)))+1;
-    await S.db.collection("membros").add({nome,ordem,sexo,naoJovem,bindura:false,activo:false,cotas:{}});return "Jovem adicionado"});
+    await S.db.collection("membros").add({...d,ordem,cotas:{},registado:today()});return "Membro registado"},{wide:true});
 }
+function idade(d){if(!d)return "";const b=new Date(d+"T00:00"),n=new Date();if(isNaN(b))return "";let a=n.getFullYear()-b.getFullYear();if(n.getMonth()<b.getMonth()||(n.getMonth()===b.getMonth()&&n.getDate()<b.getDate()))a--;return a>=0&&a<120?a:""}
+const MFILTROS=[["todos","Todos"],["jovens","Jovens"],["sede","Sede"],["bindura","Bindura"],["lider","Liderança"],["semcota","Sem cota em "]];
+function membroPassa(m,f){const A=[1,2,3,4,5,6,7,8,9,10,11,12];return f==="jovens"?!m.naoJovem&&!IGREJA.includes(m.cargo):f==="sede"?!m.bindura:f==="bindura"?!!m.bindura:f==="lider"?!!m.cargo:f==="semcota"?cotaPeriodo(m,S.ano,A)===0:true}
+function vMembros(){
+  const A=[1,2,3,4,5,6,7,8,9,10,11,12],f=S.mf||"todos",q=S.mq||"";
+  const ms=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem));
+  const c=contagem(),comTel=ms.filter(m=>m.telefone).length,pagaram=ms.filter(m=>cotaPeriodo(m,S.ano,A)>0).length;
+  const lista=ms.filter(m=>membroPassa(m,f));
+  const rows=lista.map((m,i)=>{const id=idade(m.nascimento),ct=cotaPeriodo(m,S.ano,A);
+    return `<tr data-q="${esc(nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")))}" ${q&&!nrm(m.nome+" "+(m.telefone||"")+" "+(m.morada||"")).includes(nrm(q))?"hidden":""}>
+    <td class="c-n">${i+1}</td>
+    <td class="c-nome"><button class="mname" ${S.edit?`data-act="editMembro"`:"disabled"} data-id="${m.id}"><span class="av">${esc((m.nome||"?").trim().charAt(0).toUpperCase())}</span><span><b>${esc(m.nome)}</b><small>${esc([cargoLbl(m.cargo),m.naoJovem?"Não conta como jovem":""].filter(Boolean).join(" · ")||"Membro")}</small></span></button></td>
+    <td>${esc(sexoLbl(m.sexo)||"—")}</td><td>${m.bindura?`Bindura${m.activo?' <span class="chip good">activo</span>':""}`:"Sede"}</td>
+    <td>${m.telefone?`<a href="tel:${esc(String(m.telefone).replace(/\s/g,""))}">${esc(m.telefone)}</a>`:'<span class="muted">—</span>'}</td>
+    <td>${id!==""?id+" anos":'<span class="muted">—</span>'}</td><td>${m.entrada?dataPt(m.entrada):'<span class="muted">—</span>'}</td>
+    <td class="money ${ct?"":"muted"}">${ct?fmt(ct):"—"}</td></tr>`}).join("");
+  return `<div class="head"><div><h2>Registo de membros</h2><p>Todos os membros da juventude, com contactos e situação das cotas de ${S.ano}.</p></div><div class="head-acts">${xlsBar("membros")}${addBtn("novoMembro","Registar membro")}</div></div>
+  <div class="kpis kpis4">
+    <div class="kpi"><span class="l">Membros registados</span><span class="v">${ms.length}</span></div>
+    <div class="kpi"><span class="l">Jovens</span><span class="v">${c.total}</span><span class="h">${c.rapazes} rapazes · ${c.raparigas} raparigas</span></div>
+    <div class="kpi"><span class="l">Pagaram cota em ${S.ano}</span><span class="v">${pagaram}</span><span class="h">${ms.length?Math.round(pagaram/ms.length*100):0}% dos membros</span></div>
+    <div class="kpi"><span class="l">Com telefone</span><span class="v">${comTel}</span><span class="h">${ms.length-comTel} sem contacto</span></div>
+  </div>
+  <section class="panel">
+    <div class="toolbar"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="mSearch" type="search" placeholder="Procurar por nome, telefone ou morada" value="${esc(q)}" autocomplete="off" aria-label="Procurar membro"></div>
+      <div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
+    ${lista.length?`<div class="scroll flat"><table class="mtab"><thead><tr><th class="c-n">Nº</th><th class="c-nome">Nome</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>Idade</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="muted small" id="mCount">${lista.length} ${lista.length===1?"membro":"membros"}${f!=="todos"?" neste filtro":""}.${S.edit?" Toque no nome para ver ou editar os dados.":""}</p>`:`<div class="empty">Nenhum membro neste filtro.${S.edit?" Use “Registar membro” para adicionar.":""}</div>`}
+  </section>`;
+}
+document.addEventListener("input",ev=>{if(ev.target.id!=="mSearch")return;S.mq=ev.target.value;const q=nrm(S.mq);let n=0;
+  document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".")});
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-mf]");if(!b)return;S.mf=b.dataset.mf;render()});
 function formEvento(e,tipoDef){
   const tipo=e?.tipo||tipoDef||"conferencia";
   openSheet(`<h3>${e?"Editar evento":"Novo evento"}</h3>
@@ -837,7 +1380,7 @@ function vJovens(){
     <div class="kpi"><span class="l">Activos de Bindura</span><span class="v">${c.binduraActivos}</span></div>
   </div>
   ${c.semSexo?`<div class="banner">${c.semSexo} ${c.semSexo===1?"jovem ainda não tem":"jovens ainda não têm"} o sexo marcado. Escolha Rapaz ou Rapariga na lista para as contas ficarem certas.</div>`:""}
-  <section class="panel"><div class="head"><h3>Lista completa (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button><button class="btn" data-pdf="jovens" data-k="jovens">PDF só jovens (${c.total})</button>${addBtn("novoMembro","Pessoa")}</div></div>
+  <section class="panel"><div class="head"><h3>Lista completa (${LC.length})</h3><div class="controls"><button class="btn" data-pdf="jovens" data-k="completa">PDF lista completa</button><button class="btn" data-pdf="jovens" data-k="jovens">PDF só jovens (${c.total})</button>${xlsBar("membros")}${addBtn("novoMembro","Pessoa")}</div></div>
     <div class="scroll" style="margin-top:10px"><table class="jov"><thead><tr><th>Nº</th><th style="text-align:left">Nome</th><th>Cargo</th><th>Sexo</th><th>Local</th><th>Activo (Bindura)</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted" style="font-size:12px;margin:8px 0 0">Ordem: líderes da Sede, líderes do Bloco, conselheiros, coordenador, pastores e diáconos, e depois os restantes. Toque no nome para o corrigir. A lista "só jovens" e as contagens não incluem conselheiros, coordenador, pastores nem diáconos. Os jovens desta lista também aparecem na tabela de cotas.</p></section>
   ${(()=>{const nj=S.membros.filter(m=>m.naoJovem);return nj.length?`<section class="panel"><h3>Só na tabela de cotas (não contam como jovens)</h3><ul class="list">${nj.map(m=>`<li><div class="grow"><div class="t">${esc(m.nome)}</div></div>${ed?`<button class="btn small" data-jovem="${m.id}" data-v="1">Contar como jovem</button>`:""}</li>`).join("")}</ul></section>`:""})()}`;
@@ -1314,10 +1857,13 @@ function vPdf(){
     <section class="panel pdfcard"><h3>Conferências e contribuições</h3>
       ${evs.length?`<label class="muted" style="display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600">Evento<select class="inp" id="pdfEv"><option value="__conf">Todas as conferências e eventos</option><option value="__all">Todos (conferências e contribuições)</option>${evs.map(e=>`<option value="${e.id}">${esc(TIPOS[e.tipo]||"Evento")}: ${esc(e.nome)}</option>`).join("")}</select></label>
       <div><button class="btn primary" data-pdf="evento">Baixar PDF</button></div>`:`<p class="muted">Ainda não há eventos registados.</p>`}</section>
+    <section class="panel pdfcard"><h3>Excel: todos os dados</h3>
+      <p class="muted" style="margin:0">Um ficheiro Excel com resumo mensal, membros, cotas de ${S.ano}, movimentos, eventos e actividades. A importação aceita o mesmo ficheiro (ou o modelo) e actualiza membros, cotas, movimentos e actividades.</p>
+      ${xlsBar("tudo",true)}</section>
     <section class="panel pdfcard"><h3>Cópia de segurança dos dados</h3>
-      <p class="muted" style="margin:0">Os dados ficam guardados só neste navegador. Baixe uma cópia com frequência e importe-a noutro telemóvel ou computador para ter os mesmos dados.</p>
+      <p class="muted" style="margin:0">${window.TES_REMOTO?"Os dados estão guardados na base de dados MySQL e são os mesmos em todos os aparelhos. Pode baixar uma cópia (.json) para guardar à parte.":"Os dados ficam guardados só neste navegador. Baixe uma cópia com frequência e importe-a noutro telemóvel ou computador para ter os mesmos dados."}</p>
       <p class="muted" style="margin:0;font-size:13px">${window.TES_LOCAL?textoUltimaCopia():""}</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="bkExport">Baixar cópia (.json)</button><label class="btn" style="cursor:pointer">Importar cópia<input type="file" accept=".json,application/json" id="bkImport" hidden></label></div></section>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="bkExport">Baixar cópia (.json)</button>${!window.TES_REMOTO||S.sessao?.papel==="admin"?`<label class="btn" style="cursor:pointer">${window.TES_REMOTO?"Importar cópia para o MySQL":"Importar cópia"}<input type="file" accept=".json,application/json" id="bkImport" hidden></label>`:""}${window.TES_REMOTO&&S.sessao?.papel==="admin"&&dadosDoNavegador()?`<button class="btn" data-act="bkNavegador">Enviar dados deste navegador para o MySQL</button>`:""}</div></section>
     <section class="panel pdfcard"><h3>Enviar por email</h3>
       <p class="muted" style="margin:0">O site não consegue enviar emails sozinho. Depois de baixar o PDF, anexe-o a um email para:</p>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><code class="mail" id="mailAddr">${EMAIL}</code><button class="btn small" data-copy="${EMAIL}">Copiar email</button></div>
@@ -1511,6 +2057,145 @@ async function baixarPdf(tipo,btn){
 }
 
 
+// ---------- Excel: exportar e importar (SheetJS, carregado só quando é preciso)
+let _xls=null;
+function xlsLib(){if(window.XLSX)return Promise.resolve(window.XLSX);if(_xls)return _xls;
+  _xls=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>ok(window.XLSX);s.onerror=()=>{_xls=null;ko(Object.assign(new Error("nolib"),{code:"nolib"}))};document.head.appendChild(s)});return _xls}
+const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1};
+function xlsBar(kind,big){
+  const imp=S.edit&&XLS_IMP[kind]&&!(kind==="tudo"&&S.sessao?.papel==="leitor");
+  return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
+}
+const simNao=b=>b?"Sim":"Não";
+const nrm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").trim().toLowerCase();
+function resumoMensal(ano=S.ano){
+  return [...Array(12)].map((_,i)=>{const m=i+1;
+    const c=sum(S.membros.map(x=>cotaM(x,ano,m))),mv=t=>sum(S.movs.filter(v=>v.tipo===t&&anoMov(v)===ano&&mesMov(v)===m).map(v=>num(v.valor)));
+    const co=mv("contribuicao"),of=mv("oferta"),sa=mv("saida");return {m,c,co,of,ent:c+co+of,sa,saldo:c+co+of-sa}});
+}
+function xlsSheets(kind){
+  const A=S.ano,sh=[];
+  const membros=()=>[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem)).map((m,i)=>({"Nº":i+1,"Nome":m.nome,"Sexo":sexoLbl(m.sexo),"Cargo":cargoLbl(m.cargo),"Local":m.bindura?"Bindura":"Sede","Activo (Bindura)":simNao(m.activo),"Conta como jovem":simNao(!m.naoJovem),"Telefone":m.telefone||"","Data de nascimento":m.nascimento||"","Data de entrada":m.entrada||"","Morada":m.morada||"","Notas":m.notas||""}));
+  const cotas=()=>{const rows=[...S.membros].sort((a,b)=>num(a.ordem)-num(b.ordem)).map(m=>{const r={"Nome":m.nome};M3.forEach((k,i)=>r[k]=cotaM(m,A,i+1)||"");r["Total"]=cotaPeriodo(m,A,[1,2,3,4,5,6,7,8,9,10,11,12]);return r});
+    const t={"Nome":"TOTAL"};M3.forEach((k,i)=>t[k]=sum(S.membros.map(m=>cotaM(m,A,i+1))));t["Total"]=sum(M3.map(k=>t[k]));return [...rows,t]};
+  const movs=tipo=>S.movs.filter(v=>(!tipo||v.tipo===tipo)&&anoMov(v)===A).sort((a,b)=>(a.data||"").localeCompare(b.data||"")).map(v=>{const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null;
+    return {"Data":v.data||"","Tipo":{contribuicao:"Contribuição",oferta:"Oferta",saida:"Saída"}[v.tipo]||v.tipo,"Descrição":v.nome||"","Valor (MT)":num(v.valor),"Sai de":v.tipo==="saida"?(ev?"Evento: "+ev.nome:ORIGENS[v.origem]||""):"","Evento":ev?ev.nome:"","Nota":v.nota||""}});
+  const eventos=()=>S.eventos.map(e=>{const t=eventoTotais(e.id);return {"Nome":e.nome,"Tipo":TIPOS[e.tipo]||e.tipo,"Data":e.data||"","Meta (MT)":e.meta??"","Entradas (MT)":t.te,"Saídas (MT)":t.ts,"Saldo (MT)":t.te-t.ts,"Nota":e.nota||""}});
+  const acts=()=>S.acts.filter(a=>a.data&&+a.data.slice(0,4)===A).sort((a,b)=>a.data.localeCompare(b.data)).map(a=>({"Data":a.data,"Nome":a.nome,"Tipo":TACT[a.tipo]||a.tipo||"","Local":a.local||"","Participantes":num(a.participantes)||"","Descrição":a.nota||""}));
+  const resumo=()=>{let ac=0;return resumoMensal().map(r=>{ac+=r.saldo;return {"Mês":MESES[r.m-1],"Cotas":r.c,"Contribuições":r.co,"Ofertas":r.of,"Total de entradas":r.ent,"Saídas":r.sa,"Saldo do mês":r.saldo,"Saldo acumulado":ac}})};
+  const users=()=>S.users.map(u=>({"Nome":u.nome||u.id,"Papel":(PAPEIS[u.papel]||"").split(" (")[0],"Último acesso":u.ultimoLogin||"","Nº de entradas":u.totalLogins||0}));
+  const acessos=()=>(window.TES_REMOTO?TES_REMOTO.acessos():[]).filter(a=>a.sucesso).map(a=>({"Data":a.data,"Nome":a.nome||"","Papel":(PAPEIS[a.papel]||"").split(" (")[0]}));
+  if(kind==="tudo"){sh.push(["Resumo "+A,resumo()],["Membros",membros()],["Cotas "+A,cotas()],["Movimentos "+A,movs()],["Eventos",eventos()],["Actividades "+A,acts()]);if(S.sessao?.papel==="admin"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}}
+  else if(kind==="cotas")sh.push(["Cotas "+A,cotas()]);
+  else if(kind==="membros")sh.push(["Membros",membros()]);
+  else if(kind==="ofertas")sh.push(["Ofertas "+A,movs("oferta")]);
+  else if(kind==="saidas")sh.push(["Saídas "+A,movs("saida")]);
+  else if(kind==="contribuicoes")sh.push(["Contribuições "+A,movs("contribuicao")],["Eventos",eventos()]);
+  else if(kind==="actividades")sh.push(["Actividades "+A,acts()]);
+  else if(kind==="utilizadores"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}
+  else if(kind==="resumo")sh.push(["Resumo "+A,resumo()]);
+  return sh;
+}
+const XLS_MODELO={
+  membros:[["Membros",[{"Nome":"Ex.: Maria Joaquim","Sexo":"Rapariga","Cargo":"","Local":"Sede","Activo (Bindura)":"Não","Conta como jovem":"Sim","Telefone":"84 000 0000","Data de nascimento":"2004-05-21","Data de entrada":"2022-01-10","Morada":"","Notas":""}]]],
+  cotas:[["Cotas "+new Date().getFullYear(),[Object.assign({"Nome":"Ex.: Maria Joaquim"},Object.fromEntries(M3.map((k,i)=>[k,i<2?100:""])))]]],
+  ofertas:[["Ofertas",[{"Data":"2026-01-15","Descrição":"Ex.: Oferta do culto","Valor (MT)":500,"Nota":""}]]],
+  saidas:[["Saídas",[{"Data":"2026-01-20","Descrição":"Ex.: Compra de material","Valor (MT)":300,"Sai de":"Cota","Nota":""}]]],
+  actividades:[["Actividades",[{"Data":"2026-01-18","Nome":"Ex.: Culto da juventude","Tipo":"","Local":"Sede","Participantes":40,"Descrição":""}]]],
+};
+XLS_MODELO.tudo=[...XLS_MODELO.membros,...XLS_MODELO.cotas,["Movimentos",[{"Data":"2026-01-15","Tipo":"Oferta","Descrição":"Ex.: Oferta do culto","Valor (MT)":500,"Sai de":"","Nota":""}]],...XLS_MODELO.actividades];
+async function xlsBaixar(sheets,nome){
+  const X=await xlsLib(),wb=X.utils.book_new();
+  sheets.forEach(([n,rows])=>{const ws=rows.length?X.utils.json_to_sheet(rows):X.utils.aoa_to_sheet([["Sem dados"]]);
+    const keys=rows.length?Object.keys(rows[0]):[];ws["!cols"]=keys.map(k=>({wch:Math.min(48,Math.max(k.length+2,...rows.map(r=>String(r[k]??"").length+2)))}));
+    X.utils.book_append_sheet(wb,ws,n.replace(/[\\/?*[\]:]/g,"").slice(0,31))});
+  const blob=new Blob([X.write(wb,{type:"array",bookType:"xlsx"})],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+  const dl=await window.claude.use("downloads");await dl.save({filename:nome,data:blob});
+}
+// leitura
+function isoData(v){
+  if(v instanceof Date&&!isNaN(v))return new Date(v.getTime()-v.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  const s=String(v??"").trim();if(!s)return "";
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,"0")}-${m[3].padStart(2,"0")}`;
+  m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const y=m[3].length===2?"20"+m[3]:m[3];return `${y}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`}
+  return "";
+}
+const pega=(r,...al)=>{for(const k of Object.keys(r)){const n=nrm(k);if(al.some(a=>n===a||n.startsWith(a)))return r[k]}return ""};
+const sexoDe=v=>{const n=nrm(v);return !n?"":/^(m|rapaz|masc|homem)/.test(n)?"M":/^(f|rapariga|fem|mulher)/.test(n)?"F":n==="pai"?"PAI":/^mae/.test(n)?"MAE":""};
+const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n);return c?c[0]:""};
+const tactDe=v=>{const n=nrm(v);if(!n)return "outro";const e=Object.entries(TACT).find(([k,l])=>nrm(k)===n||nrm(l)===n);return e?e[0]:"outro"};
+const ridX=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+function xlsInterpretar(wb,kind,X){
+  const ops=[],res={membrosNovos:0,membrosAct:0,cotas:0,movs:0,acts:0,ignorados:0};
+  const porNome=new Map(S.membros.map(m=>[nrm(m.nome),{...m}]));let ordem=Math.max(0,...S.membros.map(x=>num(x.ordem)));
+  const novoMembro=nome=>{const id=ridX(),m={id,nome,ordem:++ordem,sexo:"",naoJovem:false,bindura:false,activo:false,cotas:{}};porNome.set(nrm(nome),m);ops.push({op:"set",col:"membros",id,data:{...m,id:undefined}});res.membrosNovos++;return m};
+  const linhas=ws=>X.utils.sheet_to_json(ws,{defval:"",raw:true});
+  const tipoFolha=n=>{n=nrm(n);return n.startsWith("membro")||n.startsWith("jove")?"membros":n.startsWith("cota")?"cotas":n.startsWith("movimento")?"movs":n.startsWith("oferta")?"ofertas":n.startsWith("saida")?"saidas":n.startsWith("actividade")||n.startsWith("atividade")?"actividades":""};
+  const folhas=kind==="tudo"?wb.SheetNames.map(n=>[n,tipoFolha(n)]).filter(x=>x[1]):[[wb.SheetNames[0],kind]];
+  const movKey=v=>[v.tipo,v.data,nrm(v.nome),num(v.valor)].join("|"),movSet=new Set(S.movs.map(movKey));
+  const actSet=new Set(S.acts.map(a=>a.data+"|"+nrm(a.nome)));
+  for(const [nomeF,tp] of folhas){const rows=linhas(wb.Sheets[nomeF]);
+    if(tp==="membros")rows.forEach(r=>{const nome=String(pega(r,"nome")).trim();if(!nome||nome.startsWith("Ex.:")){res.ignorados+=nome?1:0;return}
+      const d={};const sx=sexoDe(pega(r,"sexo"));if(sx)d.sexo=sx;const cg=cargoDe(pega(r,"cargo"));if(cg)d.cargo=cg;
+      const lc=nrm(pega(r,"local"));if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
+      const at=nrm(pega(r,"activo","ativo"));if(at&&d.bindura!==false)d.activo=at.startsWith("s");
+      const jv=nrm(pega(r,"conta como jovem","jovem"));if(jv)d.naoJovem=jv.startsWith("n");
+      const tel=String(pega(r,"telefone","contacto","celular")).trim();if(tel)d.telefone=tel;
+      const nas=isoData(pega(r,"data de nascimento","nascimento"));if(nas)d.nascimento=nas;
+      const ent=isoData(pega(r,"data de entrada","entrada"));if(ent)d.entrada=ent;
+      const mo=String(pega(r,"morada","endereco","bairro")).trim();if(mo)d.morada=mo;
+      const no=String(pega(r,"notas","observ")).trim();if(no)d.notas=no;
+      const ex=porNome.get(nrm(nome));
+      if(ex){if(Object.keys(d).length){if(ex.id&&S.membros.some(m=>m.id===ex.id))ops.push({op:"update",col:"membros",id:ex.id,data:d});else{const o=ops.find(o=>o.id===ex.id);o&&Object.assign(o.data,d)}Object.assign(ex,d);res.membrosAct++}}
+      else{const m=novoMembro(nome);Object.assign(ops[ops.length-1].data,d)}});
+    if(tp==="cotas"){const ano=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||S.ano;
+      rows.forEach(r=>{const nome=String(pega(r,"nome")).trim();if(!nome||nrm(nome)==="total"||nome.startsWith("Ex.:"))return;
+        const c={};Object.keys(r).forEach(k=>{const n=nrm(k);let mes=M3.findIndex(x=>nrm(x)===n)+1||MESES.findIndex(x=>nrm(x)===n)+1;if(!mes&&/^\d{1,2}$/.test(n)&&+n>=1&&+n<=12)mes=+n;
+          if(mes&&String(r[k]).trim()!==""){c[mes]=num(r[k])}});
+        if(!Object.keys(c).length)return;
+        let m=porNome.get(nrm(nome));if(!m)m=novoMembro(nome);
+        const isNew=!S.membros.some(x=>x.id===m.id);
+        if(isNew){const o=ops.find(o=>o.id===m.id);o.data.cotas={...(o.data.cotas||{}),[ano]:{...((o.data.cotas||{})[ano]||{}),...c}}}
+        else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:c}}});
+        res.cotas+=Object.keys(c).length})}
+    if(tp==="movs"||tp==="ofertas"||tp==="saidas")rows.forEach(r=>{
+      const tipo=tp==="ofertas"?"oferta":tp==="saidas"?"saida":(n=>n.startsWith("sa")?"saida":n.startsWith("contr")?"contribuicao":n.startsWith("of")?"oferta":"")(nrm(pega(r,"tipo")));
+      const nome=String(pega(r,"descricao","nome")).trim(),valor=num(pega(r,"valor")),data=isoData(pega(r,"data"));
+      if(!tipo||!nome||nome.startsWith("Ex.:")||!(valor>0)){if(nome&&!nome.startsWith("Ex.:"))res.ignorados++;return}
+      const d={tipo,nome,valor,data,ano:data?+data.slice(0,4):S.ano,nota:String(pega(r,"nota")).trim(),eventoId:"",origem:""};
+      const evN=nrm(String(pega(r,"evento")||"").replace(/^evento:\s*/i,"")),sai=nrm(pega(r,"sai de","origem"));
+      const ev=S.eventos.find(e=>nrm(e.nome)===evN||("evento: "+nrm(e.nome))===sai);
+      if(tipo==="saida"){if(ev){d.eventoId=ev.id;d.origem="evento"}else d.origem=sai.startsWith("of")?"oferta":"cota"}
+      else if(tipo==="contribuicao"){if(!ev){res.ignorados++;return}d.eventoId=ev.id}
+      if(movSet.has(movKey(d))){res.ignorados++;return}movSet.add(movKey(d));
+      ops.push({op:"set",col:"movimentos",id:ridX(),data:d});res.movs++});
+    if(tp==="actividades")rows.forEach(r=>{const nome=String(pega(r,"nome")).trim(),data=isoData(pega(r,"data"));
+      if(!nome||!data||nome.startsWith("Ex.:")){if(nome&&!nome.startsWith("Ex.:"))res.ignorados++;return}
+      if(actSet.has(data+"|"+nrm(nome))){res.ignorados++;return}actSet.add(data+"|"+nrm(nome));
+      ops.push({op:"set",col:"actividades",id:ridX(),data:{nome,tipo:tactDe(pega(r,"tipo")),data,local:String(pega(r,"local")).trim(),participantes:num(pega(r,"participantes")),nota:String(pega(r,"descricao","nota")).trim(),criado:Date.now()}});res.acts++});
+  }
+  ops.forEach(o=>{if(o.data)delete o.data.id});
+  return {ops,res};
+}
+document.addEventListener("click",async ev=>{
+  const e=ev.target.closest("[data-xls-exp],[data-xls-modelo]");if(!e)return;
+  const old=e.innerHTML;e.disabled=true;e.textContent="A preparar…";
+  try{if(e.dataset.xlsExp){const k=e.dataset.xlsExp;await xlsBaixar(xlsSheets(k),`tesouraria-${k}-${S.ano}.xlsx`);toast("Excel pronto")}
+    else{const k=e.dataset.xlsModelo;await xlsBaixar(XLS_MODELO[k],`modelo-${k}.xlsx`);toast("Modelo baixado: preencha e importe")}}
+  catch(er){toast(er.code==="nolib"?"Não foi possível carregar o Excel. Verifique a ligação.":"Não foi possível criar o Excel.")}
+  finally{e.disabled=false;e.innerHTML=old}
+});
+document.addEventListener("change",async ev=>{
+  const inp=ev.target.closest("[data-xls-imp]");if(!inp)return;const f=inp.files[0],kind=inp.dataset.xlsImp;inp.value="";if(!f)return;
+  try{const X=await xlsLib();const wb=X.read(await f.arrayBuffer(),{type:"array",cellDates:true});
+    const {ops,res}=xlsInterpretar(wb,kind,X);
+    if(!ops.length){toast(res.ignorados?"Nada de novo: "+res.ignorados+" linhas já existiam ou estavam incompletas.":"Não encontrei dados nas colunas esperadas. Use o modelo.");return}
+    const partes=[res.membrosNovos&&res.membrosNovos+" membros novos",res.membrosAct&&res.membrosAct+" membros actualizados",res.cotas&&res.cotas+" valores de cota",res.movs&&res.movs+" movimentos",res.acts&&res.acts+" actividades"].filter(Boolean);
+    if(!confirm("Importar de "+f.name+":\n\n• "+partes.join("\n• ")+(res.ignorados?"\n\n"+res.ignorados+" linhas ignoradas (repetidas ou incompletas).":"")+"\n\nContinuar?"))return;
+    await S.db.batch(ops);toast("Importado: "+partes.join(", "));render();
+  }catch(er){console.error(er);toast(er.code==="nolib"?"Não foi possível carregar o Excel. Verifique a ligação.":er.code==="invalid_argument"?"Sem permissão para gravar.":"Não foi possível ler o ficheiro: "+(er.message||""))}
+});
+
 // ---------- entrada no sistema (login) e utilizadores
 const PAPEIS={admin:"Administrador",tesoureiro:"Tesoureiro (pode registar)",leitor:"Só leitura"};
 // Senhas: PBKDF2 (150 000 voltas). Contas antigas (SHA-256 simples) passam a PBKDF2 no próximo login.
@@ -1526,14 +2211,66 @@ const novoSalt=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toSt
 const normUser=u=>String(u||"").trim().toLowerCase().replace(/[^a-z0-9._-]/g,"");
 function aplicarSessao(u,padrao){S.sessao={user:u.id,nome:u.nome||u.id,papel:u.papel||"leitor",padrao:!!padrao};S.edit=S.editBase&&S.sessao.papel!=="leitor"}
 function restaurarSessao(){
+  if(window.TES_REMOTO){
+    const r=TES_REMOTO.sessao();if(!r){S.sessao=null;S.edit=S.editBase;return}
+    const u=S.users.find(x=>x.id===r.user.id)||r.user;aplicarSessao(u,r.padrao&&!u.senhaAlterada);return}
   if(S.sessao){const u=S.users.find(x=>x.id===S.sessao.user);if(!u){terminarSessao();return}aplicarSessao(u,S.sessao.padrao&&!u.senhaAlterada);return}
   let r=null;try{r=JSON.parse(localStorage.getItem("jc-sessao")||"null")}catch(e){}
   if(r&&r.user){const u=S.users.find(x=>x.id===r.user&&x.hash===r.h);if(u)aplicarSessao(u,!u.senhaAlterada&&u.id==="admin"&&r.padrao)}
 }
 function guardarSessao(u,padrao){try{localStorage.setItem("jc-sessao",JSON.stringify({user:u.id,h:u.hash,padrao:!!padrao}))}catch(e){}}
-function terminarSessao(){S.sessao=null;S.edit=S.editBase;try{localStorage.removeItem("jc-sessao")}catch(e){}}
+function terminarSessao(){S.sessao=null;S.edit=S.editBase;try{localStorage.removeItem("jc-sessao")}catch(e){}if(window.TES_REMOTO)TES_REMOTO.logout()}
+window.addEventListener("tes-sessao-terminada",()=>{if(S.sessao){S.sessao=null;S.edit=S.editBase;render();toast("A sessão terminou. Entre outra vez.")}});
+const credSenha=async senha=>window.TES_REMOTO?{senha}:await novaSenha(senha);
+// Senha forte: as mesmas regras do servidor.
+const SENHAS_COMUNS=["admin123","12345678","123456789","password","password1","senha123","qwerty123","abc12345","11111111","tesouraria"];
+const REGRAS_SENHA=[["len","Pelo menos 8 caracteres",s=>s.length>=8],["min","Uma letra minúscula",s=>/[a-z]/.test(s)],["mai","Uma letra maiúscula",s=>/[A-Z]/.test(s)],["num","Um número",s=>/\d/.test(s)],["sim","Um símbolo (ex.: ! @ # ?)",s=>/[^A-Za-z0-9]/.test(s)]];
+function problemasSenha(s,user){s=String(s||"");const e=REGRAS_SENHA.filter(r=>!r[2](s)).map(r=>r[1].toLowerCase());
+  if(user&&s.toLowerCase().includes(String(user).toLowerCase()))e.push("não conter o nome de utilizador");if(SENHAS_COMUNS.includes(s.toLowerCase()))e.push("não ser uma senha conhecida");if(s.length>128)e.push("no máximo 128 caracteres");return e}
+const erroSenha=(s,user)=>{const e=problemasSenha(s,user);return e.length?"A senha precisa de: "+e.join(", ")+".":""};
+function pwField(name,id,label,ac="new-password",opt=""){
+  return `<div class="pwf"><label for="${id}">${label}</label><div class="pwbox"><input class="inp" type="password" name="${name}" id="${id}" data-forte="1" autocomplete="${ac}" ${opt}><button type="button" class="pwver" data-pwver="${id}" aria-label="Mostrar senha">Mostrar</button></div>
+  <div class="pwmeter" aria-hidden="true"><span></span></div><ul class="pwreq" data-req="${id}">${REGRAS_SENHA.map(([k,l])=>`<li data-k="${k}">${l}</li>`).join("")}</ul></div>`;
+}
+document.addEventListener("input",ev=>{const i=ev.target;if(!i.matches||!i.matches("[data-forte]"))return;const s=i.value,box=i.closest(".pwf");if(!box)return;
+  let ok=0;REGRAS_SENHA.forEach(([k,,t])=>{const li=box.querySelector(`[data-k="${k}"]`);const p=t(s);li.classList.toggle("ok",p);if(p)ok++});
+  const bar=box.querySelector(".pwmeter span");const pct=s?Math.round(ok/REGRAS_SENHA.length*100):0;bar.style.width=pct+"%";bar.dataset.n=ok});
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-pwver]");if(!b)return;const i=document.getElementById(b.dataset.pwver);if(!i)return;const v=i.type==="password";i.type=v?"text":"password";b.textContent=v?"Esconder":"Mostrar";b.setAttribute("aria-label",v?"Esconder senha":"Mostrar senha")});
+function vMudarSenha(){
+  return `<div class="login-wrap"><form class="login wide" data-forcasenha="1" novalidate>
+    <div><span class="chip gold">Primeira entrada</span><h2 style="margin-top:8px">Defina a sua senha</h2><p class="muted" style="margin:4px 0 0;font-size:14px">Para proteger a tesouraria, escolha uma senha forte antes de continuar. Ela é só sua.</p></div>
+    <label>Senha actual<input class="inp" type="password" name="atual" id="fs-atual" autocomplete="current-password"></label>
+    ${pwField("nova","fs-nova","Senha nova")}
+    <label>Repetir a senha nova<input class="inp" type="password" name="nova2" id="fs-nova2" autocomplete="new-password"></label>
+    <p class="err" hidden></p>
+    <button type="submit" class="btn primary">Guardar e entrar</button>
+    <button type="button" class="btn ghost" data-act="sair">Sair</button>
+  </form></div>`;
+}
+document.addEventListener("submit",async ev=>{const f=ev.target.closest("[data-forcasenha]");if(!f)return;ev.preventDefault();
+  const fd=new FormData(f),err=f.querySelector(".err"),b=f.querySelector("[type=submit]");const bad=t=>{err.hidden=false;err.textContent=t;b.disabled=false};
+  const a=String(fd.get("atual")||""),n=String(fd.get("nova")||""),n2=String(fd.get("nova2")||"");
+  if(!a)return bad("Escreva a senha actual.");const e=erroSenha(n,S.sessao.user);if(e)return bad(e);if(n===a)return bad("A senha nova tem de ser diferente da actual.");if(n!==n2)return bad("As duas senhas novas não são iguais.");
+  b.disabled=true;
+  try{if(window.TES_REMOTO)await TES_REMOTO.mudarSenha(a,n);
+    else{const u=S.users.find(x=>x.id===S.sessao.user);if(!(await confereSenha(a,u)))return bad("A senha actual está errada.");const ns=await novaSenha(n);await S.db.doc("utilizadores/"+u.id).update({...ns,senhaAlterada:true});guardarSessao({...u,...ns},false)}
+    S.sessao.padrao=false;toast("Senha definida. Bem-vindo!");render()}
+  catch(er){bad(er.message||"Não foi possível guardar a senha.")}});
 function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.style.display="none";return}
-  el.style.display="inline-flex";el.innerHTML=`${esc(S.sessao.nome)} · ${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}<button class="sess-out" data-act="minhaSenha" title="Alterar a minha senha">Senha</button><button class="sess-out" data-act="sair">Sair</button>`}
+  el.style.display="block";el.className="";
+  const aberto=!document.querySelector(".contamenu")?.hidden&&!!document.querySelector(".contamenu");
+  const lig=window.TES_REMOTO?TES_REMOTO.ligados():[],n=Math.max(1,lig.length);
+  const lista=window.TES_REMOTO?(lig.length?lig:[{id:S.sessao.user,nome:S.sessao.nome,papel:S.sessao.papel}]):[];
+  el.innerHTML=`<div class="contabox">${window.TES_REMOTO?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
+  <button class="avbtn" data-act="menuConta" aria-haspopup="menu" aria-expanded="${aberto}" aria-label="Conta de ${esc(S.sessao.nome)}" title="Sessão iniciada: ${esc(S.sessao.nome)}">${esc((S.sessao.nome||"?").trim().charAt(0).toUpperCase())}<i class="dot" aria-hidden="true"></i></button></div>
+  <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
+  ${window.TES_REMOTO?`<div class="cm-lig"><span class="cm-t">Ligados agora (${lista.length})</span><ul>${lista.map(u=>`<li><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===S.sessao.user?" (você)":""}</b><small>${esc((PAPEIS[u.papel]||"").split(" (")[0])}</small></span></li>`).join("")}</ul></div>`:""}
+  <button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
+window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();if(S.tab==="utilizadores"&&!S.pending)render()}});
+document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="menuConta"]'),m=document.querySelector(".contamenu");if(!m)return;
+  if(b){const open=m.hidden;m.hidden=!open;b.setAttribute("aria-expanded",String(open));return}
+  if(!m.hidden){m.hidden=true;document.querySelector(".avbtn")?.setAttribute("aria-expanded","false")}});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"){const m=document.querySelector(".contamenu");if(m&&!m.hidden){m.hidden=true;document.querySelector(".avbtn")?.focus()}}});
 function vLogin(){
   return `<div class="login-wrap"><form class="login" data-login="1" novalidate>
     <div><span class="chip gold">Tesouraria da Juventude</span><h2 style="margin-top:8px">Entrar no sistema</h2><p class="muted" style="margin:4px 0 0;font-size:14px">Escreva o seu utilizador e a sua senha.</p></div>
@@ -1550,6 +2287,10 @@ document.addEventListener("submit",async ev=>{
   const bad=t=>{err.hidden=false;err.textContent=t;b.disabled=false};
   if(!user||!senha)return bad("Escreva o utilizador e a senha.");
   b.disabled=true;
+  if(window.TES_REMOTO){
+    try{const r=await TES_REMOTO.login(user,senha);aplicarSessao(r.user,r.padrao);document.activeElement&&document.activeElement.blur();toast("Bem-vindo, "+(r.user.nome||r.user.id));render()}
+    catch(e){bad(e.code==="offline"?"Sem ligação à internet. Tente outra vez.":e.message||"Não foi possível entrar.")}
+    return}
   try{
     if(!S.users.length){
       if(user!=="admin"||senha!=="admin123")return bad("Utilizador ou senha errados.");
@@ -1566,17 +2307,38 @@ document.addEventListener("submit",async ev=>{
 });
 function vUsers(){
   const me=S.sessao.user;
-  return `<div class="head"><div><h2>Utilizadores</h2><p>Quem pode entrar na tesouraria. Só o administrador vê esta aba.</p></div></div>
-  <form class="panel quick" data-newuser="1" novalidate><h3>Criar utilizador</h3>
-    <div class="qgrid"><label class="q-desc">Nome<input class="inp" name="nome" id="nu-nome" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
-    <label>Utilizador<input class="inp" name="user" id="nu-user" placeholder="Ex.: quefasse" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
-    <label>Senha<input class="inp" type="text" name="senha" id="nu-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></label>
-    <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label></div>
-    <p class="err" hidden></p><div><button type="submit" class="btn primary">Criar utilizador</button></div></form>
-  <section class="panel"><h3>Utilizadores (${S.users.length})</h3><ul class="list">${S.users.map(u=>`<li><div class="grow"><div class="t">${esc(u.nome||u.id)}${u.id===me?' <span class="muted" style="font-weight:500">(você)</span>':""}</div><div class="s">utilizador: ${esc(u.id)}</div></div>
-    <span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span>
-    <button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button></li>`).join("")}</ul>
-    <p class="muted" style="font-size:12px;margin:8px 0 0">Tesoureiro: regista e altera valores. Só leitura: vê tudo mas não altera. Administrador: tudo, e cria utilizadores.</p></section>`;
+  const ac=window.TES_REMOTO?TES_REMOTO.acessos():[];
+  const hoje=new Date().toISOString().slice(0,10),okHoje=ac.filter(a=>a.sucesso&&String(a.data).slice(0,10)===hoje).length,lig=window.TES_REMOTO?TES_REMOTO.ligados():[];
+  const entradas=ac.filter(a=>a.sucesso);
+  const quando=d=>{if(!d)return "Nunca entrou";const t=new Date(String(d).replace(" ","T"));if(isNaN(t))return esc(d);return t.getDate()+" "+M3[t.getMonth()]+" "+t.getFullYear()+", "+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")};
+  return `<div class="head"><div><h2>Utilizadores</h2><p>Quem pode entrar na tesouraria e o registo de cada entrada. Só o administrador vê esta aba.</p></div><div class="head-acts">${xlsBar("utilizadores")}</div></div>
+  <div class="kpis kpis4">
+    <div class="kpi"><span class="l">Utilizadores</span><span class="v">${S.users.length}</span></div>
+    <div class="kpi"><span class="l">Administradores</span><span class="v">${S.users.filter(u=>u.papel==="admin").length}</span></div>
+    <div class="kpi"><span class="l">Entradas hoje</span><span class="v">${window.TES_REMOTO?okHoje:"—"}</span></div>
+    <div class="kpi"><span class="l">Ligados agora</span><span class="v">${window.TES_REMOTO?lig.length:"—"}</span><span class="h">${esc(lig.map(u=>u.nome).join(", "))}</span></div>
+  </div>
+  <div class="grid2 users-grid">
+  <form class="panel quick" data-newuser="1" novalidate><div class="sheet-h"><h3>Registar utilizador</h3><p>Cria um acesso novo. Dê a senha à pessoa; na primeira entrada terá de escolher uma senha só sua.</p></div>
+    <div class="fgrid">
+    <label class="span2">Nome completo<input class="inp" name="nome" id="nu-nome" placeholder="Ex.: Mano Quefasse" autocomplete="off"></label>
+    <label>Utilizador (para entrar)<input class="inp" name="user" id="nu-user" placeholder="Ex.: quefasse" autocapitalize="none" spellcheck="false" autocomplete="off"></label>
+    <label>Papel<select class="inp" name="papel" id="nu-papel">${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${k==="tesoureiro"?"selected":""}>${l}</option>`).join("")}</select></label>
+    <div class="span2">${pwField("senha","nu-pass","Senha inicial (a pessoa muda-a na primeira entrada)")}</div></div>
+    <p class="err" hidden></p><div class="acts-inline"><button type="submit" class="btn primary">Registar utilizador</button></div>
+    <ul class="papeis"><li><span class="role admin">Administrador</span> tudo, incluindo criar utilizadores</li><li><span class="role">Tesoureiro</span> regista e altera valores</li><li><span class="role">Só leitura</span> vê tudo, não altera</li></ul></form>
+  <section class="panel"><h3>Contas (${S.users.length})</h3>
+    <div class="scroll flat"><table class="utab"><thead><tr><th class="c-nome">Nome</th><th>Papel</th><th>Último acesso</th><th>Entradas</th><th></th></tr></thead><tbody>
+    ${S.users.map(u=>`<tr><td class="c-nome"><div class="mname"><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===me?' <span class="muted">(você)</span>':""}</b><small>${lig.some(x=>x.id===u.id)?'<span class="chip good">ligado agora</span>':""}</small></span></div></td>
+      <td><span class="role ${u.papel==="admin"?"admin":""}">${esc((PAPEIS[u.papel]||"").split(" (")[0])}</span></td>
+      <td>${window.TES_REMOTO?quando(u.ultimoLogin):"—"}</td><td>${window.TES_REMOTO?(u.totalLogins||0):"—"}</td>
+      <td><button class="btn small" data-act="userEdit" data-id="${esc(u.id)}">Editar</button></td></tr>`).join("")}
+    </tbody></table></div></section>
+  </div>
+  ${window.TES_REMOTO?`<section class="panel"><div class="head"><h3>Histórico de entradas</h3><span class="muted small">Últimas ${Math.min(150,entradas.length)} entradas no sistema</span></div>
+    ${entradas.length?`<div class="scroll flat" style="max-height:420px"><table class="utab"><thead><tr><th>Data e hora</th><th class="c-nome">Quem entrou</th><th>Papel</th></tr></thead><tbody>
+    ${entradas.slice(0,150).map(a=>`<tr><td>${quando(a.data)}</td><td class="c-nome">${esc(a.nome||"—")}</td><td>${esc((PAPEIS[a.papel]||"").split(" (")[0])}</td></tr>`).join("")}
+    </tbody></table></div>`:`<div class="empty">Ainda não há entradas registadas.</div>`}</section>`:""}`;
 }
 document.addEventListener("submit",async ev=>{
   const f=ev.target.closest("[data-newuser]");if(!f)return;ev.preventDefault();
@@ -1585,34 +2347,36 @@ document.addEventListener("submit",async ev=>{
   const nome=String(fd.get("nome")||"").trim(),user=normUser(fd.get("user")),senha=String(fd.get("senha")||""),papel=String(fd.get("papel"));
   if(!nome)return bad("Escreva o nome.");if(!user)return bad("Escreva o utilizador (letras e números, sem espaços).");
   if(S.users.some(u=>u.id===user))return bad("Já existe um utilizador com esse nome.");
-  if(senha.length<6)return bad("A senha deve ter pelo menos 6 caracteres.");
+  const es=erroSenha(senha,user);if(es)return bad(es);
   b.disabled=true;
-  try{await S.db.doc("utilizadores/"+user).set({nome,papel,...await novaSenha(senha),criado:Date.now(),senhaAlterada:true});f.reset();toast("Utilizador criado: "+user);b.disabled=false}
-  catch(e){bad("Não foi possível criar o utilizador.")}
+  try{await S.db.doc("utilizadores/"+user).set({nome,papel,...await credSenha(senha),criado:Date.now(),senhaAlterada:true});f.reset();toast("Utilizador criado: "+user);b.disabled=false}
+  catch(e){bad(e&&e.message&&window.TES_REMOTO?e.message:"Não foi possível criar o utilizador.")}
 });
 function formUser(u){
   const me=u.id===S.sessao.user,admins=S.users.filter(x=>x.papel==="admin").length;
   openSheet(`<h3>Editar ${esc(u.nome||u.id)}</h3><p class="muted" style="margin:0">Utilizador: ${esc(u.id)}</p>
    <label>Nome<input class="inp" name="nome" id="fu-nome" value="${esc(u.nome||"")}"></label>
    <label>Papel<select class="inp" name="papel" id="fu-papel" ${me?"disabled":""}>${Object.entries(PAPEIS).map(([k,l])=>`<option value="${k}" ${u.papel===k?"selected":""}>${l}</option>`).join("")}</select></label>
-   <label>Nova senha (deixe vazio para manter)<input class="inp" type="text" name="senha" id="fu-pass" autocomplete="new-password"></label>
+   ${me?`<p class="muted small" style="margin:0">Para mudar a sua própria senha use “Alterar a minha senha” no menu da conta.</p>`:`<details class="pwreset"><summary>Repor a senha desta pessoa</summary>${pwField("senha","fu-pass","Senha nova (a pessoa terá de a mudar ao entrar)")}</details>`}
    <div class="acts">${!me&&!(u.papel==="admin"&&admins<2)?`<button type="button" class="btn danger" data-act="userDel" data-id="${esc(u.id)}">Apagar utilizador</button>`:""}<button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
   async(fd,f)=>{const d={nome:String(fd.get("nome")||"").trim()||u.id};if(!me)d.papel=String(fd.get("papel"));
     if(!me&&u.papel==="admin"&&d.papel!=="admin"&&admins<2)return fail(f,"Tem de ficar pelo menos um administrador.");
-    const senha=String(fd.get("senha")||"");if(senha){if(senha.length<6)return fail(f,"A senha deve ter pelo menos 6 caracteres.");Object.assign(d,await novaSenha(senha));d.senhaAlterada=true}
-    await S.db.doc("utilizadores/"+u.id).update(d);if(me&&d.hash){const nu={...u,...d};S.sessao.padrao=false;guardarSessao(nu,false)}return "Utilizador actualizado"});
+    const senha=me?"":String(fd.get("senha")||"");if(senha){const es=erroSenha(senha,u.id);if(es)return fail(f,es);Object.assign(d,await credSenha(senha));d.senhaAlterada=!window.TES_REMOTO}
+    await S.db.doc("utilizadores/"+u.id).update(d);if(window.TES_REMOTO){if(me&&senha)S.sessao.padrao=false}else if(me&&d.hash){const nu={...u,...d};S.sessao.padrao=false;guardarSessao(nu,false)}return "Utilizador actualizado"});
 }
 function formMinhaSenha(){
-  const u=S.users.find(x=>x.id===S.sessao.user);if(!u)return;
-  openSheet(`<h3>Alterar a minha senha</h3>
+  const u=S.users.find(x=>x.id===S.sessao.user)||{id:S.sessao.user};
+  openSheet(`<div class="sheet-h"><h3>Alterar a minha senha</h3><p>As sessões abertas noutros aparelhos terminam depois da mudança.</p></div>
    <label>Senha actual<input class="inp" type="password" name="atual" id="ms-atual" autocomplete="current-password"></label>
-   <label>Nova senha<input class="inp" type="password" name="nova" id="ms-nova" autocomplete="new-password"></label>
-   <label>Repetir a nova senha<input class="inp" type="password" name="nova2" id="ms-nova2" autocomplete="new-password"></label>
-   <div class="acts"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
+   ${pwField("nova","ms-nova","Senha nova")}
+   <label>Repetir a senha nova<input class="inp" type="password" name="nova2" id="ms-nova2" autocomplete="new-password"></label>
+   <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar senha</button></div>`,
   async(fd,f)=>{const a=String(fd.get("atual")||""),n=String(fd.get("nova")||""),n2=String(fd.get("nova2")||"");
+    const es=erroSenha(n,u.id);if(es)return fail(f,es);if(n===a)return fail(f,"A senha nova tem de ser diferente da actual.");
+    if(window.TES_REMOTO){if(n!==n2)return fail(f,"As duas senhas novas não são iguais.");
+      try{await TES_REMOTO.mudarSenha(a,n)}catch(e){return fail(f,e.message||"Não foi possível alterar a senha.")}S.sessao.padrao=false;return "Senha alterada"}
     if(!(await confereSenha(a,u)))return fail(f,"A senha actual está errada.");
-    if(n.length<6)return fail(f,"A nova senha deve ter pelo menos 6 caracteres.");if(n!==n2)return fail(f,"As duas senhas novas não são iguais.");
-    if(n==="admin123")return fail(f,"Escolha uma senha diferente da senha padrão.");
+    if(n!==n2)return fail(f,"As duas senhas novas não são iguais.");
     const ns=await novaSenha(n);await S.db.doc("utilizadores/"+u.id).update({...ns,senhaAlterada:true});
     S.sessao.padrao=false;guardarSessao({...u,...ns},false);return "Senha alterada"});
 }
@@ -1628,7 +2392,7 @@ const BK_KEY="jc-ultima-copia",BK_DIAS=7;
 const COLECOES=["membros","eventos","movimentos","actividades","regiao","config","relatorios","utilizadores"];
 function ultimaCopia(){try{return +localStorage.getItem(BK_KEY)||0}catch(e){return 0}}
 function baixarCopia(prefixo){
-  const blob=new Blob([JSON.stringify(window.TES_LOCAL.exportar(),null,1)],{type:"application/json"});
+  const blob=new Blob([JSON.stringify((window.TES_LOCAL||window.TES_REMOTO).exportar(),null,1)],{type:"application/json"});
   const u=URL.createObjectURL(blob);const l=document.createElement("a");l.href=u;l.download=prefixo+new Date().toISOString().slice(0,10)+".json";
   document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
 }
@@ -1640,11 +2404,21 @@ function bannerCopia(){
   return `<div class="banner">${dias===null?"Ainda não baixou nenhuma cópia de segurança neste aparelho.":"A última cópia de segurança foi há "+dias+" dias."} Os dados ficam só neste navegador. <button class="linkbtn" data-act="bkExport">Baixar cópia agora</button></div>`;
 }
 function textoUltimaCopia(){const t=ultimaCopia();if(!t)return "Ainda não foi baixada nenhuma cópia neste aparelho.";const d=new Date(t);return "Última cópia baixada: "+d.getDate()+" de "+MESES[d.getMonth()]+" de "+d.getFullYear()+"."}
-document.addEventListener("click",ev=>{const a=ev.target.closest('[data-act="bkExport"]');if(!a||!window.TES_LOCAL)return;
+document.addEventListener("click",ev=>{const a=ev.target.closest('[data-act="bkExport"]');if(!a||!(window.TES_LOCAL||window.TES_REMOTO))return;
   baixarCopia("tesouraria-copia-");try{localStorage.setItem(BK_KEY,String(Date.now()))}catch(e){}toast("Cópia baixada");render()});
-document.addEventListener("change",async ev=>{if(ev.target.id!=="bkImport"||!window.TES_LOCAL)return;const inp=ev.target,f=inp.files[0];inp.value="";if(!f)return;
+// Dados antigos guardados só neste navegador (antes do MySQL): podem ser enviados para a base de dados.
+function dadosDoNavegador(){try{const d=JSON.parse(localStorage.getItem("tesouraria-db")||"null");return d&&COLECOES.some(k=>d[k]&&Object.keys(d[k]).length)?d:null}catch(e){return null}}
+async function enviarParaMySQL(d,origem){
+  const n=Object.keys(d.membros||{}).length,mv=Object.keys(d.movimentos||{}).length;
+  if(!confirm(origem+" tem "+n+" membros e "+mv+" movimentos.\n\nVão ser gravados na base de dados MySQL. Registos com o mesmo identificador são substituídos; os outros ficam como estão. Os utilizadores só entram se ainda não existirem.\n\nContinuar?"))return;
+  try{await TES_REMOTO.importar(d);toast("Dados gravados na base de dados")}catch(e){toast(e.message||"Não foi possível importar.")}
+}
+document.addEventListener("click",ev=>{const a=ev.target.closest('[data-act="bkNavegador"]');if(!a||!window.TES_REMOTO)return;const d=dadosDoNavegador();if(d)enviarParaMySQL(d,"Este navegador")});
+document.addEventListener("click",ev=>{if(!ev.target.closest('[data-act="migFechar"]'))return;S.migVisto=true;render()});
+document.addEventListener("change",async ev=>{if(ev.target.id!=="bkImport"||!(window.TES_LOCAL||window.TES_REMOTO))return;const inp=ev.target,f=inp.files[0];inp.value="";if(!f)return;
   let d;try{d=JSON.parse(await f.text())}catch(e){d=null}
   if(!d||typeof d!=="object"||Array.isArray(d)||!COLECOES.some(k=>d[k]&&typeof d[k]==="object")){toast("Ficheiro de cópia inválido.");return}
+  if(window.TES_REMOTO){await enviarParaMySQL(d,"Esta cópia");return}
   const n=Object.keys(d.membros||{}).length,mv=Object.keys(d.movimentos||{}).length;
   if(!confirm("Esta cópia tem "+n+" membros e "+mv+" movimentos.\n\nImportar substitui todos os dados deste navegador. Antes disso, será baixada uma cópia dos dados actuais, por segurança.\n\nContinuar?"))return;
   try{if(temDados())baixarCopia("tesouraria-antes-de-importar-");window.TES_LOCAL.importar(d);toast("Cópia importada");setTimeout(()=>location.reload(),900)}
@@ -1662,7 +2436,7 @@ render();
   if(user){try{const c=await user.can("data.write");const o=await user.isOwner(),e2=await user.canEdit();let id=null;try{id=await user.id()}catch(_){}
     S.access={user:true,write:c,owner:o,editor:e2,id:!!id};S.edit=c===false?!!(o||e2):true}catch(e){S.edit=true}}
   S.editBase=S.edit;
-  const ab=document.getElementById("accessBox");if(ab&&window.TES_LOCAL)ab.remove();else if(ab){const a=S.access;ab.textContent=!a.user||!a.id?"Sem sessão iniciada: só leitura":a.owner?"Dono · pode editar":a.editor?"Editor · pode editar":a.write===false?"Só leitura (peça acesso de Contributor ou Editor)":"Pode editar"}
+  const ab=document.getElementById("accessBox");if(ab&&(window.TES_LOCAL||window.TES_REMOTO))ab.remove();else if(ab){const a=S.access;ab.textContent=!a.user||!a.id?"Sem sessão iniciada: só leitura":a.owner?"Dono · pode editar":a.editor?"Editor · pode editar":a.write===false?"Só leitura (peça acesso de Contributor ou Editor)":"Pode editar"}
   const onErr=e=>{if(e&&(e.code==="revoked"||e.code==="not_granted")){S.dbFail=true;render()}};
   db.collection("membros").onSnapshot(s=>{S.membros=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>num(a.ordem)-num(b.ordem)||a.nome.localeCompare(b.nome));S.loaded.m=true;render()},onErr);
   db.collection("eventos").onSnapshot(s=>{S.eventos=s.docs.map(d=>({id:d.id,...d.data()}));S.loaded.e=true;render()},onErr);

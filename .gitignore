@@ -6,3 +6,6 @@ tesouraria-antes-de-importar-*.json
 Thumbs.db
 
 .vercel
+
+.env
+node_modules

@@ -1,12 +1,13 @@
 // Permite abrir a tesouraria sem internet depois da primeira visita.
 // Páginas do site: tenta a rede primeiro (para receber as actualizações) e usa a cópia guardada se não houver rede.
 // Bibliotecas e letras (CDN): usa a cópia guardada, porque têm versão fixa.
-const CACHE = "tesouraria-v1";
+const CACHE = "tesouraria-v2";
 const BASE = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 const CDN = [
   "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"
+  "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
 ];
 
 self.addEventListener("install", e => {
@@ -21,6 +22,7 @@ self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
+  if (url.origin === location.origin && url.pathname.startsWith("/api/")) return; // a API vai sempre à rede (nunca à cache)
   if (url.origin === location.origin) {
     e.respondWith(
       fetch(req).then(r => {

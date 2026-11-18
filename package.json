@@ -1,0 +1,16 @@
+{
+  "name": "tesouraria",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Tesouraria da Juventude: site + API Node.js com MySQL",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "mysql2": "^3.11.0"
+  }
+}
