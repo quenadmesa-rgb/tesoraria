@@ -621,6 +621,77 @@ body.sem-scroll{overflow:hidden}
   .contamenu{top:calc(100% + 10px)}
 }
 @media (min-width:1024px) and (prefers-color-scheme: dark){:root:not([data-theme="light"]) body:not(:has(#tabs:empty)) header.top{background:color-mix(in srgb,var(--surface) 92%,transparent)}}
+/* ===== Tamanho do texto (mais pequeno no PC e no telemóvel) ===== */
+body{font-size:13.5px}
+h2{font-size:21px}
+h3,.panel h3{font-size:15.5px}
+.head p,.sheet-h p{font-size:12.5px}
+.btn{font-size:12.5px;padding:8px 13px}.btn.small{font-size:12px}.xbar .btn{font-size:12.5px;padding:7px 11px}
+select.inp,input.inp,textarea.inp{font-size:13.5px;min-height:38px}
+.sheet label,.qgrid label,.lgrid label,.fgrid label,.login label,.pwf>label{font-size:12px}
+th{font-size:10.5px}td{font-size:13px}
+.kpi{min-height:100px;padding:14px 16px}.kpi .l{font-size:10.5px}.kpi .v{font-size:22px}.kpi.saldo .v{font-size:24px}.kpi .h{font-size:11.5px}
+.list .t{font-size:13.5px}.list .s,.small,.muted.small{font-size:12px}
+.rank li{font-size:13.5px}.dlegend li{font-size:12.5px}
+.banner{font-size:13px}.toast{font-size:13px}
+.chip,.role{font-size:10.5px}
+.login-h h2{font-size:23px}.login-txt{font-size:13px}.login-sub{font-size:12px}
+.mname b{font-size:13.5px}.mname small{font-size:11.5px}
+@media (min-width:1024px){
+  .tab{font-size:13px;padding:9px 12px}.tgl{font-size:10px}
+  .side-brand b{font-size:14px}.side-brand span{font-size:11.5px}
+  .pg-title b{font-size:18px}.pg-title span{font-size:11.5px}
+}
+@media (max-width:640px){
+  body{font-size:13px}
+  h2{font-size:18px}
+  h3,.panel h3{font-size:14.5px}
+  .head p{font-size:12px}
+  .kpi{min-height:84px;padding:11px 12px}.kpi .l{font-size:9.5px}.kpi .v{font-size:17px}.kpi.saldo .v{font-size:20px}.kpi .h{font-size:10.5px}
+  .btn{font-size:12px;padding:8px 11px}.xbar .btn{font-size:12px}
+  select.inp,input.inp,textarea.inp{font-size:14px}
+  td{font-size:12.5px}th{font-size:10px}
+  .list .t{font-size:13px}.list .s{font-size:11.5px}
+  .church{font-size:14px}.youth{font-size:11px}
+  .bn{font-size:10px}.bn .ti{width:21px;height:21px}
+  .mais-i{font-size:11.5px}.mais-h b{font-size:17px}
+  .login-h h2{font-size:20px}
+  .dlegend li{font-size:12px}
+  .sheet h3{font-size:17px}
+}
+/* ===== Revisão de acabamento ===== */
+/* barra lateral a toda a altura, mesmo em páginas compridas */
+@media (min-width:1024px){body:not(:has(#tabs:empty))::after{content:"";position:fixed;left:0;top:0;bottom:0;width:264px;background:linear-gradient(180deg,#154539 0%,var(--brand) 60%,#0d3027 100%);z-index:-1}}
+/* caixas de texto com a mesma letra do resto */
+textarea,textarea.inp{font-family:var(--body);font-size:13.5px;line-height:1.5}
+/* botão "Apagar" nas listas: discreto, vermelho ao passar */
+.del{border:1px solid transparent;border-radius:8px;padding:5px 9px;font-size:12px;color:var(--muted);background:transparent;transition:background .15s,color .15s,border-color .15s}
+.del:hover{color:var(--bad);background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 30%,transparent)}
+.del.armed{color:#fff;background:var(--bad);border-color:var(--bad)}
+.list li{gap:12px;padding:11px 2px}
+.list .money{font-weight:600}
+.month-h{padding-top:10px;border-top:1px solid var(--line);margin-top:10px}
+.month-h:first-child{border-top:0;margin-top:0;padding-top:0}
+/* tabela de cotas mais compacta */
+.cota th,.cota td{padding:7px 6px}
+.cota input{width:54px;padding:4px}
+.cota tfoot td{font-size:12px}
+.cota th:first-child,.cota td:first-child{min-width:150px}
+/* telemóvel: tabela de membros só com o essencial (nome, telefone, cotas) */
+@media (max-width:640px){
+  .mtab th:nth-child(3),.mtab td:nth-child(3),.mtab th:nth-child(4),.mtab td:nth-child(4),.mtab th:nth-child(6),.mtab td:nth-child(6),.mtab th:nth-child(7),.mtab td:nth-child(7){display:none}
+  .mtab .c-n{width:28px;padding-left:6px;padding-right:2px}
+  .mname{min-width:0}.mname .av{width:28px;height:28px;font-size:12px}
+  .utab th:nth-child(4),.utab td:nth-child(4){display:none}
+  .mtab th.c-n,.mtab td.c-n{display:none}
+  .mtab td,.mtab th{padding-left:8px;padding-right:8px}
+  .mtab td.c-nome{white-space:normal}
+  .mname b{white-space:normal;line-height:1.2}
+  /* botões de Excel/PDF em grelha 2×2 */
+  .head-acts .xbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+  .head-acts .xbar .btn{width:100%;justify-content:center}
+  .head-acts .xbar .btn.ghost{border-color:var(--line);background:var(--surface)}
+}
 /* ===== Botão de idioma PT | EN ===== */
 .lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
 .lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
@@ -2392,8 +2463,9 @@ function xlsInterpretar(wb,kind,X){
     else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:c}}});res.cotas+=Object.keys(c).length};
   for(const [nomeF,tp,rows] of folhas){const ano=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||S.ano;
     if(tp==="membros"||tp==="cotas")rows.forEach(l=>{const c=l.c;
-      let nome=String(c.nome??c.desc??"").trim();if(!nome){const p=Object.entries(l.extra).find(([,v])=>typeof v==="string"&&/[a-zà-ú]/i.test(v));if(p){nome=String(p[1]).trim();delete l.extra[p[0]]}}
-      if(!nome||exemplo(nome)||nrm(nome)==="total")return;
+      // Sem coluna de nome: entra como "(sem nome)" com todos os dados, para completar depois (nunca usa outra coluna como nome)
+      let nome=String(c.nome??c.desc??"").trim();const semNome=!nome;if(semNome)nome="(sem nome)";
+      if(exemplo(nome)||nrm(nome)==="total")return;
       const d={};
       if(tp==="membros"){const sx=sexoDe(c.sexo);if(sx)d.sexo=sx;const cg=cargoDe(c.cargo);if(cg)d.cargo=cg;
         const lc=nrm(c.local);if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
@@ -2403,8 +2475,9 @@ function xlsInterpretar(wb,kind,X){
         const nas=isoData(c.nascimento);if(nas)d.nascimento=nas;const ent=isoData(c.entrada);if(ent)d.entrada=ent;
         if(c.morada!=null)d.morada=String(c.morada).trim();const no=[c.notas,c.nota].filter(x=>x!=null).join(" ").trim();if(no)d.notas=no;
         if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,v instanceof Date?isoData(v):String(v)]))}
-      let m=porNome.get(nrm(nome));
-      if(m){if(Object.keys(d).length){if(S.membros.some(x=>x.id===m.id))ops.push({op:"update",col:"membros",id:m.id,data:d});else{const o=ops.find(o=>o.id===m.id);o&&Object.assign(o.data,d)}Object.assign(m,d);res.membrosAct++}}
+      let m=semNome?null:porNome.get(nrm(nome));
+      if(semNome){m=novoMembro(nome);porNome.delete(nrm(nome));Object.assign(ops[ops.length-1].data,d)}
+      else if(m){if(Object.keys(d).length){if(S.membros.some(x=>x.id===m.id))ops.push({op:"update",col:"membros",id:m.id,data:d});else{const o=ops.find(o=>o.id===m.id);o&&Object.assign(o.data,d)}Object.assign(m,d);res.membrosAct++}}
       else{m=novoMembro(nome);Object.assign(ops[ops.length-1].data,d)}
       if(Object.keys(l.meses).length)cotasDe(m,ano,l.meses)});
     if(["movs","ofertas","saidas","contribs"].includes(tp))rows.forEach(l=>{const c=l.c;
