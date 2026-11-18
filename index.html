@@ -544,6 +544,92 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
   .donut{flex-direction:column;align-items:stretch}.donut svg{align-self:center}
   .dlegend li{grid-template-columns:12px 1fr auto auto;font-size:13px}
 }
+/* ===== Barra de navegação em baixo (telemóvel e tablet) ===== */
+.bottomnav{display:none}
+@media (max-width:1023px){
+  nav.tabs{display:none!important}
+  body:has(#bnav .bn) .bottomnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:15;background:color-mix(in srgb,var(--surface) 96%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line);box-shadow:0 -4px 18px rgba(16,32,26,.08);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+  body:has(#bnav .bn) main{padding-bottom:96px}
+  body:has(#bnav .bn) .foot{padding-bottom:76px}
+  body:has(#bnav .bn) .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .bn{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 2px;border-radius:12px;color:var(--muted);font-size:11px;font-weight:600;min-width:0;-webkit-tap-highlight-color:transparent}
+  .bn span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bn .ti{display:block;width:23px;height:23px;padding:3px 14px;box-sizing:content-box;border-radius:999px;transition:background .15s}
+  .bn[aria-current="true"]{color:var(--brand)}
+  .bn[aria-current="true"] .ti{background:color-mix(in srgb,var(--gold) 28%,transparent);color:var(--brand)}
+  .bn:focus-visible{outline:2px solid var(--gold)}
+  :root[data-theme="dark"] .bn[aria-current="true"],:root[data-theme="dark"] .bn[aria-current="true"] .ti{color:var(--gold)}
+}
+@media (max-width:1023px) and (prefers-color-scheme: dark){:root:not([data-theme="light"]) .bn[aria-current="true"],:root:not([data-theme="light"]) .bn[aria-current="true"] .ti{color:var(--gold)}}
+.mais-bg{position:fixed;inset:0;z-index:25;background:rgba(5,12,10,.5);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.mais{background:var(--surface);color:var(--fg);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto;box-shadow:var(--shadow-lg)}
+.mais-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;position:relative}
+.mais-h b{font:800 19px var(--display)}
+.mais-h .sheet-x{position:static}
+.mais-g{margin-top:14px}
+.mais-g .tgl{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:0 4px 8px}
+.mais-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mais-i{all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 6px;border-radius:14px;background:var(--sunk);text-align:center;font-size:12.5px;font-weight:600;color:var(--fg2)}
+.mais-i .ti{display:block;width:24px;height:24px;color:var(--c1)}
+.mais-i[aria-current="true"]{background:color-mix(in srgb,var(--gold) 22%,var(--surface));color:var(--fg);outline:1.5px solid var(--gold)}
+.mais-i:focus-visible{outline:2px solid var(--gold)}
+body.sem-scroll{overflow:hidden}
+@media (min-width:1024px){.mais-bg{display:none!important}}
+
+/* ===== Navegação: abas no telemóvel, barra lateral no computador ===== */
+.side-brand,.side-foot,.pg-title{display:none}
+.tgrp{display:contents}.tgl{display:none}
+.tab .ti{display:none}
+@media (min-width:1024px){
+  body{display:grid;grid-template-columns:264px minmax(0,1fr);grid-template-rows:auto 1fr auto;grid-template-areas:"side top" "side main" "side foot";min-height:100vh}
+  body:has(#tabs:empty){grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "main" "foot"}
+  header.top{grid-area:top;position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);color:var(--fg);border-bottom:1px solid var(--line)}
+  body:has(#tabs:empty) header.top{position:static;background:linear-gradient(180deg,#154539,var(--brand));color:var(--brand-fg);border-bottom:0}
+  main{grid-area:main;width:100%}
+  .foot{grid-area:foot}
+  header.top .wrap.bar{max-width:none;padding:14px 32px;min-height:68px}
+  body:not(:has(#tabs:empty)) header.top .brandbox{display:none}
+  body:not(:has(#tabs:empty)) .pg-title{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+  .pg-title b{font:800 21px var(--display);font-stretch:90%;color:var(--fg)}
+  .pg-title span{font-size:12.5px;color:var(--muted)}
+  body:not(:has(#tabs:empty)) .yearsel span{color:var(--muted);opacity:1}
+  body:not(:has(#tabs:empty)) .yearsel select{color:var(--fg);background-color:var(--surface);border-color:var(--line)}
+  body:not(:has(#tabs:empty)) .online{background:var(--sunk);border-color:var(--line);color:var(--fg)}
+  body:not(:has(#tabs:empty)) .avbtn{border-color:var(--line)}
+  body:not(:has(#tabs:empty)) .avbtn .dot{border-color:var(--surface)}
+  /* barra lateral */
+  nav.tabs{grid-area:side;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:linear-gradient(180deg,#154539 0%,var(--brand) 60%,#0d3027 100%);border:0;box-shadow:none;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+  nav.tabs .wrap{display:flex;flex-direction:column;gap:2px;padding:6px 14px 16px;max-width:none;overflow:visible;mask-image:none;-webkit-mask-image:none;flex:1}
+  .side-brand{display:flex;align-items:center;gap:12px;padding:22px 20px 18px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1);color:var(--brand-fg)}
+  .side-brand img{width:44px;height:44px;border-radius:12px;background:#fff;flex:0 0 auto}
+  .side-brand div{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+  .side-brand b{font:800 15px var(--display);font-stretch:85%;text-transform:uppercase;letter-spacing:.02em;color:var(--gold)}
+  .side-brand span{font-size:12px;opacity:.8;margin-top:2px}
+  .tgrp{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+  .tgl{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(242,247,243,.45);padding:0 12px 6px}
+  .tab{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:0;color:rgba(242,247,243,.78);font-size:14px;font-weight:500;white-space:normal;position:relative}
+  .tab .ti{display:block;width:19px;height:19px;flex:0 0 auto;opacity:.85}
+  .tab:hover{background:rgba(255,255,255,.07);color:#fff}
+  .tab[aria-current="true"]{background:rgba(255,255,255,.12);color:#fff;font-weight:600;border:0}
+  .tab[aria-current="true"]::before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--gold)}
+  .tab[aria-current="true"] .ti{color:var(--gold);opacity:1}
+  :root[data-theme="dark"] .tab[aria-current="true"]{color:#fff}
+  .tab:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .side-foot{display:block;padding:16px 26px 22px;font-size:11.5px;line-height:1.5;color:rgba(242,247,243,.45);border-top:1px solid rgba(255,255,255,.08)}
+  main.wrap{max-width:1240px;padding:28px 32px 64px;margin:0 auto}
+  .foot .wrap{max-width:none}
+  .contamenu{top:calc(100% + 10px)}
+}
+@media (min-width:1024px) and (prefers-color-scheme: dark){:root:not([data-theme="light"]) body:not(:has(#tabs:empty)) header.top{background:color-mix(in srgb,var(--surface) 92%,transparent)}}
+/* ===== Botão de idioma PT | EN ===== */
+.lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
+.lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
+.lang button[aria-pressed="true"]{background:var(--gold);color:#1b1404;opacity:1}
+.lang button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+@media (min-width:1024px){body:not(:has(#tabs:empty)) .lang{border-color:var(--line);background:var(--sunk)}body:not(:has(#tabs:empty)) .lang button{color:var(--fg)}body:not(:has(#tabs:empty)) .lang button[aria-pressed="true"]{color:#1b1404}}
+/* ===== Logótipo: emblema redondo, sem fundo branco, com anel dourado do tema ===== */
+.logo,.side-brand img{border-radius:50%!important;background:transparent!important;object-fit:cover;box-shadow:0 0 0 2px var(--gold),0 4px 12px rgba(0,0,0,.25)!important}
+.login::before{border-radius:50%!important;background:transparent url(icon-192.png) center/cover no-repeat!important;box-shadow:0 0 0 3px var(--gold),0 8px 20px rgba(16,32,26,.18)!important}
 @media print{header.top,nav.tabs,.foot,.head-acts,.xbar,.quick,.btn{display:none!important}.panel,.kpi{box-shadow:none;break-inside:avoid}body{background:#fff}}
 </style>
 
@@ -556,7 +642,9 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
         <span class="youth" title="Direcção da Juventude da Autonomia da Cidade das Águias de Pemba">Tesouraria da Juventude · Águias de Pemba</span>
       </div>
     </div>
+    <div class="pg-title" id="pgTitle"></div>
     <div class="hdr-r">
+      <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt">PT</button><button type="button" data-lang="en">EN</button></div>
       <label class="yearsel"><span>Ano</span>
         <select id="ano"></select>
       </label>
@@ -566,14 +654,19 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
   </div>
 </header>
 <nav class="tabs" aria-label="Secções">
+  <div class="side-brand"><img src="icon-192.png" alt="" width="44" height="44"><div><b>Assembleia de Deus Africana</b><span>Tesouraria da Juventude</span></div></div>
   <div class="wrap" id="tabs"></div>
+  <div class="side-foot">Direcção da Juventude<br>Águias de Pemba</div>
 </nav>
 <main class="wrap" id="main">
   <div class="empty">A carregar os dados da tesouraria…</div>
 </main>
 <footer class="foot"><div class="wrap"><p class="org">Assembleia de Deus Africana · Avante na Fé<br>Direcção da Juventude da Autonomia da Cidade das Águias de Pemba</p><p class="verso">Continuamos a andar nas coisas que aprendemos, estando enraizados e firmados na doutrina bíblica na nossa igreja, na união, no amor, nas orações, no perdoar de coração e no temor genuíno de Deus.</p><p class="refs">Filipenses 4:9 · 2 Timóteo 3:14 · Provérbios 4:27</p></div></footer>
+<nav class="bottomnav" id="bnav" aria-label="Navegação principal"></nav>
+<div id="maisMenu" class="mais-bg" hidden></div>
 <div id="sheet" hidden></div>
 <div id="toast" class="toast" hidden></div>
+<script src="i18n.js"></script>
 
 <script>
 // ---- Base de dados local (GitHub Pages): guarda tudo no navegador deste aparelho
@@ -749,7 +842,7 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
 <script>
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const M3=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
-const TABS=[["resumo","Resumo"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
+const TABS=[["resumo","Painel"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
 const TIPOS={contribuicao:"Contribuição",conferencia:"Conferência",retiro:"Retiro",culto:"Culto especial",outro:"Outro evento"};
 const ORIGENS={cota:"Cota",oferta:"Ofertas",evento:"Evento"};
 const S={membros:[],eventos:[],movs:[],acts:[],actMes:"todos",ano:new Date().getFullYear(),tab:"resumo",evento:null,
@@ -794,11 +887,47 @@ function eventoTotais(id){
 }
 
 // ---------- render
+// Ícones das secções (traço simples, herdam a cor do texto)
+const ICO={resumo:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+  membros:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.7 2.8 2.4 3 5.2"/>',
+  cotas:'<rect x="2.5" y="6" width="19" height="13" rx="2"/><path d="M2.5 10h19M16.5 14.5h2"/>',
+  classificacao:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5"/>',
+  contribuicoes:'<path d="M12 21s-7.5-4.6-7.5-10.4A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z"/>',
+  conferencias:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  actividades:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+  regiao:'<path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/>',
+  ofertas:'<rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v7h14v-7M12 8v12M12 8S10.5 3.5 8 4.2 8.5 8 12 8zM12 8s1.5-4.5 4-3.8S15.5 8 12 8z"/>',
+  saidas:'<path d="M7 17 17 7M8 7h9v9"/>',
+  jovens:'<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8L3.5 9.2l5.9-.9z"/>',
+  relatorio:'<path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3v5h5M8.5 13h7M8.5 17h5"/>',
+  pdf:'<path d="M12 3v12M7 10l5 5 5-5M4 19h16"/>',
+  utilizadores:'<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/>'};
+const ico=k=>`<svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]||""}</svg>`;
+const GRUPOS=[["Geral",["resumo","membros"]],["Finanças",["cotas","classificacao","contribuicoes","conferencias","ofertas","saidas"]],["Juventude",["actividades","jovens","regiao"]],["Relatórios",["relatorio","pdf"]],["Administração",["utilizadores"]]];
 function renderTabs(){
-  if(!S.sessao){$("#tabs").innerHTML="";return}
-  const T2=S.sessao.papel==="admin"?[...TABS,["utilizadores","Utilizadores"]]:TABS;
-  $("#tabs").innerHTML=T2.map(([k,l])=>`<button class="tab" data-tab="${k}" aria-current="${S.tab===k}">${l}</button>`).join("");
+  const pt=$("#pgTitle");
+  if(!S.sessao||S.sessao.padrao){$("#tabs").innerHTML="";if(pt)pt.innerHTML="";return}
+  const T2=S.sessao.papel==="admin"?[...TABS,["utilizadores","Utilizadores"]]:TABS,lbl=Object.fromEntries(T2);
+  $("#tabs").innerHTML=GRUPOS.map(([g,ks])=>{const bs=ks.filter(k=>lbl[k]);return bs.length?`<div class="tgrp"><span class="tgl">${g}</span>${bs.map(k=>`<button class="tab" data-tab="${k}" aria-current="${S.tab===k}">${ico(k)}<span>${lbl[k]}</span></button>`).join("")}</div>`:""}).join("");
+  if(pt)pt.innerHTML=`<b>${esc(lbl[S.tab]||"")}</b><span>Tesouraria da Juventude · ${S.ano}</span>`;
+  // Barra de baixo (telemóvel/tablet): 4 secções principais + "Mais"
+  const bn=$("#bnav");if(bn){const prin=["resumo","membros","cotas","ofertas"],emMais=!prin.includes(S.tab);
+    bn.innerHTML=prin.map(k=>`<button class="bn" data-tab="${k}" aria-current="${S.tab===k}">${ico(k)}<span>${lbl[k]}</span></button>`).join("")+
+      `<button class="bn" data-act="maisMenu" aria-current="${emMais}" aria-haspopup="dialog"><svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>${emMais?esc(lbl[S.tab]||"Mais"):"Mais"}</span></button>`;}
+  const mm=$("#maisMenu");if(mm&&!mm.hidden)abrirMais();
 }
+function abrirMais(){const mm=$("#maisMenu");if(!S.sessao)return;
+  const T2=S.sessao.papel==="admin"?[...TABS,["utilizadores","Utilizadores"]]:TABS,lbl=Object.fromEntries(T2);
+  mm.innerHTML=`<div class="mais" role="dialog" aria-modal="true" aria-label="Todas as secções"><div class="mais-h"><b>Todas as secções</b><button class="sheet-x" data-act="maisFechar" aria-label="Fechar">✕</button></div>
+    ${GRUPOS.map(([g,ks])=>{const bs=ks.filter(k=>lbl[k]);return bs.length?`<div class="mais-g"><span class="tgl">${g}</span><div class="mais-grid">${bs.map(k=>`<button class="mais-i" data-tab="${k}" aria-current="${S.tab===k}">${ico(k)}<span>${lbl[k]}</span></button>`).join("")}</div></div>`:""}).join("")}</div>`;
+  mm.hidden=false;document.body.classList.add("sem-scroll")}
+function fecharMais(){const mm=$("#maisMenu");if(mm){mm.hidden=true;mm.innerHTML=""}document.body.classList.remove("sem-scroll")}
+document.addEventListener("click",ev=>{
+  if(ev.target.closest('[data-act="maisMenu"]')){abrirMais();return}
+  if(ev.target.closest('[data-act="maisFechar"]')||ev.target.id==="maisMenu"){fecharMais();return}
+  if(ev.target.closest("#maisMenu [data-tab]"))setTimeout(fecharMais,0);
+},true);
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#maisMenu").hidden)fecharMais()});
 function renderAnos(){
   const anos=new Set([S.ano,new Date().getFullYear()]);
   S.membros.forEach(m=>Object.keys(m.cotas||{}).forEach(a=>anos.add(+a)));
@@ -842,7 +971,7 @@ function vResumo(){
   const RM=resumoMensal();let ac=0;const acum=RM.map(r=>ac+=r.saldo);
   const ultimo=S.ano===new Date().getFullYear()?new Date().getMonth()+1:12;
   const ent=tc+tco+tof;
-  return `<div class="head"><div><h2>Resumo de ${S.ano}</h2><p>Entradas, saídas e evolução do saldo ao longo do ano.</p></div><div class="head-acts"><div class="xbar"><button class="btn" data-xls-exp="tudo"><span aria-hidden="true">⬇</span> Exportar Excel completo</button></div></div></div>
+  return `<div class="head"><div><h2>Painel de ${S.ano}</h2><p>Entradas, saídas e evolução do saldo ao longo do ano.</p></div><div class="head-acts"><div class="xbar"><button class="btn" data-xls-exp="tudo"><span aria-hidden="true">⬇</span> Exportar Excel completo</button></div></div></div>
   <div class="kpis">
     <div class="kpi saldo"><span class="l">Saldo disponível</span><span class="v">${fmt(saldo)}</span><span class="h">${ent?Math.round(ts/ent*100):0}% das entradas já gasto</span></div>
     <div class="kpi k1"><span class="l">Cotas</span><span class="v">${fmt(tc)}</span></div>
@@ -1239,12 +1368,14 @@ function formMembro(m){
      </div>
      <label class="span2">Notas<textarea class="inp" name="notas" id="f-notas" rows="2" placeholder="Observações (opcional)">${esc(m?.notas||"")}</textarea></label>
    </div></fieldset>
+   ${m?.extra&&Object.keys(m.extra).length?`<fieldset class="fs"><legend>Outros dados (vindos do Excel)</legend><div class="fgrid">${Object.entries(m.extra).map(([k,v],i)=>`<label>${esc(k)}<input class="inp" name="x:${esc(k)}" id="f-x${i}" value="${esc(v)}" autocomplete="off"></label>`).join("")}</div></fieldset>`:""}
    <div class="acts">${m?`<button type="button" class="btn danger" data-act="apagarMembro" data-id="${m.id}">Remover membro</button>`:""}<span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">${m?"Guardar alterações":"Registar membro"}</button></div>`,
   async(fd,f)=>{const nome=String(fd.get("nome")).trim();if(!nome)return fail(f,"Escreva o nome do membro.");
     if(!m&&S.membros.some(x=>nrm(x.nome)===nrm(nome))&&!confirm("Já existe um membro chamado "+nome+". Registar outro com o mesmo nome?"))return false;
     const bindura=fd.get("local")==="Bindura";
     const d={nome,sexo:String(fd.get("sexo")||""),naoJovem:!fd.get("jovem"),cargo:String(fd.get("cargo")||""),bindura,activo:bindura&&!!fd.get("activo"),
       telefone:String(fd.get("telefone")||"").trim(),nascimento:String(fd.get("nascimento")||""),entrada:String(fd.get("entrada")||""),morada:String(fd.get("morada")||"").trim(),notas:String(fd.get("notas")||"").trim()};
+    const ex={};for(const [k,v] of fd.entries())if(k.startsWith("x:"))ex[k.slice(2)]=String(v).trim();if(Object.keys(ex).length)d.extra=ex;
     if(m){await S.db.doc("membros/"+m.id).update(d);return "Membro actualizado"}
     const ordem=Math.max(0,...S.membros.map(x=>num(x.ordem)))+1;
     await S.db.collection("membros").add({...d,ordem,cotas:{},registado:today()});return "Membro registado"},{wide:true});
@@ -1933,8 +2064,8 @@ function vPdf(){
   const clsOpts=[["anual","Anual "+S.ano],["s1","1.º semestre"],["s2","2.º semestre"],["t1","1.º trimestre"],["t2","2.º trimestre"],["t3","3.º trimestre"],["t4","4.º trimestre"],...MESES.map((m,i)=>["m"+(i+1),m])];
   return `<div class="head"><div><h2>Relatórios em PDF</h2><p>Escolha o relatório e toque em “Baixar PDF”. Os valores são os de ${S.ano}.</p></div></div>
   <div class="cards">
-    <section class="panel pdfcard"><h3>Resumo de ${S.ano}</h3><p class="muted">O resumo como aparece no site: totais, gráfico de cotas e saídas por mês, melhores cotas e eventos.</p>
-      <div><button class="btn primary" data-pdf="resumo">Baixar PDF do resumo</button></div></section>
+    <section class="panel pdfcard"><h3>Painel de ${S.ano}</h3><p class="muted">O painel como aparece no site: totais, gráfico de cotas e saídas por mês, melhores cotas e eventos.</p>
+      <div><button class="btn primary" data-pdf="resumo">Baixar PDF do painel</button></div></section>
     <section class="panel pdfcard"><h3>Relatório mensal</h3><p class="muted">Relatório completo do mês com o timbre da igreja, liderança, jovens, mapa de cota, finanças, expectativas, conclusão e assinatura do pastor.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-tab="relatorio">Abrir relatório mensal (Word ou PDF)</button><button class="btn" data-tab="relatorio" data-anual="1">Relatório anual em Word</button></div></section>
     <section class="panel pdfcard"><h3>Listas de nomes</h3><p class="muted">Lista completa (com conselheiros, coordenador, pastores e diáconos) ou só jovens, com cargo, sexo e local.</p>
@@ -2064,7 +2195,7 @@ function resumoDados(){
 }
 function pdfResumo(J){
   const R=resumoDados();
-  const doc=pdfDoc(J,"Resumo de "+S.ano,"Entradas e saídas registadas neste ano",false);
+  const doc=pdfDoc(J,"Painel de "+S.ano,"Entradas e saídas registadas neste ano",false);
   const W=doc.internal.pageSize.getWidth(),L=36,CW=W-72;
   const rr=(x,y,w,h,fill,stroke)=>{if(fill)doc.setFillColor(...fill);if(stroke){doc.setDrawColor(...stroke);doc.setLineWidth(.7)}doc.roundedRect(x,y,w,h,8,8,fill&&stroke?"FD":fill?"F":"S")};
   // tiles
@@ -2152,7 +2283,7 @@ function xlsLib(){if(window.XLSX)return Promise.resolve(window.XLSX);if(_xls)ret
 const XLS_IMP={tudo:1,cotas:1,membros:1,ofertas:1,saidas:1,actividades:1};
 function xlsBar(kind,big){
   const imp=S.edit&&XLS_IMP[kind]&&!(kind==="tudo"&&S.sessao?.papel==="leitor");
-  return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
+  return `<div class="xbar${big?" big":""}"><button class="btn" data-xls-exp="${kind}"><span aria-hidden="true">⬇</span> Exportar Excel</button><button class="btn" data-pdf-tab="${kind}"><span aria-hidden="true">⬇</span> PDF</button>${imp?`<label class="btn"><span aria-hidden="true">⬆</span> Importar Excel<input type="file" accept=".xlsx,.xls,.csv" data-xls-imp="${kind}" hidden></label><button class="btn ghost" data-xls-modelo="${kind}" title="Baixar um ficheiro modelo com as colunas certas">Modelo</button>`:""}</div>`;
 }
 const simNao=b=>b?"Sim":"Não";
 const nrm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").trim().toLowerCase();
@@ -2173,7 +2304,7 @@ function xlsSheets(kind){
   const resumo=()=>{let ac=0;return resumoMensal().map(r=>{ac+=r.saldo;return {"Mês":MESES[r.m-1],"Cotas":r.c,"Contribuições":r.co,"Ofertas":r.of,"Total de entradas":r.ent,"Saídas":r.sa,"Saldo do mês":r.saldo,"Saldo acumulado":ac}})};
   const users=()=>S.users.map(u=>({"Nome":u.nome||u.id,"Papel":(PAPEIS[u.papel]||"").split(" (")[0],"Último acesso":u.ultimoLogin||"","Nº de entradas":u.totalLogins||0}));
   const acessos=()=>(window.TES_REMOTO?TES_REMOTO.acessos():[]).filter(a=>a.sucesso).map(a=>({"Data":a.data,"Nome":a.nome||"","Papel":(PAPEIS[a.papel]||"").split(" (")[0]}));
-  if(kind==="tudo"){sh.push(["Resumo "+A,resumo()],["Membros",membros()],["Cotas "+A,cotas()],["Movimentos "+A,movs()],["Eventos",eventos()],["Actividades "+A,acts()]);if(S.sessao?.papel==="admin"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}}
+  if(kind==="tudo"){sh.push(["Painel "+A,resumo()],["Membros",membros()],["Cotas "+A,cotas()],["Movimentos "+A,movs()],["Eventos",eventos()],["Actividades "+A,acts()]);if(S.sessao?.papel==="admin"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}}
   else if(kind==="cotas")sh.push(["Cotas "+A,cotas()]);
   else if(kind==="membros")sh.push(["Membros",membros()]);
   else if(kind==="ofertas")sh.push(["Ofertas "+A,movs("oferta")]);
@@ -2181,7 +2312,7 @@ function xlsSheets(kind){
   else if(kind==="contribuicoes")sh.push(["Contribuições "+A,movs("contribuicao")],["Eventos",eventos()]);
   else if(kind==="actividades")sh.push(["Actividades "+A,acts()]);
   else if(kind==="utilizadores"){sh.push(["Utilizadores",users()]);if(window.TES_REMOTO)sh.push(["Acessos",acessos()])}
-  else if(kind==="resumo")sh.push(["Resumo "+A,resumo()]);
+  else if(kind==="resumo")sh.push(["Painel "+A,resumo()]);
   return sh;
 }
 const XLS_MODELO={
@@ -2194,7 +2325,9 @@ const XLS_MODELO={
 XLS_MODELO.tudo=[...XLS_MODELO.membros,...XLS_MODELO.cotas,["Movimentos",[{"Data":"2026-01-15","Tipo":"Oferta","Descrição":"Ex.: Oferta do culto","Valor (MT)":500,"Sai de":"","Nota":""}]],...XLS_MODELO.actividades];
 async function xlsBaixar(sheets,nome){
   const X=await xlsLib(),wb=X.utils.book_new();
-  sheets.forEach(([n,rows])=>{const ws=rows.length?X.utils.json_to_sheet(rows):X.utils.aoa_to_sheet([["Sem dados"]]);
+  const T=s=>window.TES_TR?TES_TR(String(s)):String(s);
+  sheets=sheets.map(([n,rows])=>[T(n),rows.map(r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[T(k),typeof v==="string"?T(v):v])))]);
+  sheets.forEach(([n,rows])=>{const ws=rows.length?X.utils.json_to_sheet(rows):X.utils.aoa_to_sheet([[T("Sem dados")]]);
     const keys=rows.length?Object.keys(rows[0]):[];ws["!cols"]=keys.map(k=>({wch:Math.min(48,Math.max(k.length+2,...rows.map(r=>String(r[k]??"").length+2)))}));
     X.utils.book_append_sheet(wb,ws,n.replace(/[\\/?*[\]:]/g,"").slice(0,31))});
   const blob=new Blob([X.write(wb,{type:"array",bookType:"xlsx"})],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
@@ -2213,58 +2346,93 @@ const sexoDe=v=>{const n=nrm(v);return !n?"":/^(m|rapaz|masc|homem)/.test(n)?"M"
 const cargoDe=v=>{const n=nrm(v);if(!n)return "";const c=CARGOJ.find(([k,l])=>nrm(k)===n||nrm(l)===n);return c?c[0]:""};
 const tactDe=v=>{const n=nrm(v);if(!n)return "outro";const e=Object.entries(TACT).find(([k,l])=>nrm(k)===n||nrm(l)===n);return e?e[0]:"outro"};
 const ridX=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+// Cabeçalhos reconhecidos (português ou inglês, em qualquer ordem). Colunas desconhecidas não se perdem: ficam em "extra".
+const CAMPOS=[["num",["nº","no","n.º","numero","#","n"]],["nome",["nome completo","nome","name","full name","membro","member","jovem nome","pessoa"]],["desc",["descricao","description","designacao","motivo","item"]],
+  ["sexo",["sexo","genero","sex","gender"]],["cargo",["cargo","funcao","role","position"]],["local",["local","location","lugar","sede/bloco","bloco"]],["activo",["activo","ativo","active"]],["jovem",["conta como jovem","jovem?","counts as youth","youth"]],
+  ["telefone",["telefone","telemovel","celular","contacto","contato","phone","mobile","tel"]],["nascimento",["data de nascimento","nascimento","date of birth","birth","aniversario","birthday"]],["entrada",["data de entrada","membro desde","entrada","member since","joined"]],
+  ["morada",["morada","endereco","bairro","residencia","address"]],["notas",["notas","observacoes","observacao","obs","notes"]],["nota",["nota","note","comentario","comment"]],["participantes",["participantes","participants","presencas","presentes"]],
+  ["data",["data","date","dia"]],["valor",["valor","montante","quantia","amount","value","mt"]],["tipo",["tipo","type","categoria","category"]],["saide",["sai de","origem","paid from","source"]],["evento",["evento","event","campanha","conferencia"]],["total",["total"]]];
+const MESES_EN=["january","february","march","april","may","june","july","august","september","october","november","december"];
+function mesDe(h){const n=nrm(h).replace(/\.$/,"");let i=M3.findIndex(x=>nrm(x)===n);if(i<0)i=MESES.findIndex(x=>nrm(x)===n);if(i<0)i=MESES_EN.findIndex(x=>x===n||x.slice(0,3)===n);if(i<0&&/^\d{1,2}$/.test(n)&&+n>=1&&+n<=12)i=+n-1;return i>=0?i+1:0}
+function campoDe(h){const n=nrm(h).replace(/\s*\(.*\)\s*$/,"").trim();if(!n)return null;for(const [c,al] of CAMPOS)if(al.some(a=>n===a))return c;for(const [c,al] of CAMPOS)if(al.some(a=>a.length>3&&n.startsWith(a)))return c;return null}
+function normLinha(r){const o={c:{},extra:{},meses:{}};for(const [k,v] of Object.entries(r)){if(String(v).trim()===""||/^__EMPTY/.test(k))continue;const m=mesDe(k);if(m){o.meses[m]=v;continue}
+  const c=campoDe(k);if(c&&o.c[c]==null)o.c[c]=v;else if(!c)o.extra[String(k).trim()]=v}return o}
 function xlsInterpretar(wb,kind,X){
-  const ops=[],res={membrosNovos:0,membrosAct:0,cotas:0,movs:0,acts:0,ignorados:0};
+  const ops=[],res={membrosNovos:0,membrosAct:0,cotas:0,movs:0,acts:0,ignorados:0,eventos:0};
   const porNome=new Map(S.membros.map(m=>[nrm(m.nome),{...m}]));let ordem=Math.max(0,...S.membros.map(x=>num(x.ordem)));
   const novoMembro=nome=>{const id=ridX(),m={id,nome,ordem:++ordem,sexo:"",naoJovem:false,bindura:false,activo:false,cotas:{}};porNome.set(nrm(nome),m);ops.push({op:"set",col:"membros",id,data:{...m,id:undefined}});res.membrosNovos++;return m};
-  const linhas=ws=>X.utils.sheet_to_json(ws,{defval:"",raw:true});
-  const tipoFolha=n=>{n=nrm(n);return n.startsWith("membro")||n.startsWith("jove")?"membros":n.startsWith("cota")?"cotas":n.startsWith("movimento")?"movs":n.startsWith("oferta")?"ofertas":n.startsWith("saida")?"saidas":n.startsWith("actividade")||n.startsWith("atividade")?"actividades":""};
-  const folhas=kind==="tudo"?wb.SheetNames.map(n=>[n,tipoFolha(n)]).filter(x=>x[1]):[[wb.SheetNames[0],kind]];
+  const evPorNome=new Map(S.eventos.map(e=>[nrm(e.nome),e]));
+  const eventoDe=(nome,tipo)=>{nome=String(nome||"").replace(/^(evento|event):\s*/i,"").trim()||"Contribuições importadas";let e=evPorNome.get(nrm(nome));
+    if(!e){e={id:ridX(),nome,tipo,data:"",meta:null,nota:"Criado ao importar Excel",criado:Date.now()};evPorNome.set(nrm(nome),e);ops.push({op:"set",col:"eventos",id:e.id,data:{...e,id:undefined}});res.eventos++}return e};
+  const linhas=ws=>X.utils.sheet_to_json(ws,{defval:"",raw:true}).map(normLinha).filter(l=>Object.keys(l.c).length||Object.keys(l.meses).length||Object.keys(l.extra).length);
+  const exemplo=s=>/^ex\.?:/i.test(String(s||"").trim());
+  // Tipo de cada folha: pelo nome da folha e, se não der, pelas colunas que tem
+  const tipoNome=n=>{n=nrm(n);return /^(membro|jove|member|youth)/.test(n)?"membros":/^(cota|dues)/.test(n)?"cotas":/^(movimento|movement|transac)/.test(n)?"movs":/^(oferta|offering)/.test(n)?"ofertas":/^(saida|expense|despesa)/.test(n)?"saidas":/^(contribui|contribution)/.test(n)?"contribs":/^(actividade|atividade|activit)/.test(n)?"actividades":""};
+  const tipoColunas=ls=>{const t=ls.slice(0,20),tem=c=>t.some(l=>l.c[c]!=null);return t.some(l=>Object.keys(l.meses).length)?"cotas":tem("valor")?"movs":tem("participantes")?"actividades":"membros"};
+  const folhas=[];
+  for(const n of (kind==="tudo"?wb.SheetNames:[wb.SheetNames[0]])){const ls=linhas(wb.Sheets[n]);if(!ls.length)continue;
+    let tp=kind==="tudo"?(tipoNome(n)||tipoColunas(ls)):kind;if(/^(painel|resumo|utilizadores|acessos|eventos|users|summary|dashboard|access|events)/.test(nrm(n))&&kind==="tudo")continue;folhas.push([n,tp,ls])}
   const movKey=v=>[v.tipo,v.data,nrm(v.nome),num(v.valor)].join("|"),movSet=new Set(S.movs.map(movKey));
   const actSet=new Set(S.acts.map(a=>a.data+"|"+nrm(a.nome)));
-  for(const [nomeF,tp] of folhas){const rows=linhas(wb.Sheets[nomeF]);
-    if(tp==="membros")rows.forEach(r=>{const nome=String(pega(r,"nome")).trim();if(!nome||nome.startsWith("Ex.:")){res.ignorados+=nome?1:0;return}
-      const d={};const sx=sexoDe(pega(r,"sexo"));if(sx)d.sexo=sx;const cg=cargoDe(pega(r,"cargo"));if(cg)d.cargo=cg;
-      const lc=nrm(pega(r,"local"));if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
-      const at=nrm(pega(r,"activo","ativo"));if(at&&d.bindura!==false)d.activo=at.startsWith("s");
-      const jv=nrm(pega(r,"conta como jovem","jovem"));if(jv)d.naoJovem=jv.startsWith("n");
-      const tel=String(pega(r,"telefone","contacto","celular")).trim();if(tel)d.telefone=tel;
-      const nas=isoData(pega(r,"data de nascimento","nascimento"));if(nas)d.nascimento=nas;
-      const ent=isoData(pega(r,"data de entrada","entrada"));if(ent)d.entrada=ent;
-      const mo=String(pega(r,"morada","endereco","bairro")).trim();if(mo)d.morada=mo;
-      const no=String(pega(r,"notas","observ")).trim();if(no)d.notas=no;
-      const ex=porNome.get(nrm(nome));
-      if(ex){if(Object.keys(d).length){if(ex.id&&S.membros.some(m=>m.id===ex.id))ops.push({op:"update",col:"membros",id:ex.id,data:d});else{const o=ops.find(o=>o.id===ex.id);o&&Object.assign(o.data,d)}Object.assign(ex,d);res.membrosAct++}}
-      else{const m=novoMembro(nome);Object.assign(ops[ops.length-1].data,d)}});
-    if(tp==="cotas"){const ano=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||S.ano;
-      rows.forEach(r=>{const nome=String(pega(r,"nome")).trim();if(!nome||nrm(nome)==="total"||nome.startsWith("Ex.:"))return;
-        const c={};Object.keys(r).forEach(k=>{const n=nrm(k);let mes=M3.findIndex(x=>nrm(x)===n)+1||MESES.findIndex(x=>nrm(x)===n)+1;if(!mes&&/^\d{1,2}$/.test(n)&&+n>=1&&+n<=12)mes=+n;
-          if(mes&&String(r[k]).trim()!==""){c[mes]=num(r[k])}});
-        if(!Object.keys(c).length)return;
-        let m=porNome.get(nrm(nome));if(!m)m=novoMembro(nome);
-        const isNew=!S.membros.some(x=>x.id===m.id);
-        if(isNew){const o=ops.find(o=>o.id===m.id);o.data.cotas={...(o.data.cotas||{}),[ano]:{...((o.data.cotas||{})[ano]||{}),...c}}}
-        else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:c}}});
-        res.cotas+=Object.keys(c).length})}
-    if(tp==="movs"||tp==="ofertas"||tp==="saidas")rows.forEach(r=>{
-      const tipo=tp==="ofertas"?"oferta":tp==="saidas"?"saida":(n=>n.startsWith("sa")?"saida":n.startsWith("contr")?"contribuicao":n.startsWith("of")?"oferta":"")(nrm(pega(r,"tipo")));
-      const nome=String(pega(r,"descricao","nome")).trim(),valor=num(pega(r,"valor")),data=isoData(pega(r,"data"));
-      if(!tipo||!nome||nome.startsWith("Ex.:")||!(valor>0)){if(nome&&!nome.startsWith("Ex.:"))res.ignorados++;return}
-      const d={tipo,nome,valor,data,ano:data?+data.slice(0,4):S.ano,nota:String(pega(r,"nota")).trim(),eventoId:"",origem:""};
-      const evN=nrm(String(pega(r,"evento")||"").replace(/^evento:\s*/i,"")),sai=nrm(pega(r,"sai de","origem"));
-      const ev=S.eventos.find(e=>nrm(e.nome)===evN||("evento: "+nrm(e.nome))===sai);
-      if(tipo==="saida"){if(ev){d.eventoId=ev.id;d.origem="evento"}else d.origem=sai.startsWith("of")?"oferta":"cota"}
-      else if(tipo==="contribuicao"){if(!ev){res.ignorados++;return}d.eventoId=ev.id}
+  const cotasDe=(m,ano,meses)=>{const c={};for(const [k,v] of Object.entries(meses))c[k]=num(v);if(!Object.keys(c).length)return;
+    const isNew=!S.membros.some(x=>x.id===m.id);
+    if(isNew){const o=ops.find(o=>o.id===m.id);o.data.cotas={...(o.data.cotas||{}),[ano]:{...((o.data.cotas||{})[ano]||{}),...c}}}
+    else ops.push({op:"update",col:"membros",id:m.id,data:{cotas:{[ano]:c}}});res.cotas+=Object.keys(c).length};
+  for(const [nomeF,tp,rows] of folhas){const ano=+(String(nomeF).match(/(19|20)\d{2}/)||[])[0]||S.ano;
+    if(tp==="membros"||tp==="cotas")rows.forEach(l=>{const c=l.c;
+      let nome=String(c.nome??c.desc??"").trim();if(!nome){const p=Object.entries(l.extra).find(([,v])=>typeof v==="string"&&/[a-zà-ú]/i.test(v));if(p){nome=String(p[1]).trim();delete l.extra[p[0]]}}
+      if(!nome||exemplo(nome)||nrm(nome)==="total")return;
+      const d={};
+      if(tp==="membros"){const sx=sexoDe(c.sexo);if(sx)d.sexo=sx;const cg=cargoDe(c.cargo);if(cg)d.cargo=cg;
+        const lc=nrm(c.local);if(lc){d.bindura=lc.startsWith("bindura");if(!d.bindura)d.activo=false}
+        const at=nrm(c.activo);if(at&&d.bindura!==false)d.activo=/^(s|y|1|true)/.test(at);
+        const jv=nrm(c.jovem);if(jv)d.naoJovem=/^(n|0|false)/.test(jv);
+        if(c.telefone!=null)d.telefone=String(c.telefone).trim();
+        const nas=isoData(c.nascimento);if(nas)d.nascimento=nas;const ent=isoData(c.entrada);if(ent)d.entrada=ent;
+        if(c.morada!=null)d.morada=String(c.morada).trim();const no=[c.notas,c.nota].filter(x=>x!=null).join(" ").trim();if(no)d.notas=no;
+        if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,v instanceof Date?isoData(v):String(v)]))}
+      let m=porNome.get(nrm(nome));
+      if(m){if(Object.keys(d).length){if(S.membros.some(x=>x.id===m.id))ops.push({op:"update",col:"membros",id:m.id,data:d});else{const o=ops.find(o=>o.id===m.id);o&&Object.assign(o.data,d)}Object.assign(m,d);res.membrosAct++}}
+      else{m=novoMembro(nome);Object.assign(ops[ops.length-1].data,d)}
+      if(Object.keys(l.meses).length)cotasDe(m,ano,l.meses)});
+    if(["movs","ofertas","saidas","contribs"].includes(tp))rows.forEach(l=>{const c=l.c;
+      const tn=nrm(c.tipo);const tipo=tp==="ofertas"?"oferta":tp==="saidas"?"saida":tp==="contribs"?"contribuicao":/^(sa|exp|desp)/.test(tn)?"saida":/^contr/.test(tn)?"contribuicao":"oferta";
+      const nome=String(c.desc??c.nome??"").trim(),valor=num(c.valor),data=isoData(c.data);
+      if(exemplo(nome)||(!nome&&!valor))return;
+      const d={tipo,nome,valor,data,ano:data?+data.slice(0,4):ano,nota:String(c.nota??c.notas??"").trim(),eventoId:"",origem:""};
+      if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,String(v)]));
+      const sai=nrm(c.saide),evNome=c.evento||(/^(evento|event):/.test(sai)?String(c.saide):"");
+      if(tipo==="saida"){if(evNome){d.eventoId=eventoDe(evNome,"outro").id;d.origem="evento"}else d.origem=/^(of|off)/.test(sai)?"oferta":"cota"}
+      else if(tipo==="contribuicao")d.eventoId=eventoDe(evNome,"contribuicao").id;
       if(movSet.has(movKey(d))){res.ignorados++;return}movSet.add(movKey(d));
       ops.push({op:"set",col:"movimentos",id:ridX(),data:d});res.movs++});
-    if(tp==="actividades")rows.forEach(r=>{const nome=String(pega(r,"nome")).trim(),data=isoData(pega(r,"data"));
-      if(!nome||!data||nome.startsWith("Ex.:")){if(nome&&!nome.startsWith("Ex.:"))res.ignorados++;return}
+    if(tp==="actividades")rows.forEach(l=>{const c=l.c;const nome=String(c.nome??c.desc??"").trim(),data=isoData(c.data)||today();
+      if(!nome||exemplo(nome))return;
       if(actSet.has(data+"|"+nrm(nome))){res.ignorados++;return}actSet.add(data+"|"+nrm(nome));
-      ops.push({op:"set",col:"actividades",id:ridX(),data:{nome,tipo:tactDe(pega(r,"tipo")),data,local:String(pega(r,"local")).trim(),participantes:num(pega(r,"participantes")),nota:String(pega(r,"descricao","nota")).trim(),criado:Date.now()}});res.acts++});
+      const d={nome,tipo:tactDe(c.tipo),data,local:String(c.local??"").trim(),participantes:num(c.participantes),nota:String(c.desc&&c.nome?c.desc:(c.nota??c.notas??"")).trim(),criado:Date.now()};
+      if(Object.keys(l.extra).length)d.extra=Object.fromEntries(Object.entries(l.extra).map(([k,v])=>[k,String(v)]));
+      ops.push({op:"set",col:"actividades",id:ridX(),data:d});res.acts++});
   }
   ops.forEach(o=>{if(o.data)delete o.data.id});
   return {ops,res};
 }
+// PDF de qualquer tabela: usa as mesmas folhas do Excel
+const TITULOS_TAB={tudo:"Todos os dados",cotas:"Cotas",membros:"Registo de membros",ofertas:"Ofertas",saidas:"Saídas",contribuicoes:"Contribuições",actividades:"Actividades",utilizadores:"Utilizadores",resumo:"Painel"};
+async function pdfTabelas(kind){
+  const J=await pdfLib(),T=s=>window.TES_TR?TES_TR(s):s;
+  const sheets=xlsSheets(kind).filter(s=>s[1].length);
+  if(!sheets.length){toast(T("Nada registado."));return}
+  let doc=null;
+  sheets.forEach(([nome,rows],i)=>{const keys=Object.keys(rows[0]),land=keys.length>6;
+    if(!doc)doc=pdfDoc(J,T(TITULOS_TAB[kind]||nome)+" "+S.ano,T(nome),land);
+    else{doc.addPage("a4",land?"landscape":"portrait");doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(22,33,29);doc.text(T(nome),36,48)}
+    const cel=v=>typeof v==="number"?Math.round(v*100)/100===Math.round(v)?String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g," "):String(v):String(v??"");
+    doc.autoTable({...TBL,startY:i===0?136:62,head:[keys.map(T)],body:rows.map(r=>keys.map(k=>T(cel(r[k])))),styles:{...TBL.styles,fontSize:keys.length>9?7.5:9}})});
+  pdfFooter(doc);
+  const dl=await window.claude.use("downloads");const nome=`tesouraria-${kind}-${S.ano}.pdf`;await dl.save({filename:nome,data:doc.output("blob")});toast(T("PDF pronto: ")+nome);
+}
+document.addEventListener("click",async ev=>{const e=ev.target.closest("[data-pdf-tab]");if(!e)return;const old=e.innerHTML;e.disabled=true;e.textContent="…";
+  try{await pdfTabelas(e.dataset.pdfTab)}catch(er){console.error(er);toast(er&&er.code==="nolib"?"Não foi possível carregar o gerador de PDF. Verifique a ligação.":"Não foi possível criar o PDF.")}finally{e.disabled=false;e.innerHTML=old}});
 document.addEventListener("click",async ev=>{
   const e=ev.target.closest("[data-xls-exp],[data-xls-modelo]");if(!e)return;
   const old=e.innerHTML;e.disabled=true;e.textContent="A preparar…";
@@ -2278,7 +2446,7 @@ document.addEventListener("change",async ev=>{
   try{const X=await xlsLib();const wb=X.read(await f.arrayBuffer(),{type:"array",cellDates:true});
     const {ops,res}=xlsInterpretar(wb,kind,X);
     if(!ops.length){toast(res.ignorados?"Nada de novo: "+res.ignorados+" linhas já existiam ou estavam incompletas.":"Não encontrei dados nas colunas esperadas. Use o modelo.");return}
-    const partes=[res.membrosNovos&&res.membrosNovos+" membros novos",res.membrosAct&&res.membrosAct+" membros actualizados",res.cotas&&res.cotas+" valores de cota",res.movs&&res.movs+" movimentos",res.acts&&res.acts+" actividades"].filter(Boolean);
+    const partes=[res.membrosNovos&&res.membrosNovos+" membros novos",res.membrosAct&&res.membrosAct+" membros actualizados",res.cotas&&res.cotas+" valores de cota",res.movs&&res.movs+" movimentos",res.acts&&res.acts+" actividades",res.eventos&&res.eventos+" eventos novos"].filter(Boolean);
     if(!confirm("Importar de "+f.name+":\n\n• "+partes.join("\n• ")+(res.ignorados?"\n\n"+res.ignorados+" linhas ignoradas (repetidas ou incompletas).":"")+"\n\nContinuar?"))return;
     await S.db.batch(ops);toast("Importado: "+partes.join(", "));render();
   }catch(er){console.error(er);toast(er.code==="nolib"?"Não foi possível carregar o Excel. Verifique a ligação.":er.code==="invalid_argument"?"Sem permissão para gravar.":"Não foi possível ler o ficheiro: "+(er.message||""))}
