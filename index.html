@@ -589,7 +589,17 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
 
   // ---- Base de dados MySQL (através da API /api): usada quando o servidor responde e tem a base de dados ligada.
   const COLS=["membros","eventos","movimentos","actividades","regiao","config","relatorios","utilizadores"];
-  const CK="tesouraria-cache",SK="jc-sessao-r",PK="tesouraria-pendentes";
+  const CK="tesouraria-cache",SK="jc-sessao-r",PK="tesouraria-pendentes",CRK="tesouraria-acesso-local";
+  // Entrada sem base de dados: depois de entrar uma vez com o MySQL ligado, o aparelho guarda uma marca cifrada da senha
+  // (PBKDF2 com sal próprio deste aparelho; a senha nunca fica guardada) para a pessoa poder voltar a entrar com o MySQL desligado.
+  const credLer=()=>{try{return JSON.parse(localStorage.getItem(CRK)||"{}")||{}}catch(e){return {}}};
+  const credGravar=c=>{try{localStorage.setItem(CRK,JSON.stringify(c))}catch(e){}};
+  const hexb=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+  async function marcaSenha(senha,salt){const te=new TextEncoder(),k=await crypto.subtle.importKey("raw",te.encode(senha),"PBKDF2",false,["deriveBits"]);
+    return hexb(await crypto.subtle.deriveBits({name:"PBKDF2",salt:te.encode("local:"+salt),iterations:150000,hash:"SHA-256"},k,256))}
+  async function credGuardar(user,senha,s){if(!window.crypto?.subtle)return;const salt=hexb(crypto.getRandomValues(new Uint8Array(12)));const c=credLer();
+    c[user]={salt,hash:await marcaSenha(senha,salt),token:s.token,user:s.user,t:Date.now()};credGravar(c)}
+  const credApagar=u=>{const c=credLer();if(c[u]){delete c[u];credGravar(c)}};
   // Dados guardados nos dois sítios: no MySQL (através da API) e neste navegador (cópia + fila do que falta enviar).
   const R=(()=>{
     let cache={},sess=null,timer=null,ligados=[],pend=[],aEnviar=false;
@@ -609,7 +619,7 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
       if(r.status>=502&&r.status<=504){marcaOnline(false);const er=new Error("servidor indisponível");er.code="offline";throw er}
       marcaOnline(true);
       let j={};try{j=await r.json()}catch(e){}
-      if(r.status===401&&path!=="login"){R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
+      if(r.status===401&&path!=="login"){if(sess&&sess.user)credApagar(sess.user.id);R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
       if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429?"rate_limited":"server";er.status=r.status;throw er}
       return j;
     }
@@ -664,13 +674,25 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
       acessos:()=>cache.acessos||[],
       exportar:()=>{const o={};COLS.forEach(c=>o[c]=limpo(cache[c]||{}));return o},
       sessao:()=>sess,
-      async login(user,senha){const j=await api("login",{method:"POST",body:JSON.stringify({user,senha})});sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}await sync();iniciarSync();return sess},
+      async login(user,senha){let j;
+        try{j=await api("login",{method:"POST",body:JSON.stringify({user,senha})})}
+        catch(e){if(e.code!=="offline")throw e;
+          // MySQL desligado: entra com a marca guardada neste aparelho
+          const c=credLer()[user];
+          if(!c){const er=new Error("A base de dados está desligada e este utilizador ainda não entrou neste aparelho. Entre num aparelho que já tenha usado, ou ligue a base de dados.");er.code="offline";throw er}
+          if((await marcaSenha(senha,c.salt))!==c.hash){const er=new Error("Utilizador ou senha errados.");er.code="senha";throw er}
+          sess={token:c.token,user:c.user,padrao:false,offline:true};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
+          marcaOnline(false);avisa();COLS.forEach(remit);iniciarSync();return sess}
+        sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
+        if(!j.padrao)credGuardar(user,senha,sess).catch(()=>{});
+        await sync();iniciarSync();return sess},
       ligados:()=>ligados,
       estado:()=>({online:R.online,pendentes:pend.length}),
       // Ao sair, a cópia dos dados fica neste navegador (só aparece depois de entrar outra vez).
       logout(){avisaSaida();sess=null;ligados=[];clearInterval(timer);try{localStorage.removeItem(SK)}catch(e){}COLS.forEach(remit)},
       async mudarSenha(atual,nova){const j=await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"senha",data:{atual,nova}}]})});
-        if(sess){sess.padrao=false;if(j.token)sess.token=j.token;if(sess.user)sess.user.senhaAlterada=true;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}}await sync();iniciarSync()},
+        if(sess){sess.padrao=false;if(j.token)sess.token=j.token;if(sess.user)sess.user.senhaAlterada=true;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
+          if(sess.user)credGuardar(sess.user.id,nova,sess).catch(()=>{})}await sync();iniciarSync()},
       async importar(d){await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"importar",data:d}]})});await sync()},
       sync,
       arrancar(offline){if(offline)marcaOnline(false);if(sess){sync();iniciarSync()}
@@ -683,9 +705,12 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
     if(location.protocol==="file:")return "local";
     try{const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),6000);
       const r=await fetch("api/login",{cache:"no-store",signal:ctl.signal});clearTimeout(t);
-      if(r.ok){const j=await r.json();if(j&&j.db)return "remoto";if(j&&j.ok){window.TES_API_SEM_DB=j.erro||"Base de dados não configurada no servidor."}}
-      else if(r.status>=502&&localStorage.getItem(SK))return "remoto-offline";
-    }catch(e){if(localStorage.getItem(SK))return "remoto-offline"} // sem ligação, mas já usou o MySQL neste aparelho: abre com a cópia guardada
+      const jaUsou=!!(localStorage.getItem(SK)||localStorage.getItem(CK)||localStorage.getItem(CRK));
+      if(r.ok){const j=await r.json();if(j&&j.db)return "remoto";
+        if(j&&j.configurada)return "remoto-offline"; // MySQL configurado mas desligado: continua com os dados do aparelho
+        if(j&&j.ok){window.TES_API_SEM_DB=j.erro||"Base de dados não configurada no servidor."}}
+      else if(r.status>=502&&jaUsou)return "remoto-offline";
+    }catch(e){if(localStorage.getItem(SK)||localStorage.getItem(CK)||localStorage.getItem(CRK))return "remoto-offline"} // servidor desligado, mas já usou o MySQL neste aparelho
     return "local";
   })().then(m=>{if(m.startsWith("remoto")){window.TES_REMOTO=R;R.arrancar(m==="remoto-offline");return "remoto"}window.TES_LOCAL=db;return m});
   window.claude={use:async k=>{const m=await pronto;return ({db:m==="remoto"?R:db,user,downloads})[k]||null}};
@@ -2297,7 +2322,7 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   const lig=window.TES_REMOTO?TES_REMOTO.ligados():[],n=Math.max(1,lig.length);
   const lista=window.TES_REMOTO?(lig.length?lig:[{id:S.sessao.user,nome:S.sessao.nome,papel:S.sessao.papel}]):[];
   const st=window.TES_REMOTO?TES_REMOTO.estado():null;
-  const estado=!st?"":!st.online?`<span class="syncst off" title="Sem ligação ao servidor. As alterações ficam guardadas neste aparelho e seguem para o MySQL quando a ligação voltar."><i></i><span>Sem ligação${st.pendentes?` · <b>${st.pendentes}</b> por enviar`:""}</span></span>`:st.pendentes?`<span class="syncst wait" title="A enviar para o MySQL as alterações guardadas neste aparelho."><i></i><span><b>${st.pendentes}</b> a enviar</span></span>`:"";
+  const estado=!st?"":!st.online?`<span class="syncst off" title="A base de dados não está acessível. A app continua a funcionar: as alterações ficam guardadas neste aparelho e são gravadas no MySQL quando a base de dados voltar."><i></i><span>Base de dados desligada${st.pendentes?` · <b>${st.pendentes}</b> por enviar`:""}</span></span>`:st.pendentes?`<span class="syncst wait" title="A enviar para o MySQL as alterações guardadas neste aparelho."><i></i><span><b>${st.pendentes}</b> a enviar</span></span>`:"";
   el.innerHTML=`<div class="contabox">${estado}${window.TES_REMOTO&&st.online?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
   <button class="avbtn" data-act="menuConta" aria-haspopup="menu" aria-expanded="${aberto}" aria-label="Conta de ${esc(S.sessao.nome)}" title="Sessão iniciada: ${esc(S.sessao.nome)}">${esc((S.sessao.nome||"?").trim().charAt(0).toUpperCase())}<i class="dot" aria-hidden="true"></i></button></div>
   <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
@@ -2327,7 +2352,7 @@ document.addEventListener("submit",async ev=>{
   b.disabled=true;
   if(window.TES_REMOTO){
     try{const r=await TES_REMOTO.login(user,senha);aplicarSessao(r.user,r.padrao);document.activeElement&&document.activeElement.blur();toast("Bem-vindo, "+(r.user.nome||r.user.id));render()}
-    catch(e){bad(e.code==="offline"?"Sem ligação à internet. Tente outra vez.":e.message||"Não foi possível entrar.")}
+    catch(e){bad(e.code==="offline"&&e.message==="sem ligação"?"Sem ligação ao servidor. Tente outra vez.":e.message||"Não foi possível entrar.")}
     return}
   try{
     if(!S.users.length){

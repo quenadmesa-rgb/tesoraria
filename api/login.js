@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     if (!dbConfigurada()) return enviar(res, 200, { ok: true, db: false });
     try { await ensureSchema(); return enviar(res, 200, { ok: true, db: true }); }
-    catch (e) { console.error(e); return enviar(res, 200, { ok: true, db: false, erro: "Não foi possível ligar ao MySQL." }); }
+    catch (e) { console.error("MySQL indisponível:", e.code || e.message); return enviar(res, 200, { ok: true, db: false, configurada: true, erro: "A base de dados está desligada." }); }
   }
   if (req.method !== "POST") return enviar(res, 405, { erro: "Método não permitido" });
   if (!dbConfigurada()) return enviar(res, 503, { erro: "Base de dados não configurada." });

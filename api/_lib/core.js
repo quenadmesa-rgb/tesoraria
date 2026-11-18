@@ -177,7 +177,11 @@ export function merge(a, b) {
   return o;
 }
 
+// MySQL desligado ou inacessível: a app continua com os dados do aparelho e envia tudo quando voltar.
+const CODIGOS_SEM_DB = ["ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "EHOSTUNREACH", "ENOTFOUND", "PROTOCOL_CONNECTION_LOST", "ER_CON_COUNT_ERROR", "ER_SERVER_SHUTDOWN", "ER_ACCESS_DENIED_ERROR", "ER_BAD_DB_ERROR"];
+export function semBaseDados(e) { return !!e && (CODIGOS_SEM_DB.includes(e.code) || (e.fatal && !e.status)); }
 export function erroInterno(res, e) {
+  if (semBaseDados(e)) { console.error("MySQL indisponível:", e.code); return enviar(res, 503, { erro: "A base de dados está desligada.", codigo: "db_offline" }); }
   console.error(e);
   enviar(res, e.status || 500, { erro: e.status ? e.message : "Erro no servidor da base de dados." });
 }
