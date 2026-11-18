@@ -61,7 +61,7 @@ async function mudarSenha(cx, eu, { data }) {
   exigeSenhaForte(nova, eu.id);
   const s = novaSenha(nova);
   await cx.query("UPDATE utilizadores SET salt=?,hash=?,alg=?,senha_alterada=1 WHERE id=?", [s.salt, s.hash, s.alg, eu.id]);
-  return criarToken({ id: eu.id, hash: s.hash }); // a sessão deste aparelho continua; as outras terminam
+  return criarToken({ id: eu.id, hash: s.hash, sessao_id: eu.sessao_id }); // a sessão deste aparelho continua
 }
 
 async function importar(cx, eu, { data }) {
@@ -91,7 +91,9 @@ export default async function handler(req, res) {
     const ops = Array.isArray(b.ops) ? b.ops : [];
     if (!ops.length || ops.length > 2000) return enviar(res, 400, { erro: "Nada para gravar." });
     // "sair": termina a presença (deixa de aparecer como ligado).
-    if (ops.length === 1 && ops[0].op === "sair") { await getPool().query("UPDATE utilizadores SET visto_em=NULL WHERE id=?", [eu.id]); return enviar(res, 200, { ok: true }); }
+    // "sair" liberta a conta (a sessão deixa de valer); "ausente" (fechar a página) só tira a pessoa da lista de ligados.
+    if (ops.length === 1 && ops[0].op === "sair") { await getPool().query("UPDATE utilizadores SET visto_em=NULL, sessao_id=NULL WHERE id=?", [eu.id]); return enviar(res, 200, { ok: true }); }
+    if (ops.length === 1 && ops[0].op === "ausente") { await getPool().query("UPDATE utilizadores SET visto_em=NULL WHERE id=?", [eu.id]); return enviar(res, 200, { ok: true }); }
     const soSenha = ops.every(o => o.op === "senha");
     if (!eu.senha_alterada && !soSenha) return enviar(res, 403, { erro: "Defina uma senha nova antes de continuar.", codigo: "mudar_senha" });
     if (eu.papel === "leitor" && !soSenha) return enviar(res, 403, { erro: "Utilizador só de leitura." });

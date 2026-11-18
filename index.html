@@ -519,6 +519,20 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
 .pwreset summary{cursor:pointer;font-weight:600;font-size:13.5px;color:var(--fg2);padding:4px 0}
 .pwreset[open] summary{margin-bottom:10px}
 .login.wide{max-width:440px}
+/* Ecrã de entrada: logótipo, título, subtítulo e texto centrados */
+.login{max-width:400px;padding:32px 30px 28px;gap:18px}
+.login::before{align-self:center;width:72px;height:72px;border-radius:18px;margin-bottom:-2px}
+.login-h{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.login-h .chip{margin-bottom:2px}
+.login-h h2{margin:0;font-size:26px;line-height:1.15;text-align:center}
+.login-sub{margin:0;font-size:13px;font-weight:600;color:var(--fg2);letter-spacing:.01em;text-wrap:balance}
+.login-txt{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--muted);text-align:center;text-wrap:balance;max-width:32ch}
+.login-campos{display:flex;flex-direction:column;gap:14px;padding-top:16px;border-top:1px solid var(--line)}
+.login label{display:flex;flex-direction:column;gap:6px}
+.login .pwbox{display:block}
+.login .btn.primary{width:100%;justify-content:center;padding-block:12px;font-size:15px}
+.login .btn.ghost{align-self:center}
+@media (max-width:640px){.login{padding:26px 20px 22px}.login-h h2{font-size:23px}}
 @media (max-width:640px){.pwreq{grid-template-columns:1fr}}
 /* Gráficos e tabelas no telemóvel */
 .dlegend b{white-space:nowrap}
@@ -602,13 +616,14 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
   const credApagar=u=>{const c=credLer();if(c[u]){delete c[u];credGravar(c)}};
   // Dados guardados nos dois sítios: no MySQL (através da API) e neste navegador (cópia + fila do que falta enviar).
   const R=(()=>{
-    let cache={},sess=null,timer=null,ligados=[],pend=[],aEnviar=false;
+    let cache={},sess=null,timer=null,ligados=[],pend=[],aEnviar=false,senhaMem=null;
     try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){cache={}}
     try{pend=JSON.parse(localStorage.getItem(PK)||"[]");if(!Array.isArray(pend))pend=[]}catch(e){pend=[]}
     const guardaPend=()=>{try{localStorage.setItem(PK,JSON.stringify(pend))}catch(e){}};
     const avisa=()=>setTimeout(()=>window.dispatchEvent(new Event("tes-online")),0);
     const marcaOnline=v=>{if(R.online!==v){R.online=v;avisa()}};
-    const avisaSaida=()=>{if(!sess||!sess.token)return;try{fetch("api/doc",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json",Authorization:"Bearer "+sess.token},body:JSON.stringify({ops:[{op:"sair"}]})})}catch(e){}};
+    // op "sair": liberta a conta (botão Sair); op "ausente": fechar/recarregar a página só tira a pessoa da lista de ligados.
+    const avisaSaida=(op="sair")=>{if(!sess||!sess.token)return;try{fetch("api/doc",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json",Authorization:"Bearer "+sess.token},body:JSON.stringify({ops:[{op}]})})}catch(e){}};
     try{sess=JSON.parse(localStorage.getItem(SK)||"null")}catch(e){}
     const rsubs={},remit=c=>(rsubs[c]||[]).forEach(f=>f());
     const guardaCache=()=>{try{localStorage.setItem(CK,JSON.stringify(cache))}catch(e){}};
@@ -619,6 +634,7 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
       if(r.status>=502&&r.status<=504){marcaOnline(false);const er=new Error("servidor indisponível");er.code="offline";throw er}
       marcaOnline(true);
       let j={};try{j=await r.json()}catch(e){}
+      if(r.status===401&&path!=="login"&&sess&&sess.offline&&senhaMem){setTimeout(sync,0);const er=new Error("a entrar outra vez");er.code="offline";throw er} // vai reentrar sozinha; a alteração fica na fila
       if(r.status===401&&path!=="login"){if(sess&&sess.user)credApagar(sess.user.id);R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
       if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429?"rate_limited":"server";er.status=r.status;throw er}
       return j;
@@ -633,8 +649,19 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
             pend.shift();guardaPend();avisa();window.dispatchEvent(new CustomEvent("tes-erro-envio",{detail:e.message||"Uma alteração guardada no aparelho foi recusada pelo servidor."}))}}}
       finally{aEnviar=false}
     }
+    // Sessão aberta com o MySQL desligado: quando a base de dados volta, entra sozinha (senha só em memória) e depois envia a fila.
+    async function reentrar(){
+      if(!sess||!sess.offline||!senhaMem)return true;
+      try{const j=await api("login",{method:"POST",body:JSON.stringify({user:sess.user.id,senha:senhaMem})});
+        sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
+        credGuardar(j.user.id,senhaMem,sess).catch(()=>{});senhaMem=null;return true}
+      catch(e){if(e.code==="offline")return false;
+        senhaMem=null;if(e.status===401&&sess?.user)credApagar(sess.user.id);
+        R.logout();window.dispatchEvent(new CustomEvent("tes-sessao-terminada",{detail:e.message}));return false}
+    }
     async function sync(){
       if(!sess)return;
+      if(!(await reentrar()))return;
       await enviarPendentes();
       if(pend.some(p=>!p.u||!sess.user||p.u===sess.user.id))return; // ainda há alterações por enviar: não substituir a cópia local
       try{const d=await api("data");const ch=[];
@@ -681,7 +708,7 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
           const c=credLer()[user];
           if(!c){const er=new Error("A base de dados está desligada e este utilizador ainda não entrou neste aparelho. Entre num aparelho que já tenha usado, ou ligue a base de dados.");er.code="offline";throw er}
           if((await marcaSenha(senha,c.salt))!==c.hash){const er=new Error("Utilizador ou senha errados.");er.code="senha";throw er}
-          sess={token:c.token,user:c.user,padrao:false,offline:true};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
+          sess={token:c.token,user:c.user,padrao:false,offline:true};senhaMem=senha;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
           marcaOnline(false);avisa();COLS.forEach(remit);iniciarSync();return sess}
         sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
         if(!j.padrao)credGuardar(user,senha,sess).catch(()=>{});
@@ -689,14 +716,14 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
       ligados:()=>ligados,
       estado:()=>({online:R.online,pendentes:pend.length}),
       // Ao sair, a cópia dos dados fica neste navegador (só aparece depois de entrar outra vez).
-      logout(){avisaSaida();sess=null;ligados=[];clearInterval(timer);try{localStorage.removeItem(SK)}catch(e){}COLS.forEach(remit)},
+      logout(){avisaSaida();sess=null;senhaMem=null;ligados=[];clearInterval(timer);try{localStorage.removeItem(SK)}catch(e){}COLS.forEach(remit)},
       async mudarSenha(atual,nova){const j=await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"senha",data:{atual,nova}}]})});
         if(sess){sess.padrao=false;if(j.token)sess.token=j.token;if(sess.user)sess.user.senhaAlterada=true;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}
           if(sess.user)credGuardar(sess.user.id,nova,sess).catch(()=>{})}await sync();iniciarSync()},
       async importar(d){await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"importar",data:d}]})});await sync()},
       sync,
       arrancar(offline){if(offline)marcaOnline(false);if(sess){sync();iniciarSync()}
-        window.addEventListener("online",()=>sync());window.addEventListener("focus",()=>sync());window.addEventListener("pagehide",avisaSaida);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()})}
+        window.addEventListener("online",()=>sync());window.addEventListener("focus",()=>sync());window.addEventListener("pagehide",()=>avisaSaida("ausente"));document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()})}
     };
   })();
 
@@ -789,6 +816,7 @@ function render(){
   if(S.dbFail){main.innerHTML=`<div class="empty">Não foi possível abrir os dados guardados neste navegador. Verifique se o navegador permite guardar dados do site (não use o modo privado) e recarregue a página.</div>`;return}
   if(!ready||!S.usersLoaded){main.innerHTML=`<div class="empty">A carregar os dados da tesouraria…</div>`;return}
   renderSess();
+  const ys=document.querySelector(".yearsel");if(ys)ys.hidden=!S.sessao||!!S.sessao.padrao;
   if(!S.sessao){main.innerHTML=vLogin();return}
   if(S.sessao.padrao){$("#tabs").innerHTML="";main.innerHTML=vMudarSenha();return}
   if(S.tab==="utilizadores"&&S.sessao.papel!=="admin")S.tab="resumo";
@@ -2280,7 +2308,7 @@ function restaurarSessao(){
 }
 function guardarSessao(u,padrao){try{localStorage.setItem("jc-sessao",JSON.stringify({user:u.id,h:u.hash,padrao:!!padrao}))}catch(e){}}
 function terminarSessao(){S.sessao=null;S.edit=S.editBase;try{localStorage.removeItem("jc-sessao")}catch(e){}if(window.TES_REMOTO)TES_REMOTO.logout()}
-window.addEventListener("tes-sessao-terminada",()=>{if(S.sessao){S.sessao=null;S.edit=S.editBase;render();toast("A sessão terminou. Entre outra vez.")}});
+window.addEventListener("tes-sessao-terminada",e=>{if(S.sessao){S.sessao=null;S.edit=S.editBase;render();toast(e.detail||"A sessão terminou (a conta saiu ou entrou noutro aparelho). Entre outra vez.")}});
 const credSenha=async senha=>window.TES_REMOTO?{senha}:await novaSenha(senha);
 // Senha forte: as mesmas regras do servidor.
 const SENHAS_COMUNS=["admin123","12345678","123456789","password","password1","senha123","qwerty123","abc12345","11111111","tesouraria"];
@@ -2298,7 +2326,7 @@ document.addEventListener("input",ev=>{const i=ev.target;if(!i.matches||!i.match
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-pwver]");if(!b)return;const i=document.getElementById(b.dataset.pwver);if(!i)return;const v=i.type==="password";i.type=v?"text":"password";b.textContent=v?"Esconder":"Mostrar";b.setAttribute("aria-label",v?"Esconder senha":"Mostrar senha")});
 function vMudarSenha(){
   return `<div class="login-wrap"><form class="login wide" data-forcasenha="1" novalidate>
-    <div><span class="chip gold">Primeira entrada</span><h2 style="margin-top:8px">Defina a sua senha</h2><p class="muted" style="margin:4px 0 0;font-size:14px">Para proteger a tesouraria, escolha uma senha forte antes de continuar. Ela é só sua.</p></div>
+    <div class="login-h"><span class="chip gold">Primeira entrada</span><h2>Defina a sua senha</h2><p class="login-txt">Para proteger a tesouraria, escolha uma senha forte antes de continuar. Ela é só sua.</p></div>
     <label>Senha actual<input class="inp" type="password" name="atual" id="fs-atual" autocomplete="current-password"></label>
     ${pwField("nova","fs-nova","Senha nova")}
     <label>Repetir a senha nova<input class="inp" type="password" name="nova2" id="fs-nova2" autocomplete="new-password"></label>
@@ -2336,9 +2364,16 @@ document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="men
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"){const m=document.querySelector(".contamenu");if(m&&!m.hidden){m.hidden=true;document.querySelector(".avbtn")?.focus()}}});
 function vLogin(){
   return `<div class="login-wrap"><form class="login" data-login="1" novalidate>
-    <div><span class="chip gold">Tesouraria da Juventude</span><h2 style="margin-top:8px">Entrar no sistema</h2><p class="muted" style="margin:4px 0 0;font-size:14px">Escreva o seu utilizador e a sua senha.</p></div>
-    <label>Utilizador<input class="inp" name="user" id="lg-user" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
-    <label>Senha<input class="inp" type="password" name="senha" id="lg-pass" autocomplete="current-password"></label>
+    <div class="login-h">
+      <span class="chip gold">Tesouraria da Juventude</span>
+      <h2>Entrar no sistema</h2>
+      <p class="login-sub">Assembleia de Deus Africana · Águias de Pemba</p>
+      <p class="login-txt">Escreva o seu utilizador e a sua senha para aceder à tesouraria.</p>
+    </div>
+    <div class="login-campos">
+      <label>Utilizador<input class="inp" name="user" id="lg-user" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="O seu utilizador"></label>
+      <label>Senha<span class="pwbox"><input class="inp" type="password" name="senha" id="lg-pass" autocomplete="current-password" placeholder="A sua senha"><button type="button" class="pwver" data-pwver="lg-pass" aria-label="Mostrar senha">Mostrar</button></span></label>
+    </div>
     <p class="err" hidden></p>
     <button type="submit" class="btn primary">Entrar</button>
   </form></div>`;

@@ -67,6 +67,8 @@ export function ensureSchema() {
     ) DEFAULT CHARSET=utf8mb4`);
     // "visto_em": última actividade da sessão (serve para saber quem está ligado agora).
     try { await db.query("ALTER TABLE utilizadores ADD COLUMN visto_em DATETIME NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
+    // "sessao_id": a única sessão válida desta conta (a mesma conta não pode estar ligada duas vezes).
+    try { await db.query("ALTER TABLE utilizadores ADD COLUMN sessao_id VARCHAR(32) NULL"); } catch (e) { if (e.code !== "ER_DUP_FIELDNAME") throw e; }
     await db.query(`CREATE TABLE IF NOT EXISTS acessos (
       id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       utilizador VARCHAR(64) NOT NULL,
@@ -126,7 +128,7 @@ function segredo() {
   return s;
 }
 export function criarToken(u) {
-  const p = b64(JSON.stringify({ u: u.id, pv: String(u.hash).slice(0, 12), exp: Date.now() + 30 * 864e5 }));
+  const p = b64(JSON.stringify({ u: u.id, pv: String(u.hash).slice(0, 12), sid: u.sessao_id || null, exp: Date.now() + 30 * 864e5 }));
   return p + "." + crypto.createHmac("sha256", segredo()).update(p).digest("base64url");
 }
 export async function sessao(req) {
@@ -138,9 +140,10 @@ export async function sessao(req) {
   if (ok.length !== sig.length || !crypto.timingSafeEqual(Buffer.from(ok), Buffer.from(sig))) return null;
   let d; try { d = JSON.parse(Buffer.from(p, "base64url").toString()); } catch { return null; }
   if (!d || !d.u || d.exp < Date.now()) return null;
-  const [rows] = await getPool().query("SELECT id,nome,papel,senha_alterada,hash FROM utilizadores WHERE id=?", [d.u]);
+  const [rows] = await getPool().query("SELECT id,nome,papel,senha_alterada,hash,sessao_id FROM utilizadores WHERE id=?", [d.u]);
   const u = rows[0];
   if (!u || String(u.hash).slice(0, 12) !== d.pv) return null;
+  if (!u.sessao_id || u.sessao_id !== d.sid) return null; // a conta entrou noutro aparelho ou saiu
   delete u.hash;
   return u;
 }

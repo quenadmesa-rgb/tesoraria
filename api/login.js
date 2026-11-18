@@ -1,5 +1,6 @@
 // GET  /api/login  -> estado da API ({ok, db})
 // POST /api/login  {user, senha} -> {token, user, padrao}. Cada tentativa fica registada na tabela "acessos".
+import crypto from "node:crypto";
 import { dbConfigurada, getPool, ensureSchema, confereSenha, novaSenha, criarToken, utilizadorPublico, enviar, lerCorpo, ipDe, erroInterno } from "./_lib/core.js";
 
 const normUser = u => String(u || "").trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
@@ -36,8 +37,12 @@ export default async function handler(req, res) {
     const [rows] = await db.query("SELECT * FROM utilizadores WHERE id=?", [user]);
     let u = rows[0];
     if (!confereSenha(senha, u)) { await registar(u, false); return enviar(res, 401, { erro: "Utilizador ou senha errados." }); }
+    // A mesma conta não pode estar ligada duas vezes: recusa se já houver uma sessão activa (actividade no último minuto).
+    const [[act]] = await db.query("SELECT (sessao_id IS NOT NULL AND visto_em > (NOW() - INTERVAL 70 SECOND)) activa FROM utilizadores WHERE id=?", [u.id]);
+    if (act.activa) return enviar(res, 409, { erro: "Esta conta já está ligada noutro aparelho. Saia nesse aparelho primeiro (ou espere cerca de 1 minuto depois de o fechar).", codigo: "ja_ligado" });
     if (u.alg !== "pbkdf2") { const s = novaSenha(senha); await db.query("UPDATE utilizadores SET salt=?,hash=?,alg=? WHERE id=?", [s.salt, s.hash, s.alg, u.id]); }
-    await db.query("UPDATE utilizadores SET ultimo_login=NOW(), visto_em=NOW(), total_logins=total_logins+1 WHERE id=?", [u.id]);
+    const sid = crypto.randomBytes(16).toString("hex");
+    await db.query("UPDATE utilizadores SET ultimo_login=NOW(), visto_em=NOW(), sessao_id=?, total_logins=total_logins+1 WHERE id=?", [sid, u.id]);
     await registar(u, true);
     const [[nu]] = await db.query("SELECT * FROM utilizadores WHERE id=?", [u.id]);
     const padrao = !nu.senha_alterada; // tem de definir uma senha nova antes de usar o sistema
