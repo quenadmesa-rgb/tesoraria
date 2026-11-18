@@ -116,6 +116,7 @@ select.inp,input.inp{border:1px solid var(--line);background:var(--surface);colo
 .card:hover{border-color:var(--gold)}
 .chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--sunk);color:var(--muted)}
 .chip.gold{background:var(--gold-soft);color:var(--gold)}
+.sem-cota{margin-left:6px;font-size:9.5px;padding:2px 6px;vertical-align:middle}
 .chip.bad{background:var(--bad-soft);color:var(--bad)}
 .row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .row3 div{display:flex;flex-direction:column;min-width:0}
@@ -440,6 +441,10 @@ label.check small{font-weight:400;color:var(--muted);font-size:12px}
 /* Tabelas de membros e utilizadores */
 .scroll.flat{box-shadow:none;border-radius:10px}
 .mtab td,.mtab th,.utab td,.utab th{text-align:left}
+/* Membros: letra mais pequena; desliza dentro da tabela com o cabeçalho preso no topo da própria tabela */
+.sc-membros{max-height:calc(100vh - 210px);max-height:calc(100dvh - 210px);overflow:auto}.sc-membros thead th{position:sticky;top:0;z-index:3}.scroll.sc-membros tbody td,.mtab td.c-nome{font-size:12px}.scroll.sc-membros tbody td small{font-size:10.5px}
+.mtab td,.mtab th{font-size:12px;line-height:1.35}.mtab th{font-size:11px}.mtab .mname b{font-size:12px}.mtab small,.mtab .chip{font-size:10px}
+.mtab .av{width:24px;height:24px;font-size:11px}
 .mtab td.money{text-align:right}.mtab th:last-child{text-align:right}
 .mtab .c-n{width:44px;color:var(--muted);text-align:center}
 .mname{all:unset;display:flex;align-items:center;gap:10px;cursor:pointer;min-width:180px}
@@ -994,13 +999,13 @@ details.criar>summary{padding:11px 14px;font-size:13px}
 .rk tbody td.c-n{font-size:12.5px}
 @media (max-width:640px){.tbl-wrap .scroll{max-height:60vh!important}}
 /* ===== Membros: editar dentro da tabela ===== */
-.mtab-ed td{padding:5px 6px!important;vertical-align:middle}
-.inp.tin{min-height:32px!important;height:32px;padding:4px 8px!important;font-size:12.5px!important;border:1.5px solid transparent;background:transparent;border-radius:8px;width:100%;min-width:110px}
+.mtab-ed td{padding:3px 5px!important;vertical-align:middle}
+.inp.tin{min-height:28px!important;height:28px;padding:3px 7px!important;font-size:11.5px!important;border:1.5px solid transparent;background:transparent;border-radius:8px;width:100%;min-width:110px}
 .inp.tin:hover{border-color:var(--line);background:var(--surface)}
 .inp.tin:focus{border-color:var(--gold);background:var(--surface);box-shadow:var(--focus)}
 select.inp.tin{padding-right:26px!important;background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%;min-width:100px}
 .tin-nome{font-weight:700!important;min-width:180px!important}
-.tin-cargo{margin-top:2px;font-size:11.5px!important;color:var(--muted)!important;height:26px!important;min-height:26px!important}
+.tin-cargo{margin-top:2px;font-size:10.5px!important;color:var(--muted)!important;height:24px!important;min-height:24px!important}
 input[type=date].inp.tin{min-width:140px}
 .mtab-ed tr.em-edicao td{background:color-mix(in srgb,var(--gold-soft) 18%,var(--surface))}
 .btn-edtab{white-space:nowrap}
@@ -1614,7 +1619,7 @@ function vCotas(){
       return S.edit?`<td><input inputmode="decimal" aria-label="${esc(m.nome)} ${MESES[i-1]}" data-cota="${m.id}" data-mes="${i}" value="${val}" placeholder="–"></td>`
         :`<td class="${val?"":"zero"}">${val===""?"–":val}</td>`}).join("");
     const q=S.cotaBusca?semAcento(S.cotaBusca):"",oculto=q?!semAcento(m.nome).includes(q):!dentro;
-    return `<tr data-drawer-m="${m.id}" data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}<button data-act="verMembro" data-id="${m.id}">${esc(m.nome)}</button></td>${cells}
+    return `<tr data-drawer-m="${m.id}" data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}<button data-act="verMembro" data-id="${m.id}">${esc(m.nome)}</button>${t>0?"":`<span class="chip bad sem-cota">sem cota</span>`}</td>${cells}
       <td class="c-tot"><div class="tot-cel"><b data-rowtot="${m.id}">${fmt(t)}</b><span class="cbar"><i style="width:${(t/maxT*100).toFixed(1)}%"></i></span></div></td></tr>`}).join("");
   const nota=f==="com"&&semCota?`<p class="muted small tbl-nota">${semCota} ${semCota===1?"membro sem cota está oculto":"membros sem cota estão ocultos"} em ${A}. <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></p>`:"";
   const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><p class="sc-dica"><span>Deslize dentro da tabela para ver todos os meses e membros</span><span><b>⇆</b> Arraste com o rato ou use a roda</span></p><div class="scroll sc-cota"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
@@ -1950,7 +1955,7 @@ function linhaTopo(){const h=document.querySelector("header.top"),k=document.que
   if(k){const r=k.getBoundingClientRect();if(getComputedStyle(k).position==="sticky"&&r.top<=y+2)y=Math.max(y,r.bottom)}return Math.max(0,y)}
 function cabecalhosFlutuantes(){
   document.querySelectorAll(".cab-flut").forEach(f=>{if(!f._sc||!document.body.contains(f._sc))f.remove()});
-  document.querySelectorAll("#main .scroll").forEach(sc=>{if(sc._flut&&document.body.contains(sc._flut))return;const tb=sc.querySelector("table");if(!tb||!tb.tHead)return;
+  document.querySelectorAll("#main .scroll").forEach(sc=>{if(sc._flut&&document.body.contains(sc._flut))return;const tb=sc.querySelector("table");if(!tb||!tb.tHead||sc.classList.contains("sem-flut"))return; // Membros: o cabeçalho fica só na própria tabela
     const f=document.createElement("div");f.className="cab-flut";f.setAttribute("aria-hidden","true");f.hidden=true;
     f.innerHTML=`<table class="${tb.className}"><thead>${tb.tHead.innerHTML}</thead></table>`;f._sc=sc;sc._flut=f;document.body.appendChild(f);
     f.addEventListener("click",ev=>{const th=ev.target.closest("th");if(!th)return;const i=[...th.parentNode.children].indexOf(th);const real=tb.tHead.rows[0].cells[i];if(real){real.click();setTimeout(()=>{f.querySelector("thead").innerHTML=tb.tHead.innerHTML;posicionarCabecalhos()},0)}});
@@ -2218,7 +2223,7 @@ function vMembros(){
   <section class="panel">
     <div class="toolbar"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="mSearch" type="search" placeholder="Procurar por nome, telefone ou morada" value="${esc(q)}" autocomplete="off" aria-label="Procurar membro"></div>
       ${S.edit?`<button type="button" class="btn ${S.mEdit?"primary":""} btn-edtab" data-act="mEditar" aria-pressed="${!!S.mEdit}">${S.mEdit?"✓ Terminar edição":"✎ Editar na tabela"}</button>`:""}<label class="filtros-sel"><span class="sr">Ordenar</span><select class="inp sel-ordem" id="mOrd" aria-label="Ordenar por">${[["ordem","⇅ Ordem de registo"],["nome","Nome (A–Z)"],["nomez","Nome (Z–A)"],["cotad","Maior → menor cota"],["cotaa","Menor → maior cota"],["novos","Mais novos primeiro"],["velhos","Mais velhos primeiro"],["recentes","Membros mais recentes"],["antigos","Membros mais antigos"]].map(([k,l])=>`<option value="${k}" ${(S.mOrd||"ordem")===k?"selected":""}>${l}</option>`).join("")}</select></label><div class="seg" role="group" aria-label="Filtrar">${MFILTROS.map(([k,l])=>`<button type="button" data-mf="${k}" aria-pressed="${f===k}">${l}${k==="semcota"?S.ano:""}</button>`).join("")}</div></div>
-    ${lista.length?`<div class="scroll flat">${S.edit&&S.mEdit?dlCargos():""}<table class="mtab${S.edit&&S.mEdit?" mtab-ed":""}"><thead><tr><th class="c-n">Nº</th><th class="c-nome">${S.edit&&S.mEdit?"Nome e cargo":"Nome"}</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>${S.edit&&S.mEdit?"Nascimento":"Idade"}</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${lista.length?`<div class="scroll flat sem-flut sc-membros">${S.edit&&S.mEdit?dlCargos():""}<table class="mtab${S.edit&&S.mEdit?" mtab-ed":""}"><thead><tr><th class="c-n">Nº</th><th class="c-nome">${S.edit&&S.mEdit?"Nome e cargo":"Nome"}</th><th>Sexo</th><th>Local</th><th>Telefone</th><th>${S.edit&&S.mEdit?"Nascimento":"Idade"}</th><th>Membro desde</th><th>Cotas ${S.ano}</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted small" id="mCount">${lista.length} ${lista.length===1?"membro":"membros"}${f!=="todos"?" neste filtro":""}.${S.edit?" Toque no nome para ver ou editar os dados.":""}</p>`:`<div class="empty">Nenhum membro neste filtro.${S.edit?" Use “Registar membro” para adicionar.":""}</div>`}
   </section>`;
 }
