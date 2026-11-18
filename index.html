@@ -949,6 +949,15 @@ details.criar>summary{padding:11px 14px;font-size:13px}
 :root[data-tema="escuro"] .kpi.saldo .v{color:var(--gold)!important}
 /* com paginação, a tabela mostra a página inteira (sem cortar linhas); só desliza para os lados */
 .tbl-wrap .scroll{max-height:none}
+/* ===== Tema "Azul institucional" (combina com o logótipo: azul + dourado) — por omissão ===== */
+:root,:root[data-tema="institucional"]{--side-a:#2a4a8a;--side-b:#1f3b73;--side-c:#172d59;--brand:#1f3b73;--brand-fg:#f5f8ff;--side-fg:#f5f8ff;--side-mut:rgba(245,248,255,.62);--gold:#c9952b;--gold-soft:#f8eed9}
+:root[data-tema="institucional"] .btn.primary,:root:not([data-tema]) .btn.primary{background:var(--brand);border-color:var(--brand)}
+:root[data-tema="institucional"] .tab[aria-current="true"] .ti{color:#f2c766}
+:root[data-tema="institucional"] .kpi.saldo{background:linear-gradient(140deg,#2c4f93 0%,#162a54 85%)}
+/* logótipo nas Definições */
+.logo-def{display:flex;gap:14px;align-items:center}
+.logo-def img{width:72px;height:72px;border-radius:50%;object-fit:contain;background:var(--sunk);box-shadow:0 0 0 3px var(--gold);flex:0 0 auto}
+.logo,.side-brand img{object-fit:contain!important;background:#fff!important}
 /* formulários e confirmações sempre por cima do painel de detalhes */
 .sheet-bg{z-index:32!important}.toast{z-index:40!important}.ctip{z-index:45!important}
 /* ===== Painel de detalhes à direita ===== */
@@ -1020,7 +1029,7 @@ h2{font-size:20px}.head p{font-size:12px}
 @media (min-width:1024px){body:not(:has(#tabs:empty)) .lang{border-color:var(--line);background:var(--sunk)}body:not(:has(#tabs:empty)) .lang button{color:var(--fg)}body:not(:has(#tabs:empty)) .lang button[aria-pressed="true"]{color:#1b1404}}
 /* ===== Logótipo: emblema redondo, sem fundo branco, com anel dourado do tema ===== */
 .logo,.side-brand img{border-radius:50%!important;background:transparent!important;object-fit:cover;box-shadow:0 0 0 2px var(--gold),0 4px 12px rgba(0,0,0,.25)!important}
-.login::before{border-radius:50%!important;background:transparent url(icon-192.png) center/cover no-repeat!important;box-shadow:0 0 0 3px var(--gold),0 8px 20px rgba(16,32,26,.18)!important}
+.login::before{border-radius:50%!important;background:transparent var(--logo-url,url(icon-192.png)) center/contain no-repeat!important;box-shadow:0 0 0 3px var(--gold),0 8px 20px rgba(16,32,26,.18)!important}
 @media print{header.top,nav.tabs,.foot,.head-acts,.xbar,.quick,.btn{display:none!important}.panel,.kpi{box-shadow:none;break-inside:avoid}body{background:#fff}}
 </style>
 
@@ -1244,10 +1253,22 @@ h2{font-size:20px}.head p{font-size:12px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 // Cor do sistema (Definições): aplicada antes de desenhar
-const TEMAS={claro:["Verde claro","#22895c"],azul:["Azul","#1e4fb8"],vinho:["Vinho","#8a2442"],escuro:["Verde escuro (antigo)","#123d33"]};
-function temaActual(){try{const t=localStorage.getItem("tes-tema");return TEMAS[t]?t:"claro"}catch(e){return "claro"}}
+const TEMAS={institucional:["Azul institucional","#1f3b73"],claro:["Verde claro","#22895c"],azul:["Azul","#1e4fb8"],vinho:["Vinho","#8a2442"],escuro:["Verde escuro (antigo)","#123d33"]};
+function temaActual(){try{const t=localStorage.getItem("tes-tema");return TEMAS[t]?t:"institucional"}catch(e){return "institucional"}}
 function aplicarTema(){const t=temaActual();document.documentElement.dataset.tema=t;const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",TEMAS[t][1])}
 aplicarTema();
+// Logótipo (pode ser trocado nas Definições pelo administrador)
+const LOGO_ORIG="icon-192.png";
+function logoActual(){try{return localStorage.getItem("tes-logo")||LOGO_ORIG}catch(e){return LOGO_ORIG}}
+function aplicarLogo(url){if(url===undefined)url=logoActual();url=url||LOGO_ORIG;try{if(url===LOGO_ORIG)localStorage.removeItem("tes-logo");else localStorage.setItem("tes-logo",url)}catch(e){}
+  document.querySelectorAll("img.logo,.side-brand img").forEach(i=>{if(i.getAttribute("src")!==url)i.setAttribute("src",url)});
+  document.documentElement.style.setProperty("--logo-url",'url("'+url.replace(/"/g,"%22")+'")');
+  document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]').forEach(l=>l.setAttribute("href",url))}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>aplicarLogo());else aplicarLogo();
+// reduz a imagem escolhida para 256×256 (PNG transparente) antes de guardar
+function prepararLogo(file){return new Promise((ok,ko)=>{if(!file||!/^image\//.test(file.type))return ko(new Error("Escolha uma imagem (PNG, JPG ou SVG)."));
+  const fr=new FileReader();fr.onerror=()=>ko(new Error("Não foi possível ler a imagem."));fr.onload=()=>{const im=new Image();im.onload=()=>{const N=256,c=document.createElement("canvas");c.width=c.height=N;const x=c.getContext("2d");
+    const k=Math.min(N/im.width,N/im.height),w=im.width*k,h=im.height*k;x.drawImage(im,(N-w)/2,(N-h)/2,w,h);ok(c.toDataURL("image/png"))};im.onerror=()=>ko(new Error("Imagem inválida."));im.src=fr.result};fr.readAsDataURL(file)})}
 const MESES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const M3=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const TABS=[["resumo","Painel"],["membros","Membros"],["cotas","Cotas"],["classificacao","Classificação"],["contribuicoes","Contribuições"],["conferencias","Conferências"],["actividades","Actividades"],["regiao","Região de Pemba"],["ofertas","Ofertas"],["saidas","Saídas"],["jovens","Jovens e Liderança"],["relatorio","Relatório mensal / anual"],["pdf","Relatórios e dados"]];
@@ -1899,6 +1920,8 @@ function formDefinicoes(){
     <fieldset class="fs"><legend>Tabelas</legend>
       <label>Linhas por página em cada tabela<select class="inp" name="linhas" id="def-linhas">${[5,10,15,20,25,50,100].map(v=>`<option value="${v}" ${v===n?"selected":""}>${v} linhas</option>`).join("")}</select></label>
       <p class="muted small" style="margin:0">As tabelas mostram este número de linhas por página, com “Anterior”, as páginas e “Próximo”.</p></fieldset>
+    ${S.sessao?.papel==="admin"?`<fieldset class="fs"><legend>Logótipo</legend><div class="logo-def"><img src="${esc(logoActual())}" alt="Logótipo actual" id="def-logo-prev"><div><p class="muted small" style="margin:0 0 8px">Aparece no cabeçalho, na barra lateral, no ecrã de entrada e no ícone do separador, em todos os aparelhos.</p>
+      <div class="acts-inline"><label class="btn">Escolher imagem<input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" id="def-logo" hidden></label><button type="button" class="btn ghost" data-act="logoOriginal">Repor original</button></div></div></div></fieldset>`:""}
     <fieldset class="fs"><legend>Cor do sistema</legend><div class="temas" role="radiogroup" aria-label="Cor do sistema">${Object.entries(TEMAS).map(([k,[l,c]])=>`<label class="tema-op"><input type="radio" name="tema" value="${k}" ${temaActual()===k?"checked":""}><span class="tema-cor" style="background:${c}"></span><span>${l}</span></label>`).join("")}</div></fieldset>
     <fieldset class="fs"><legend>Idioma</legend><div class="lang def-lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt">Português</button><button type="button" data-lang="en">English</button></div></fieldset>
     <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
@@ -1906,6 +1929,10 @@ function formDefinicoes(){
   setTimeout(()=>document.querySelectorAll(".def-lang [data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===(window.TES_LANG?TES_LANG():"pt")))),0);
 }
 document.addEventListener("click",ev=>{if(ev.target.closest('[data-act="definicoes"]'))formDefinicoes()});
+async function guardarLogo(url){await S.db.doc("config/aparencia").set({...(S.aparencia||{}),logo:url});S.aparencia={...(S.aparencia||{}),logo:url};aplicarLogo(url);const p=document.getElementById("def-logo-prev");if(p)p.src=url||LOGO_ORIG}
+document.addEventListener("change",async ev=>{if(ev.target.id!=="def-logo")return;const f=ev.target.files[0];ev.target.value="";
+  try{const url=await prepararLogo(f);await guardarLogo(url);toast("Logótipo actualizado")}catch(e){toast(e.message||"Não foi possível guardar o logótipo.")}});
+document.addEventListener("click",async ev=>{if(!ev.target.closest('[data-act="logoOriginal"]'))return;try{await guardarLogo("");toast("Logótipo original reposto")}catch(e){toast("Não foi possível repor o logótipo.")}});
 // altura do cabeçalho (para os cartões fixos ficarem logo abaixo)
 function medirCab(){const h=document.querySelector("header.top"),k=document.querySelector("#main .kpis"),r=document.documentElement.style;if(h)r.setProperty("--hdr",h.offsetHeight+"px");r.setProperty("--kpih",(k?k.offsetHeight:0)+"px")}
 // ao deslizar até um campo (teclado, pesquisa, foco), não o deixar escondido por baixo do cabeçalho e dos cartões fixos
@@ -3511,7 +3538,7 @@ render();
   db.collection("membros").onSnapshot(s=>{S.membros=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>num(a.ordem)-num(b.ordem)||a.nome.localeCompare(b.nome));S.loaded.m=true;render()},onErr);
   db.collection("eventos").onSnapshot(s=>{S.eventos=s.docs.map(d=>({id:d.id,...d.data()}));S.loaded.e=true;render()},onErr);
   db.collection("regiao").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="pemba");S.regiao=d?{...d.data()}:{};render()},onErr);
-  db.collection("config").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="lideranca");S.lider=d?{...d.data()}:{};const rc=s.docs.find(x=>x.id==="relatorio");S.relCfg=rc?{...rc.data()}:{};render()},onErr);
+  db.collection("config").onSnapshot(s=>{const d=s.docs.find(x=>x.id==="lideranca");S.lider=d?{...d.data()}:{};const rc=s.docs.find(x=>x.id==="relatorio");S.relCfg=rc?{...rc.data()}:{};const ap=s.docs.find(x=>x.id==="aparencia");S.aparencia=ap?{...ap.data()}:{};if(ap)aplicarLogo(S.aparencia.logo||"");else if(S.sessao&&s.docs.length)aplicarLogo("");render()},onErr);
   db.collection("relatorios").onSnapshot(s=>{S.rels={};s.docs.forEach(d=>S.rels[d.id]={...d.data()});render()},onErr);
   db.collection("actividades").onSnapshot(s=>{S.acts=s.docs.map(d=>({id:d.id,...d.data()}));render()},onErr);
   db.collection("utilizadores").onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.nome||a.id).localeCompare(b.nome||b.id));S.usersLoaded=true;restaurarSessao();render()},onErr);
