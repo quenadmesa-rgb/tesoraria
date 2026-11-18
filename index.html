@@ -247,6 +247,14 @@ header.top .wrap.bar{padding-block:12px;display:flex;flex-direction:row;flex-wra
 .online:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .online i,.cm-on i{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.25);flex:0 0 auto}
 .online em{font-style:normal;opacity:.85}
+.syncst{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:12.5px;white-space:nowrap;cursor:help}
+.syncst i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.syncst.off{background:rgba(239,125,112,.18);border:1px solid rgba(239,125,112,.45);color:#ffd9d4}
+.syncst.off i{background:#ef7d70}
+.syncst.wait{background:rgba(227,176,74,.18);border:1px solid rgba(227,176,74,.45);color:#ffe9bf}
+.syncst.wait i{background:#e3b04a;animation:pulsar 1.2s ease-in-out infinite}
+@keyframes pulsar{50%{opacity:.3}}
+@media (max-width:640px){.syncst>span{display:none}.syncst{padding:8px}}
 .cm-on{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--good);margin-bottom:4px}
 .cm-lig{padding:8px 12px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
 .cm-lig .cm-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
@@ -581,9 +589,15 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
 
   // ---- Base de dados MySQL (através da API /api): usada quando o servidor responde e tem a base de dados ligada.
   const COLS=["membros","eventos","movimentos","actividades","regiao","config","relatorios","utilizadores"];
-  const CK="tesouraria-cache",SK="jc-sessao-r";
+  const CK="tesouraria-cache",SK="jc-sessao-r",PK="tesouraria-pendentes";
+  // Dados guardados nos dois sítios: no MySQL (através da API) e neste navegador (cópia + fila do que falta enviar).
   const R=(()=>{
-    let cache={},sess=null,timer=null,ligados=[];
+    let cache={},sess=null,timer=null,ligados=[],pend=[],aEnviar=false;
+    try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){cache={}}
+    try{pend=JSON.parse(localStorage.getItem(PK)||"[]");if(!Array.isArray(pend))pend=[]}catch(e){pend=[]}
+    const guardaPend=()=>{try{localStorage.setItem(PK,JSON.stringify(pend))}catch(e){}};
+    const avisa=()=>setTimeout(()=>window.dispatchEvent(new Event("tes-online")),0);
+    const marcaOnline=v=>{if(R.online!==v){R.online=v;avisa()}};
     const avisaSaida=()=>{if(!sess||!sess.token)return;try{fetch("api/doc",{method:"POST",keepalive:true,headers:{"Content-Type":"application/json",Authorization:"Bearer "+sess.token},body:JSON.stringify({ops:[{op:"sair"}]})})}catch(e){}};
     try{sess=JSON.parse(localStorage.getItem(SK)||"null")}catch(e){}
     const rsubs={},remit=c=>(rsubs[c]||[]).forEach(f=>f());
@@ -591,27 +605,44 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
     const rsnap=c=>({docs:Object.entries(cache[c]||{}).map(([id,v])=>({id,data:()=>JSON.parse(JSON.stringify(v))}))});
     async function api(path,opt={}){
       const h={"Content-Type":"application/json"};if(sess&&sess.token)h.Authorization="Bearer "+sess.token;
-      let r;try{r=await fetch("api/"+path,{...opt,headers:h,cache:"no-store"})}catch(e){const er=new Error("sem ligação");er.code="offline";throw er}
+      let r;try{r=await fetch("api/"+path,{...opt,headers:h,cache:"no-store"})}catch(e){marcaOnline(false);const er=new Error("sem ligação");er.code="offline";throw er}
+      if(r.status>=502&&r.status<=504){marcaOnline(false);const er=new Error("servidor indisponível");er.code="offline";throw er}
+      marcaOnline(true);
       let j={};try{j=await r.json()}catch(e){}
       if(r.status===401&&path!=="login"){R.logout();window.dispatchEvent(new Event("tes-sessao-terminada"))}
       if(!r.ok){const er=new Error(j.erro||("Erro "+r.status));er.code=r.status===403?"invalid_argument":r.status===401?"unauthenticated":r.status===429?"rate_limited":"server";er.status=r.status;throw er}
       return j;
     }
+    // Envia para o MySQL o que ficou guardado só no navegador (por falta de ligação).
+    async function enviarPendentes(){
+      if(aEnviar||!sess)return;aEnviar=true;
+      try{while(pend.length){const p=pend[0];
+          if(p.u&&sess.user&&p.u!==sess.user.id)break; // pertence a outra conta: espera que essa pessoa entre
+          try{await api("doc",{method:"POST",body:JSON.stringify({ops:p.ops})});pend.shift();guardaPend();avisa()}
+          catch(e){if(e.code==="offline"||e.code==="unauthenticated")break;
+            pend.shift();guardaPend();avisa();window.dispatchEvent(new CustomEvent("tes-erro-envio",{detail:e.message||"Uma alteração guardada no aparelho foi recusada pelo servidor."}))}}}
+      finally{aEnviar=false}
+    }
     async function sync(){
       if(!sess)return;
+      await enviarPendentes();
+      if(pend.some(p=>!p.u||!sess.user||p.u===sess.user.id))return; // ainda há alterações por enviar: não substituir a cópia local
       try{const d=await api("data");const ch=[];
         for(const c of [...COLS,"acessos"]){const v=d[c]||(c==="acessos"?[]:{});if(JSON.stringify(v)!==JSON.stringify(cache[c]??(c==="acessos"?[]:{}))){cache[c]=v;ch.push(c)}}
         if(d.eu){sess.user=d.eu;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}}
         const on=d.online||[];if(JSON.stringify(on.map(u=>u.id))!==JSON.stringify(ligados.map(u=>u.id))){ligados=on;setTimeout(()=>window.dispatchEvent(new Event("tes-online")),0)}else ligados=on;
-        guardaCache();ch.forEach(remit);R.online=true;
-      }catch(e){if(e.code==="offline")R.online=false}
+        guardaCache();ch.forEach(remit);
+      }catch(e){}
     }
     const iniciarSync=()=>{clearInterval(timer);timer=setInterval(()=>{if(document.visibilityState==="visible")sync()},20000)};
     async function enviar(ops,local){
       const antes=JSON.stringify(cache);local&&local();guardaCache();
       const cols=[...new Set(ops.map(o=>o.col).filter(Boolean))];cols.forEach(c=>setTimeout(()=>remit(c),0));
+      if(pend.length){pend.push({ops,u:sess?.user?.id,t:Date.now()});guardaPend();avisa();enviarPendentes();return} // mantém a ordem das alterações
       try{await api("doc",{method:"POST",body:JSON.stringify({ops})});setTimeout(sync,300)}
-      catch(e){cache=JSON.parse(antes);guardaCache();cols.forEach(remit);throw e}
+      catch(e){
+        if(e.code==="offline"){pend.push({ops,u:sess?.user?.id,t:Date.now()});guardaPend();avisa();return} // fica no navegador e segue quando houver ligação
+        cache=JSON.parse(antes);guardaCache();cols.forEach(remit);throw e}
     }
     const isObj=v=>v&&typeof v==="object"&&!Array.isArray(v);
     const mg=(a,b)=>{const o={...(isObj(a)?a:{})};for(const k in b){o[k]=isObj(b[k])&&isObj(o[k])?mg(o[k],b[k]):b[k]}return o};
@@ -635,13 +666,15 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
       sessao:()=>sess,
       async login(user,senha){const j=await api("login",{method:"POST",body:JSON.stringify({user,senha})});sess={token:j.token,user:j.user,padrao:j.padrao};try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}await sync();iniciarSync();return sess},
       ligados:()=>ligados,
-      logout(){avisaSaida();sess=null;ligados=[];clearInterval(timer);cache={};try{localStorage.removeItem(SK);localStorage.removeItem(CK)}catch(e){}COLS.forEach(remit)},
+      estado:()=>({online:R.online,pendentes:pend.length}),
+      // Ao sair, a cópia dos dados fica neste navegador (só aparece depois de entrar outra vez).
+      logout(){avisaSaida();sess=null;ligados=[];clearInterval(timer);try{localStorage.removeItem(SK)}catch(e){}COLS.forEach(remit)},
       async mudarSenha(atual,nova){const j=await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"senha",data:{atual,nova}}]})});
         if(sess){sess.padrao=false;if(j.token)sess.token=j.token;if(sess.user)sess.user.senhaAlterada=true;try{localStorage.setItem(SK,JSON.stringify(sess))}catch(e){}}await sync();iniciarSync()},
       async importar(d){await api("doc",{method:"POST",body:JSON.stringify({ops:[{op:"importar",data:d}]})});await sync()},
       sync,
-      arrancar(){if(sess){try{cache=JSON.parse(localStorage.getItem(CK)||"{}")}catch(e){cache={}}sync();iniciarSync()}
-        window.addEventListener("focus",()=>sync());window.addEventListener("pagehide",avisaSaida);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()})}
+      arrancar(offline){if(offline)marcaOnline(false);if(sess){sync();iniciarSync()}
+        window.addEventListener("online",()=>sync());window.addEventListener("focus",()=>sync());window.addEventListener("pagehide",avisaSaida);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()})}
     };
   })();
 
@@ -650,9 +683,11 @@ input[type=password]::-ms-reveal,input[type=password]::-ms-clear{display:none}
     if(location.protocol==="file:")return "local";
     try{const ctl=new AbortController();const t=setTimeout(()=>ctl.abort(),6000);
       const r=await fetch("api/login",{cache:"no-store",signal:ctl.signal});clearTimeout(t);
-      if(r.ok){const j=await r.json();if(j&&j.db)return "remoto";if(j&&j.ok){window.TES_API_SEM_DB=j.erro||"Base de dados não configurada no servidor."}}}catch(e){}
+      if(r.ok){const j=await r.json();if(j&&j.db)return "remoto";if(j&&j.ok){window.TES_API_SEM_DB=j.erro||"Base de dados não configurada no servidor."}}
+      else if(r.status>=502&&localStorage.getItem(SK))return "remoto-offline";
+    }catch(e){if(localStorage.getItem(SK))return "remoto-offline"} // sem ligação, mas já usou o MySQL neste aparelho: abre com a cópia guardada
     return "local";
-  })().then(m=>{if(m==="remoto"){window.TES_REMOTO=R;R.arrancar()}else window.TES_LOCAL=db;return m});
+  })().then(m=>{if(m.startsWith("remoto")){window.TES_REMOTO=R;R.arrancar(m==="remoto-offline");return "remoto"}window.TES_LOCAL=db;return m});
   window.claude={use:async k=>{const m=await pronto;return ({db:m==="remoto"?R:db,user,downloads})[k]||null}};
 })();
 </script>
@@ -785,7 +820,7 @@ function vResumo(){
 }
 // ---------- gráficos (SVG, com dica ao passar o rato/tocar)
 const fk=v=>{const a=Math.abs(v);return (v<0?"−":"")+(a>=1e6?(a/1e6).toFixed(1).replace(".0","")+"M":a>=1000?(a/1000).toFixed(a>=1e4?0:1).replace(".0","")+"k":Math.round(a))};
-function escala(min,max){min=Math.min(0,min);max=Math.max(1,max);const st=niceStep(max-min);return {lo:Math.floor(min/st)*st,hi:Math.ceil(max/st)*st,st}}
+function escala(min,max){min=Math.min(0,min);max=Math.max(min<0?0:100,max);const st=niceStep(max-min);return {lo:Math.floor(min/st)*st,hi:Math.ceil(max/st)*st,st}}
 function eixoY(sc,y,W,pl){let g="";for(let v=sc.lo;v<=sc.hi+1e-9;v+=sc.st)g+=`<line x1="${pl}" x2="${W}" y1="${y(v)}" y2="${y(v)}" class="${v===0?"g0":"gl"}"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${fk(v)}</text>`;return g}
 function lineChart(vals,nome){
   if(!vals.length)return `<div class="empty">Sem dados.</div>`;
@@ -1861,7 +1896,7 @@ function vPdf(){
       <p class="muted" style="margin:0">Um ficheiro Excel com resumo mensal, membros, cotas de ${S.ano}, movimentos, eventos e actividades. A importação aceita o mesmo ficheiro (ou o modelo) e actualiza membros, cotas, movimentos e actividades.</p>
       ${xlsBar("tudo",true)}</section>
     <section class="panel pdfcard"><h3>Cópia de segurança dos dados</h3>
-      <p class="muted" style="margin:0">${window.TES_REMOTO?"Os dados estão guardados na base de dados MySQL e são os mesmos em todos os aparelhos. Pode baixar uma cópia (.json) para guardar à parte.":"Os dados ficam guardados só neste navegador. Baixe uma cópia com frequência e importe-a noutro telemóvel ou computador para ter os mesmos dados."}</p>
+      <p class="muted" style="margin:0">${window.TES_REMOTO?"Os dados ficam guardados na base de dados MySQL e também neste navegador. Sem ligação, as alterações ficam no aparelho e seguem para o MySQL quando a ligação voltar. Pode ainda baixar uma cópia (.json) para guardar à parte.":"Os dados ficam guardados só neste navegador. Baixe uma cópia com frequência e importe-a noutro telemóvel ou computador para ter os mesmos dados."}</p>
       <p class="muted" style="margin:0;font-size:13px">${window.TES_LOCAL?textoUltimaCopia():""}</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="bkExport">Baixar cópia (.json)</button>${!window.TES_REMOTO||S.sessao?.papel==="admin"?`<label class="btn" style="cursor:pointer">${window.TES_REMOTO?"Importar cópia para o MySQL":"Importar cópia"}<input type="file" accept=".json,application/json" id="bkImport" hidden></label>`:""}${window.TES_REMOTO&&S.sessao?.papel==="admin"&&dadosDoNavegador()?`<button class="btn" data-act="bkNavegador">Enviar dados deste navegador para o MySQL</button>`:""}</div></section>
     <section class="panel pdfcard"><h3>Enviar por email</h3>
@@ -2261,12 +2296,15 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   const aberto=!document.querySelector(".contamenu")?.hidden&&!!document.querySelector(".contamenu");
   const lig=window.TES_REMOTO?TES_REMOTO.ligados():[],n=Math.max(1,lig.length);
   const lista=window.TES_REMOTO?(lig.length?lig:[{id:S.sessao.user,nome:S.sessao.nome,papel:S.sessao.papel}]):[];
-  el.innerHTML=`<div class="contabox">${window.TES_REMOTO?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
+  const st=window.TES_REMOTO?TES_REMOTO.estado():null;
+  const estado=!st?"":!st.online?`<span class="syncst off" title="Sem ligação ao servidor. As alterações ficam guardadas neste aparelho e seguem para o MySQL quando a ligação voltar."><i></i><span>Sem ligação${st.pendentes?` · <b>${st.pendentes}</b> por enviar`:""}</span></span>`:st.pendentes?`<span class="syncst wait" title="A enviar para o MySQL as alterações guardadas neste aparelho."><i></i><span><b>${st.pendentes}</b> a enviar</span></span>`:"";
+  el.innerHTML=`<div class="contabox">${estado}${window.TES_REMOTO&&st.online?`<button class="online" data-act="menuConta" title="${n} ${n===1?"pessoa ligada":"pessoas ligadas"}: ${esc(lista.map(u=>u.nome).join(", "))}"><i></i><span><b>${n}</b> <em>${n===1?"ligado":"ligados"}</em></span></button>`:""}
   <button class="avbtn" data-act="menuConta" aria-haspopup="menu" aria-expanded="${aberto}" aria-label="Conta de ${esc(S.sessao.nome)}" title="Sessão iniciada: ${esc(S.sessao.nome)}">${esc((S.sessao.nome||"?").trim().charAt(0).toUpperCase())}<i class="dot" aria-hidden="true"></i></button></div>
   <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
   ${window.TES_REMOTO?`<div class="cm-lig"><span class="cm-t">Ligados agora (${lista.length})</span><ul>${lista.map(u=>`<li><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===S.sessao.user?" (você)":""}</b><small>${esc((PAPEIS[u.papel]||"").split(" (")[0])}</small></span></li>`).join("")}</ul></div>`:""}
   <button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
 window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();if(S.tab==="utilizadores"&&!S.pending)render()}});
+window.addEventListener("tes-erro-envio",e=>toast("Não foi possível enviar uma alteração: "+e.detail));
 document.addEventListener("click",ev=>{const b=ev.target.closest('[data-act="menuConta"]'),m=document.querySelector(".contamenu");if(!m)return;
   if(b){const open=m.hidden;m.hidden=!open;b.setAttribute("aria-expanded",String(open));return}
   if(!m.hidden){m.hidden=true;document.querySelector(".avbtn")?.setAttribute("aria-expanded","false")}});
@@ -2424,7 +2462,10 @@ document.addEventListener("change",async ev=>{if(ev.target.id!=="bkImport"||!(wi
   try{if(temDados())baixarCopia("tesouraria-antes-de-importar-");window.TES_LOCAL.importar(d);toast("Cópia importada");setTimeout(()=>location.reload(),900)}
   catch(e){toast(e&&e.code==="quota_exceeded"?"Sem espaço no navegador para esta cópia.":"Não foi possível importar a cópia.")}});
 // ---------- funcionar sem internet (GitHub Pages)
-if("serviceWorker" in navigator&&location.protocol==="https:"){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+if("serviceWorker" in navigator&&window.isSecureContext){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").then(r=>{
+  // Quando há uma versão nova da app, avisa e recarrega ao tocar.
+  r.addEventListener("updatefound",()=>{const w=r.installing;w&&w.addEventListener("statechange",()=>{if(w.state==="installed"&&navigator.serviceWorker.controller){const el=$("#toast");el.innerHTML='Há uma versão nova da app. <button class="linkbtn" onclick="location.reload()">Actualizar</button>';el.hidden=false;clearTimeout(toast.t)}})});
+  setInterval(()=>r.update().catch(()=>{}),60*60*1000)}).catch(()=>{})})}
 // ---------- arranque
 render();
 (async()=>{
