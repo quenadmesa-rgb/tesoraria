@@ -791,6 +791,62 @@ body{background:radial-gradient(1200px 600px at 100% -10%,color-mix(in srgb,var(
 .evs .chip{margin-left:6px;vertical-align:1px}
 .rk tbody tr:nth-child(-n+3) td.c-n{color:var(--gold);font-weight:800}
 @media (max-width:640px){.evs th:nth-child(3),.evs td:nth-child(3),.evs th:nth-child(4),.evs td:nth-child(4),.evs th:nth-child(6),.evs td:nth-child(6){display:none}.acts th:nth-child(4),.acts td:nth-child(4),.acts th:nth-child(5),.acts td:nth-child(5),.acts th:nth-child(7),.acts td:nth-child(7){display:none}.rk th:nth-child(5),.rk td:nth-child(5){display:none}}
+/* --- Paginação (barra fixa no fundo) --- */
+:root{--rows:10}
+.scroll{max-height:calc(var(--row) * var(--rows) + 44px + 46px)}
+tr.pg-off{display:none}
+.pager{position:sticky;bottom:0;z-index:7;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;padding:8px 10px;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;box-shadow:0 -4px 14px rgba(16,32,26,.06)}
+.pg-info{font-size:12.5px;color:var(--muted)}.pg-info b{color:var(--fg)}
+.pg-btns{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.pager button{all:unset;cursor:pointer;min-width:34px;height:34px;padding:0 10px;box-sizing:border-box;display:inline-grid;place-items:center;border-radius:9px;font:600 13px var(--body);color:var(--fg2);border:1px solid transparent}
+.pager button:hover:not(:disabled){background:var(--sunk);border-color:var(--line)}
+.pager button[aria-current="page"]{background:var(--brand);color:var(--brand-fg)}
+.pager button:disabled{opacity:.4;cursor:not-allowed}
+.pager button:focus-visible{box-shadow:var(--focus)}
+.pg-gap{padding:0 4px;color:var(--muted)}
+@media (max-width:1023px){body:has(#bnav .bn) .pager{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:640px){.pager{justify-content:center}.pg-info{width:100%;text-align:center}.pager button{min-width:38px;height:38px}}
+/* --- Cartões de indicadores fixos no topo ao deslizar --- */
+.kpis{position:sticky;top:var(--hdr,68px);z-index:6;padding:10px 0 12px;margin-top:-6px;background:linear-gradient(var(--bg) 82%,color-mix(in srgb,var(--bg) 0%,transparent))}
+.kpis.kpis5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1100px){.kpis.kpis5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){
+  .kpis,.kpis.kpis4,.kpis.kpis5{display:flex!important;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;padding:8px 0 10px;scrollbar-width:none}
+  .kpis::-webkit-scrollbar{display:none}
+  .kpis .kpi{flex:0 0 148px;min-height:76px;scroll-snap-align:start}
+  .kpis .kpi.saldo{grid-column:auto}
+}
+/* --- Contribuições: barra de filtros, criar recolhido, barra da meta --- */
+.filtros{padding:12px 14px}
+.filtros .toolbar{margin:0}
+.filtros-sel{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.filtros-sel label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+.filtros-sel select.inp{width:auto;min-height:36px}
+details.criar{border:1px dashed color-mix(in srgb,var(--gold) 55%,var(--line));border-radius:14px;background:color-mix(in srgb,var(--gold-soft) 25%,var(--surface))}
+details.criar>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 16px;font-weight:700;color:var(--fg)}
+details.criar>summary::-webkit-details-marker{display:none}
+details.criar[open]>summary{border-bottom:1px solid var(--line)}
+details.criar .panel.quick{border:0;box-shadow:none;border-radius:0 0 14px 14px;background:transparent}
+.mais-ico{width:26px;height:26px;border-radius:8px;background:var(--brand);color:var(--brand-fg);display:grid;place-items:center;font-weight:800}
+.meta-barra{height:10px;border-radius:999px;background:var(--sunk);overflow:hidden;margin-top:-4px}
+.meta-barra span{display:block;height:100%;border-radius:999px}
+.tbl-tools{display:flex;justify-content:flex-end;margin-bottom:8px}.tbl-tools .search{max-width:360px;flex:1 1 220px}
+.ev-panel .tbl-tools{justify-content:stretch}
+html{scroll-padding-top:calc(var(--hdr,68px) + var(--kpih,0px) + 12px)}
+/* --- Página das cotas --- */
+.cota .c-tot{position:sticky;right:0;z-index:2;background:var(--surface);box-shadow:inset 1px 0 0 var(--line);min-width:130px;text-align:right}
+.cota thead .c-tot{z-index:4;background:var(--sunk)}
+.cota tbody tr:nth-child(even) td.c-tot{background:color-mix(in srgb,var(--sunk) 45%,var(--surface))}
+.tot-cel{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.tot-cel b{font-variant-numeric:tabular-nums;font-size:13px}
+.tot-cel .cbar{width:100%;min-width:90px;height:5px}
+.medalha{margin-right:6px;font-size:14px}
+.cota td.name button{font-weight:600}
+.cota td.name button:hover{color:var(--c1);text-decoration:underline}
+.kpi .v small.de{font-size:13px;font-weight:600;color:var(--muted);font-family:var(--body)}
+.kpi.saldo .v small.de{color:rgba(242,247,243,.7)}
+.cota-graf .chart svg{max-height:240px}
+@media (max-width:640px){.cota .c-tot{min-width:96px}.tot-cel .cbar{min-width:60px}}
 /* ===== Botão de idioma PT | EN ===== */
 .lang{display:inline-flex;border:1px solid rgba(255,255,255,.25);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
 .lang button{all:unset;cursor:pointer;padding:6px 10px;font:700 12px var(--body);color:var(--brand-fg);opacity:.7;letter-spacing:.04em}
@@ -1133,6 +1189,7 @@ function render(){
   const fn={resumo:vResumo,membros:vMembros,cotas:vCotas,classificacao:vClass,contribuicoes:()=>vEventos("contribuicao"),conferencias:()=>vEventos("outros"),ofertas:vOfertas,saidas:vSaidas,jovens:vJovens,regiao:vRegiao,relatorio:vRelatorio,pdf:vPdf,actividades:vActividades,utilizadores:vUsers}[S.tab];
   const bMig=window.TES_REMOTO&&S.sessao.papel==="admin"&&dadosDoNavegador()&&!S.migVisto?`<div class="banner">Este navegador ainda tem dados guardados da versão antiga (só neste aparelho). <button class="linkbtn" data-act="bkNavegador">Enviar para a base de dados MySQL</button> · <button class="linkbtn" data-act="migFechar">Ignorar</button></div>`:"";
   // Estado da base de dados: tudo acontece em silêncio (sem avisos), a app guarda no aparelho e sincroniza quando pode.
+  setTimeout(()=>paginar(false),0);
   main.innerHTML=bMig+bannerCopia()+(S.edit?"":`<div class="banner">Está em modo de leitura. Só os responsáveis com permissão de edição podem registar valores.</div>`)+fn();
 }
 const addBtn=(act,txt,extra="")=>S.edit?`<button class="btn primary" data-act="${act}" ${extra}>+ ${txt}</button>`:"";
@@ -1261,26 +1318,56 @@ function niceStep(mx){const r=mx/4,p=Math.pow(10,Math.floor(Math.log10(r)));cons
 function rankLi(r,max){return `<li><span class="n">${r.pos}</span><span class="t">${esc(r.m.nome)}</span><span class="money">${fmt(r.v)}</span><span class="bar"><span style="width:${(r.v/max*100).toFixed(1)}%"></span></span></li>`}
 
 function vCotas(){
-  const ms=S.membros;
-  const head=`<tr><th class="c-n">Nº</th><th>Membro</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th>Total</th></tr>`;
-  const body=ms.map((m,idx)=>{
-    const cells=M3.map((_,i)=>{const v=m.cotas?.[S.ano]?.[i+1];const val=(v===undefined||v===null||v==="")?"":num(v);
-      return S.edit?`<td><input inputmode="decimal" aria-label="${esc(m.nome)} ${MESES[i]}" data-cota="${m.id}" data-mes="${i+1}" value="${val}" placeholder="–"></td>`
+  const A=S.ano,MS=[1,2,3,4,5,6,7,8,9,10,11,12],todos=S.membros;
+  const tot=m=>cotaPeriodo(m,A,MS),f=S.cotaFiltro||"com",ord=S.cotaOrd||"valor";
+  const hdr=`<div class="head"><div><h2>Cotas de ${A}</h2><p>${S.edit?"Toque num valor e escreva: guarda sozinho e os totais actualizam-se.":"Valores de cota por membro e por mês."}</p></div><div class="head-acts">${xlsBar("cotas")}${addBtn("novoMembro","Membro")}</div></div>`;
+  if(!todos.length)return hdr+`<div class="empty">Ainda não há membros. ${S.edit?"Use “+ Membro” para adicionar o primeiro.":""}</div>`;
+  // totais do ano (nos cartões, em cima)
+  const mensal=MS.map(i=>sum(todos.map(m=>cotaM(m,A,i)))),sai=saidasCotaMes(),T=sum(mensal),SA=sum(sai);
+  const pagaram=todos.filter(m=>tot(m)>0).length,semCota=todos.length-pagaram;
+  const mMax=Math.max(...mensal),melhor=mMax>0?mensal.indexOf(mMax):-1;
+  const mesAct=A===new Date().getFullYear()?new Date().getMonth()+1:12;
+  const kpis=`<div class="kpis kpis5">
+    <div class="kpi saldo"><span class="l">Total de cotas ${A}</span><span class="v">${fmt(T)}</span><span class="h">${mesAct<12||A===new Date().getFullYear()?"até "+MESES[mesAct-1]:"ano completo"}</span></div>
+    <div class="kpi k4"><span class="l">Saídas da cota</span><span class="v ${SA?"out":""}">${fmt(SA)}</span><span class="h">${T?Math.round(SA/T*100)+"% do total":"—"}</span></div>
+    <div class="kpi k1"><span class="l">Disponível</span><span class="v">${fmt(T-SA)}</span><span class="h">depois das saídas</span></div>
+    <div class="kpi k3"><span class="l">Pagaram cota</span><span class="v">${pagaram} <small class="de">de ${todos.length}</small></span><span class="h">${todos.length?Math.round(pagaram/todos.length*100):0}% dos membros</span></div>
+    <div class="kpi k2"><span class="l">Média por quem pagou</span><span class="v">${fmt(pagaram?T/pagaram:0)}</span><span class="h">${melhor>=0?"melhor mês: "+MESES[melhor]+" ("+fmt(mMax)+")":"—"}</span></div></div>`;
+  // gráfico por mês
+  const graf=`<section class="panel chart-panel cota-graf"><div class="ch-h"><div><h3>Cotas recebidas e saídas por mês</h3><p class="muted small">Toque numa barra para ver os valores</p></div>
+    <div class="legend"><span><i style="background:var(--c1)"></i>Cotas</span><span><i style="background:var(--c4)"></i>Saídas da cota</span></div></div>${barsChart(mensal,sai)}</section>`;
+  // filtros
+  let ms=todos.filter(m=>f==="todos"||(f==="com"?tot(m)>0:tot(m)===0));
+  ms=[...ms].sort(ord==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ord==="ordem"?(a,b)=>num(a.ordem)-num(b.ordem):(a,b)=>tot(b)-tot(a)||a.nome.localeCompare(b.nome));
+  const FIL=[["com","Com cota ("+pagaram+")"],["sem","Sem cota ("+semCota+")"],["todos","Todos ("+todos.length+")"]];
+  const barra=`<section class="panel filtros"><div class="toolbar">
+    <div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" id="cotaBusca" placeholder="Procurar membro…" aria-label="Procurar membro" value="${esc(S.cotaBusca||"")}" autocomplete="off"></div>
+    <div class="seg" role="group" aria-label="Mostrar">${FIL.map(([k,l])=>`<button type="button" data-cotaf="${k}" aria-pressed="${f===k}">${l}</button>`).join("")}</div>
+    <div class="filtros-sel"><label><span>Ordenar</span><select class="inp" id="cotaOrd">${[["valor","Maior total primeiro"],["nome","Nome (A–Z)"],["ordem","Ordem de registo"]].map(([k,l])=>`<option value="${k}" ${ord===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
+  </div></section>`;
+  const maxT=Math.max(1,...ms.map(tot));
+  const head=`<tr><th class="c-n">Nº</th><th>Membro</th>${M3.map(m=>`<th>${m}</th>`).join("")}<th class="c-tot">Total</th></tr>`;
+  // os membros fora do filtro também vão para a tabela (ocultos), para a pesquisa os encontrar
+  const resto=todos.filter(m=>!ms.includes(m)).sort((a,b)=>a.nome.localeCompare(b.nome));
+  const linhas=[...ms.map((m,idx)=>[m,idx,true]),...resto.map(m=>[m,-1,false])];
+  const body=linhas.map(([m,idx,dentro])=>{const t=tot(m),med=ord==="valor"&&t>0&&idx<3?["🥇","🥈","🥉"][idx]:"";
+    const cells=MS.map(i=>{const v=m.cotas?.[A]?.[i];const val=(v===undefined||v===null||v==="")?"":num(v);
+      return S.edit?`<td><input inputmode="decimal" aria-label="${esc(m.nome)} ${MESES[i-1]}" data-cota="${m.id}" data-mes="${i}" value="${val}" placeholder="–"></td>`
         :`<td class="${val?"":"zero"}">${val===""?"–":val}</td>`}).join("");
-    const oculto=S.cotaBusca&&!semAcento(m.nome).includes(semAcento(S.cotaBusca));
-    return `<tr data-nome="${esc(semAcento(m.nome))}" ${oculto?"hidden":""}><td class="c-n">${idx+1}</td><td class="name">${S.edit?`<button data-act="editMembro" data-id="${m.id}">${esc(m.nome)}</button>`:esc(m.nome)}</td>${cells}<td class="tot" data-rowtot="${m.id}">${fmt(cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12]))}</td></tr>`}).join("");
-  const colt=M3.map((_,i)=>`<td data-coltot="${i+1}">${fmt(sum(ms.map(m=>cotaM(m,S.ano,i+1))))}</td>`).join("");
-  const all=sum(ms.map(m=>cotaPeriodo(m,S.ano,[1,2,3,4,5,6,7,8,9,10,11,12])));
-  const live=`<p class="muted" id="liveRank" style="margin:0;font-size:13px">${liveRank()}</p>`;
-  const hdr=`<div class="head"><div><h2>Cotas de ${S.ano}</h2><p>${S.edit?"Toque num valor e escreva. Guarda sozinho, e os totais, a classificação e o resumo actualizam-se.":"Valores de cota por membro e por mês."}</p></div><div class="head-acts">${xlsBar("cotas")}${addBtn("novoMembro","Membro")}</div></div>`;
-  if(!ms.length)return hdr+`<div class="empty">Ainda não há membros. ${S.edit?"Use “+ Membro” para adicionar o primeiro.":""}</div>`;
-  const busca=ms.length>8?`<div class="controls"><input class="inp" type="search" id="cotaBusca" placeholder="Procurar membro…" aria-label="Procurar membro" value="${esc(S.cotaBusca||"")}" autocomplete="off" style="max-width:280px"></div>`:"";
-  return hdr+busca+`<div class="scroll"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody><tfoot id="cotaFoot">${footRows(M3.map((_,i)=>sum(ms.map(m=>cotaM(m,S.ano,i+1)))))}</tfoot></table></div>`+live;
+    const q=S.cotaBusca?semAcento(S.cotaBusca):"",oculto=q?!semAcento(m.nome).includes(q):!dentro;
+    return `<tr data-nome="${esc(semAcento(m.nome))}" data-f="${dentro?1:0}" ${oculto?"hidden":""}><td class="c-n">${dentro?idx+1:""}</td><td class="name">${med?`<span class="medalha" aria-hidden="true">${med}</span>`:""}${S.edit?`<button data-act="editMembro" data-id="${m.id}">${esc(m.nome)}</button>`:esc(m.nome)}</td>${cells}
+      <td class="c-tot"><div class="tot-cel"><b data-rowtot="${m.id}">${fmt(t)}</b><span class="cbar"><i style="width:${(t/maxT*100).toFixed(1)}%"></i></span></div></td></tr>`}).join("");
+  const nota=f==="com"&&semCota?`<p class="muted small tbl-nota">${semCota} ${semCota===1?"membro sem cota está oculto":"membros sem cota estão ocultos"} em ${A}. <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></p>`:"";
+  const tabela=todos.length&&(ms.length||S.cotaBusca)?`<section class="panel tbl-panel"><div class="scroll"><table class="cota"><thead>${head}</thead><tbody>${body}</tbody></table></div>${nota}</section>`
+    :`<div class="empty">${f==="com"?"Ainda não há cotas registadas em "+A+".":"Todos os membros têm cota em "+A+"."} <button class="linkbtn" data-cotaf="todos">Mostrar todos</button></div>`;
+  return hdr+kpis+graf+barra+tabela;
 }
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-cotaf]");if(!b)return;S.cotaFiltro=b.dataset.cotaf;render()});
+document.addEventListener("change",ev=>{if(ev.target.id==="cotaOrd"){S.cotaOrd=ev.target.value;render()}});
 
 const semAcento=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 document.addEventListener("input",ev=>{if(ev.target.id!=="cotaBusca")return;S.cotaBusca=ev.target.value;const q=semAcento(S.cotaBusca);
-  document.querySelectorAll("table.cota tbody tr[data-nome]").forEach(tr=>{tr.hidden=!!q&&!tr.dataset.nome.includes(q)})});
+  document.querySelectorAll("table.cota tbody tr[data-nome]").forEach(tr=>{tr.hidden=q?!tr.dataset.nome.includes(q):tr.dataset.f==="0"});paginar(true)});
 function saidasCotaMes(){return M3.map((_,i)=>sum(S.movs.filter(v=>v.tipo==="saida"&&!v.eventoId&&v.origem==="cota"&&anoMov(v)===S.ano&&mesMov(v)===i+1).map(v=>num(v.valor))))}
 function footRows(tot){
   const sai=saidasCotaMes(),disp=tot.map((t,i)=>t-sai[i]);
@@ -1315,12 +1402,39 @@ function vEventos(grupo){
   if(S.evento){const ev=S.eventos.find(e=>e.id===S.evento);if(ev)return vEvento(ev);S.evento=null}
   const evs=S.eventos.filter(e=>grupo==="contribuicao"?e.tipo==="contribuicao":e.tipo!=="contribuicao")
     .sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
-  const titulo=grupo==="contribuicao"?"Contribuições":"Conferências e eventos";
+  const co=grupo==="contribuicao",todos=evs;
+  // filtros
+  const est=e=>{const t=eventoTotais(e.id),m=num(e.meta);return !m?"semmeta":t.te>=m?"atingida":"curso"};
+  const anoF=S.evano||"todos",fF=S.evf||"todos",ordF=S.evord||"recentes";
+  let lista=todos.filter(e=>(anoF==="todos"||(e.data&&+e.data.slice(0,4)===+anoF))&&(fF==="todos"||est(e)===fF));
+  const tot=e=>eventoTotais(e.id).te,cumpr=e=>{const m=num(e.meta);return m?tot(e)/m:-1};
+  lista=[...lista].sort(ordF==="nome"?(a,b)=>a.nome.localeCompare(b.nome):ordF==="recebido"?(a,b)=>tot(b)-tot(a):ordF==="cumprimento"?(a,b)=>cumpr(b)-cumpr(a):(a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
+  const TT=lista.map(e=>eventoTotais(e.id)),te=sum(TT.map(t=>t.te)),ts=sum(TT.map(t=>t.ts)),tm=sum(lista.map(e=>num(e.meta)));
+  const nAt=todos.filter(e=>est(e)==="atingida").length;
+  const anos=[...new Set(todos.map(e=>e.data?+e.data.slice(0,4):null).filter(Boolean))].sort((a,b)=>b-a);
+  const kpis=`<div class="kpis kpis5">
+    <div class="kpi k1"><span class="l">${co?"Campanhas":"Eventos"}</span><span class="v">${lista.length}</span><span class="h">${nAt} com a meta atingida</span></div>
+    <div class="kpi k2"><span class="l">Recebido</span><span class="v">${fmt(te)}</span></div>
+    <div class="kpi k3"><span class="l">Meta total</span><span class="v">${tm?fmt(tm):"—"}</span><span class="h">${tm?"falta "+fmt(Math.max(0,tm-te)):"sem metas definidas"}</span></div>
+    <div class="kpi k4"><span class="l">Saídas</span><span class="v ${ts?"out":""}">${fmt(ts)}</span></div>
+    <div class="kpi saldo"><span class="l">Saldo</span><span class="v">${fmt(te-ts)}</span><span class="h">${tm?"cumprimento global "+Math.round(te/tm*100)+"%":""}</span></div></div>`;
+  const FILT=[["todos","Todas"],["curso","Em curso"],["atingida","Meta atingida"],["semmeta","Sem meta"]];
+  const barra=todos.length?`<section class="panel filtros"><div class="toolbar">
+      <div class="search"><span aria-hidden="true">⌕</span><input class="inp" id="evSearch" type="search" placeholder="${co?"Procurar contribuição…":"Procurar evento…"}" value="${esc(S.evq||"")}" autocomplete="off" aria-label="Procurar"></div>
+      <div class="seg" role="group" aria-label="Estado">${FILT.map(([k,l])=>`<button type="button" data-evf="${k}" aria-pressed="${fF===k}">${l}</button>`).join("")}</div>
+      <div class="filtros-sel"><label><span>Ano</span><select class="inp" id="evAno"><option value="todos">Todos</option>${anos.map(a=>`<option value="${a}" ${+anoF===a?"selected":""}>${a}</option>`).join("")}</select></label>
+      <label><span>Ordenar</span><select class="inp" id="evOrd">${[["recentes","Mais recentes"],["nome","Nome (A–Z)"],["recebido","Maior recebido"],["cumprimento","Maior cumprimento"]].map(([k,l])=>`<option value="${k}" ${ordF===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
+    </div></section>`:"";
+  const titulo=co?"Contribuições":"Conferências e eventos";
   const desc=grupo==="contribuicao"?"Campanhas de contribuição, como envelopes e contribuição dos líderes.":"Conferências, retiros, cultos especiais e outros eventos, com entradas e saídas de cada um.";
   return `<div class="head"><div><h2>${titulo}</h2><p>${desc}</p></div><div class="head-acts">${xlsBar(grupo==="contribuicao"?"contribuicoes":"conferencias")}${addBtn("novoEvento",grupo==="contribuicao"?"Nova contribuição":"Novo evento",`data-tipo="${grupo==="contribuicao"?"contribuicao":"conferencia"}"`)}</div></div>
-  ${quickEvento(grupo)}
-  ${evs.length?tabEventos(evs,grupo==="contribuicao"):`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
+  ${todos.length?kpis:""}
+  ${S.edit?`<details class="criar" ${todos.length?"":"open"}><summary><span class="mais-ico" aria-hidden="true">+</span>${co?"Criar contribuição":"Criar conferência ou evento"}</summary>${quickEvento(grupo)}</details>`:""}
+  ${barra}
+  ${lista.length?tabEventos(lista,co):todos.length?`<div class="empty">Nenhum resultado com estes filtros.</div>`:`<div class="empty">Ainda não há ${grupo==="contribuicao"?"contribuições":"conferências ou eventos"}. ${S.edit?"Preencha o formulário acima para criar o primeiro.":""}</div>`}`;
 }
+document.addEventListener("click",ev=>{const b=ev.target.closest("[data-evf]");if(!b)return;S.evf=b.dataset.evf;render()});
+document.addEventListener("change",ev=>{if(ev.target.id==="evAno"){S.evano=ev.target.value;render()}if(ev.target.id==="evOrd"){S.evord=ev.target.value;render()}});
 function quickEvento(grupo){
   if(!S.edit)return "";
   const co=grupo==="contribuicao",id="qe-"+(co?"c":"e");
@@ -1445,8 +1559,10 @@ function vEvento(e){
     ${kpiEdit(e,"entradasManual","Entradas",t.te,t.me,t.re,false)}
     ${kpiEdit(e,"saidasManual","Saídas",t.ts,t.ms,t.rs,true)}
     <div class="kpi saldo"><span class="l">Saldo</span><span class="v">${fmt(t.te-t.ts)}</span></div>
-    ${meta?`<div class="kpi"><span class="l">${t.te>=meta?"Meta atingida":"Falta para a meta"}</span><span class="v">${fmt(Math.max(0,meta-t.te))}</span></div>`:""}
+    ${meta?`<div class="kpi"><span class="l">${t.te>=meta?"Meta atingida":"Falta para a meta"}</span><span class="v">${fmt(Math.max(0,meta-t.te))}</span><span class="h">${Math.round(t.te/meta*100)}% de ${fmt(meta)}</span></div>`:""}
+    <div class="kpi k3"><span class="l">Contribuintes</span><span class="v">${new Set(t.ent.map(v=>(v.nome||"").trim().toLowerCase())).size}</span><span class="h">${t.ent.length?"maior: "+fmt(Math.max(...t.ent.map(v=>num(v.valor)))):"ainda sem entradas"}</span></div>
   </div>
+  ${meta?`<div class="meta-barra" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(t.te/meta*100))}" aria-label="Cumprimento da meta"><span style="width:${Math.min(100,t.te/meta*100).toFixed(1)}%;background:${corPct(t.te/meta*100)}"></span></div>`:""}
   <div class="grid2">
     <section class="panel ev-panel"><h3>Entradas (${t.ent.length}) · ${fmt(t.te)}</h3>${quick("contribuicao",e.id)}${lst(t.ent,false)}</section>
     <section class="panel ev-panel"><h3>Saídas (${t.sai.length}) · ${fmt(t.ts)}</h3>${quick("saida",e.id)}${lst(t.sai,true)}</section>
@@ -1471,13 +1587,61 @@ function porMes(arr,out){
 }
 // Teclado: Enter ou Espaço numa linha da tabela abre a edição
 document.addEventListener("keydown",ev=>{if(ev.key!=="Enter"&&ev.key!==" ")return;const r=ev.target.closest&&ev.target.closest("tr[data-editmov],tr[data-editact],tr[data-open],li[data-editact],[data-editmov][role=button]");if(r&&ev.target===r){ev.preventDefault();r.click()}});
+// ---------- Paginação das tabelas: N linhas por página (Definições), "Anterior · 1 2 3 · Próximo", barra fixa
+const PG={};
+function linhasPorPag(){try{const v=+localStorage.getItem("tes-linhas");return v>=5&&v<=100?v:10}catch(e){return 10}}
+function aplicarLinhas(){document.documentElement.style.setProperty("--rows",String(linhasPorPag()))}
+aplicarLinhas();
+function paginasVisiveis(p,t){if(t<=7)return [...Array(t)].map((_,i)=>i+1);const s=new Set([1,t,p,p-1,p+1]);if(p<=3)[2,3,4].forEach(x=>s.add(x));if(p>=t-2)[t-1,t-2,t-3].forEach(x=>s.add(x));
+  const a=[...s].filter(x=>x>=1&&x<=t).sort((x,y)=>x-y),o=[];a.forEach((x,i)=>{if(i&&x-a[i-1]>1)o.push("…");o.push(x)});return o}
+function paginar(reset){
+  const N=linhasPorPag();
+  document.querySelectorAll("#main .scroll").forEach((sc,ti)=>{const tb=sc.querySelector("table");const body=tb&&tb.tBodies[0];if(!body)return;
+    const rows=[...body.rows],vis=rows.filter(r=>!r.hidden),key=S.tab+":"+(S.evento||"")+":"+ti;
+    let pager=sc.nextElementSibling&&sc.nextElementSibling.classList.contains("pager")?sc.nextElementSibling:null;
+    if(vis.length<=N){rows.forEach(r=>r.classList.remove("pg-off"));if(pager)pager.remove();return}
+    const pages=Math.ceil(vis.length/N);if(reset)PG[key]=1;const pg=Math.min(Math.max(1,PG[key]||1),pages);PG[key]=pg;
+    rows.forEach(r=>r.classList.add("pg-off"));vis.slice((pg-1)*N,pg*N).forEach(r=>r.classList.remove("pg-off"));
+    if(!pager){pager=document.createElement("nav");pager.className="pager";pager.setAttribute("aria-label","Páginas da tabela");sc.after(pager)}
+    pager.dataset.key=key;
+    pager.innerHTML=`<span class="pg-info"><b>${(pg-1)*N+1}–${Math.min(pg*N,vis.length)}</b> de ${vis.length}</span><div class="pg-btns">
+      <button type="button" data-pg="${pg-1}" ${pg===1?"disabled":""} aria-label="Página anterior">‹ Anterior</button>
+      ${paginasVisiveis(pg,pages).map(x=>x==="…"?`<span class="pg-gap" aria-hidden="true">…</span>`:`<button type="button" data-pg="${x}" ${x===pg?'aria-current="page"':""} aria-label="Página ${x}">${x}</button>`).join("")}
+      <button type="button" data-pg="${pg+1}" ${pg===pages?"disabled":""} aria-label="Página seguinte">Próximo ›</button></div>`;
+  });
+}
+document.addEventListener("click",ev=>{const b=ev.target.closest(".pager [data-pg]");if(!b||b.disabled)return;const pager=b.closest(".pager");PG[pager.dataset.key]=+b.dataset.pg;paginar(false);
+  const sc=pager.previousElementSibling;if(sc){sc.scrollTop=0;const r=sc.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.6)sc.scrollIntoView({block:"start",behavior:"smooth"})}});
+// pesquisa genérica nas tabelas (ofertas, saídas, entradas das campanhas) e nas contribuições
+document.addEventListener("input",ev=>{const i=ev.target;
+  if(i.matches&&i.matches("[data-tblsearch]")){const q=nrm(i.value),sc=i.closest(".tbl-tools").nextElementSibling;if(!sc)return;sc.querySelectorAll("tbody tr").forEach(r=>{r.hidden=!!q&&!nrm(r.textContent).includes(q)});paginar(true);return}
+  if(i.id==="evSearch"){S.evq=i.value;const q=nrm(i.value);document.querySelectorAll(".evs tbody tr").forEach(r=>{r.hidden=!!q&&!nrm(r.textContent).includes(q)});paginar(true)}});
+// Definições (por aparelho)
+function formDefinicoes(){
+  const n=linhasPorPag();
+  openSheet(`<div class="sheet-h"><h3>Definições</h3><p>Preferências deste aparelho.</p></div>
+    <fieldset class="fs"><legend>Tabelas</legend>
+      <label>Linhas por página em cada tabela<select class="inp" name="linhas" id="def-linhas">${[5,10,15,20,25,50,100].map(v=>`<option value="${v}" ${v===n?"selected":""}>${v} linhas</option>`).join("")}</select></label>
+      <p class="muted small" style="margin:0">As tabelas mostram este número de linhas por página, com “Anterior”, as páginas e “Próximo”.</p></fieldset>
+    <fieldset class="fs"><legend>Idioma</legend><div class="lang def-lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt">Português</button><button type="button" data-lang="en">English</button></div></fieldset>
+    <div class="acts"><span class="sp"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn primary">Guardar</button></div>`,
+  async fd=>{try{localStorage.setItem("tes-linhas",String(+fd.get("linhas")||10))}catch(e){}aplicarLinhas();Object.keys(PG).forEach(k=>delete PG[k]);render();return "Definições guardadas"});
+  setTimeout(()=>document.querySelectorAll(".def-lang [data-lang]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===(window.TES_LANG?TES_LANG():"pt")))),0);
+}
+document.addEventListener("click",ev=>{if(ev.target.closest('[data-act="definicoes"]'))formDefinicoes()});
+// altura do cabeçalho (para os cartões fixos ficarem logo abaixo)
+function medirCab(){const h=document.querySelector("header.top"),k=document.querySelector("#main .kpis"),r=document.documentElement.style;if(h)r.setProperty("--hdr",h.offsetHeight+"px");r.setProperty("--kpih",(k?k.offsetHeight:0)+"px")}
+// ao deslizar até um campo (teclado, pesquisa, foco), não o deixar escondido por baixo do cabeçalho e dos cartões fixos
+document.addEventListener("focusin",ev=>{const el=ev.target;if(!el.closest||!el.closest("#main")||el.closest(".kpis"))return;medirCab();const r=el.getBoundingClientRect(),topo=(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr"))||0)+(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--kpih"))||0)+8;if(r.top<topo)window.scrollBy({top:r.top-topo-8})});
+window.addEventListener("resize",medirCab);setTimeout(medirCab,0);setInterval(medirCab,2000);
 // Tabela de movimentos (ofertas / saídas): numeração fixa, cabeçalho fixo e total
 function tabMovs(arr,sai){
   if(!arr.length)return "";
   const l=[...arr].sort((a,b)=>(b.data||"").localeCompare(a.data||"")||(b.criado||0)-(a.criado||0));
   const rows=l.map((v,i)=>{const ev=v.eventoId?S.eventos.find(e=>e.id===v.eventoId):null,orig=sai?(ev?ev.nome:ORIGENS[v.origem]||"Cota"):"";
     return `<tr ${S.edit?`data-editmov="${v.id}" tabindex="0" class="clicavel" title="Editar"`:""}><td class="c-n">${i+1}</td><td class="nw">${v.data?dataPt(v.data):"—"}</td><td>${v.data?MESES[+v.data.slice(5,7)-1]:"—"}</td><td class="c-desc">${esc(v.nome||"(sem descrição)")}</td>${sai?`<td>${esc(orig)}</td>`:""}<td class="c-nota">${esc(v.nota||"")}</td><td class="money ${sai?"out":""}">${fmt(num(v.valor))}</td>${S.edit?`<td class="c-acc"><button class="del" data-del="${v.id}" aria-label="Apagar ${esc(v.nome||"registo")}">Apagar</button></td>`:""}</tr>`}).join("");
-  return `<div class="scroll"><table class="mov"><thead><tr><th class="c-n">Nº</th><th>Data</th><th>Mês</th><th>Descrição</th>${sai?"<th>Origem</th>":""}<th>Nota</th><th class="r">Valor (MZN)</th>${S.edit?'<th><span class="sr">Acções</span></th>':""}</tr></thead><tbody>${rows}</tbody>
+  const busca=l.length>5?`<div class="tbl-tools"><div class="search"><span aria-hidden="true">⌕</span><input class="inp" type="search" data-tblsearch placeholder="Procurar por descrição, nota ou data…" autocomplete="off" aria-label="Procurar na tabela"></div></div>`:"";
+  return busca+`<div class="scroll"><table class="mov"><thead><tr><th class="c-n">Nº</th><th>Data</th><th>Mês</th><th>Descrição</th>${sai?"<th>Origem</th>":""}<th>Nota</th><th class="r">Valor (MZN)</th>${S.edit?'<th><span class="sr">Acções</span></th>':""}</tr></thead><tbody>${rows}</tbody>
     <tfoot><tr><td class="c-n"></td><td colspan="${sai?5:4}">Total (${l.length} ${l.length===1?"registo":"registos"})</td><td class="money">${fmt(sum(l.map(v=>num(v.valor))))}</td>${S.edit?"<td></td>":""}</tr></tfoot></table></div>`;
 }
 function vOfertas(){
@@ -1613,7 +1777,7 @@ function vMembros(){
   </section>`;
 }
 document.addEventListener("input",ev=>{if(ev.target.id!=="mSearch")return;S.mq=ev.target.value;const q=nrm(S.mq);let n=0;
-  document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".")});
+  document.querySelectorAll(".mtab tbody tr").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)n++});const c=$("#mCount");if(c)c.textContent=n+" "+(n===1?"membro":"membros")+(q?" encontrados.":".");paginar(true)});
 document.addEventListener("click",ev=>{const b=ev.target.closest("[data-mf]");if(!b)return;S.mf=b.dataset.mf;render()});
 function formEvento(e,tipoDef){
   const tipo=e?.tipo||tipoDef||"conferencia";
@@ -2620,7 +2784,8 @@ function tipoTabela(t,kind){
   if(tem("nome"))return {cotas:"cotas",lideranca:"lideranca",contribuicoes:"contribnomes"}[kind]||"membros";
   return null;
 }
-const ehTotal=s=>/^(total|totais|subtotal|saldo final|soma)\b/.test(nrm(s));
+// linhas de totais/resumo das folhas (nunca são pessoas nem registos)
+const ehTotal=s=>/^(total|totais|subtotal|sub-total|saldo|soma|acumulado|disponivel|saidas|saida \(|entradas \(|media|percentagem|%|resumo|geral)\b/.test(nrm(s));
 const exemplo=s=>/^ex\.?:/i.test(String(s||"").trim());
 function xlsInterpretar(wb,kind,X){
   const ops=[],R={membrosNovos:0,membrosAct:0,cotas:0,ofertas:0,saidas:0,contribs:0,contribEntradas:0,confs:0,quotas:0,lider:0,acts:0,ignorados:0,tabelas:0,naoReconhecidas:[]};
@@ -2696,7 +2861,8 @@ function xlsInterpretar(wb,kind,X){
         }
         else if(tp==="contribnomes"){
           const nome=String(c.nome??c.desc??"").trim(),v=numX(c.valor??c.recebido);if(!nome&&!v)continue;
-          const tit=String(t.titulo||"").trim(),evNome=tit&&!/^(folha|sheet)\d*$/i.test(tit)&&!/^contribui/i.test(nrm(tit))?tit:(R._ultContrib||"Contribuições importadas");
+          // "Envelope - quem contribuiu" / "Envelope: contribuintes" → campanha "Envelope"
+          const tit=String(t.titulo||"").trim().replace(/\s*[-–—:|]\s*(quem contribuiu|quem contribuíu|contribuintes|lista( de contribuintes)?|nomes|detalhe)\s*$/i,"").replace(/\s*\((quem contribuiu|contribuintes)\)\s*$/i,"").trim(),evNome=tit&&!/^(folha|sheet)\d*$/i.test(tit)&&!/^contribui/i.test(nrm(tit))?tit:(R._ultContrib||"Contribuições importadas");
           const e=evento(evNome,"contribuicao");const data=e.data||"";
           if(addMov({tipo:"contribuicao",nome,valor:v,data,ano:data?+data.slice(0,4):ano,nota:"",eventoId:e.id,origem:""}))R.contribEntradas++;
         }
@@ -2849,7 +3015,7 @@ function renderSess(){const el=$("#sessBox");if(!el)return;if(!S.sessao){el.styl
   <button class="avbtn" data-act="menuConta" aria-haspopup="menu" aria-expanded="${aberto}" aria-label="Conta de ${esc(S.sessao.nome)}" title="Sessão iniciada: ${esc(S.sessao.nome)}">${esc((S.sessao.nome||"?").trim().charAt(0).toUpperCase())}<i class="dot" aria-hidden="true"></i></button></div>
   <div class="contamenu" role="menu" ${aberto?"":"hidden"}><div class="cm-h"><span class="cm-on"><i></i>Sessão iniciada</span><b>${esc(S.sessao.nome)}</b><small>${esc(PAPEIS[S.sessao.papel]?.split(" (")[0]||"")}</small></div>
   ${window.TES_REMOTO?`<div class="cm-lig"><span class="cm-t">Ligados agora (${lista.length})</span><ul>${lista.map(u=>`<li><span class="av">${esc((u.nome||u.id).charAt(0).toUpperCase())}</span><span><b>${esc(u.nome||u.id)}${u.id===S.sessao.user?" (você)":""}</b><small>${esc((PAPEIS[u.papel]||"").split(" (")[0])}</small></span></li>`).join("")}</ul></div>`:""}
-  <button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
+  <button role="menuitem" data-act="definicoes">Definições</button><button role="menuitem" data-act="minhaSenha">Alterar a minha senha${S.sessao.padrao?' <span class="chip gold">recomendado</span>':""}</button><button role="menuitem" class="sair" data-act="sair">Sair do sistema</button></div>`}
 window.addEventListener("tes-online",()=>{if(S.sessao){renderSess();
   // na aba Utilizadores, só redesenha se não houver um formulário a meio (para não apagar o que se escreveu ou um erro)
   if(S.tab==="utilizadores"&&!S.pending&&!document.querySelector("#main .err:not([hidden])")&&!document.querySelector("#main form input:not([type=hidden])[value]:not([value=''])")){const f=document.querySelector("[data-newuser]");if(!f||![...f.querySelectorAll("input")].some(i=>i.value))render()}}});
