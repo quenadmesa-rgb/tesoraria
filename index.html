@@ -3003,8 +3003,10 @@ function pdfDoc(J,titulo,sub,landscape,linha2){
   const doc=new J({orientation:landscape?"landscape":"portrait",unit:"pt",format:"a4"});
   const W=doc.internal.pageSize.getWidth();
   doc.setFillColor(18,61,51);doc.rect(0,0,W,74,"F");
-  doc.setTextColor(185,132,24);doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text("ASSEMBLEIA DE DEUS AFRICANA - AVANTE NA FÉ",36,32);
-  doc.setTextColor(242,247,243);doc.setFontSize(9.5);doc.setFont("helvetica","normal");doc.text(linha2||"Autonomia das Águias de Pemba · Direcção da Juventude · Tesouraria",36,52);
+  // logótipo da igreja no cabeçalho de todas as tabelas em PDF
+  let tx=36;try{doc.setFillColor(255,255,255);doc.roundedRect(30,9,112,56,6,6,"F");doc.addImage(LOGO,"JPEG",33,11,106,52);tx=156}catch(e){}
+  doc.setTextColor(185,132,24);doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text("ASSEMBLEIA DE DEUS AFRICANA - AVANTE NA FÉ",tx,32);
+  doc.setTextColor(242,247,243);doc.setFontSize(9.5);doc.setFont("helvetica","normal");doc.text(linha2||"Autonomia das Águias de Pemba · Direcção da Juventude · Tesouraria",tx,52);
   doc.setTextColor(22,33,29);doc.setFont("helvetica","bold");doc.setFontSize(15);doc.text(titulo,36,104);
   doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(93,107,100);
   const hoje=new Date();doc.text((sub?sub+"  ·  ":"")+"Emitido em "+hoje.getDate()+" "+M3[hoje.getMonth()]+" "+hoje.getFullYear(),36,120);
